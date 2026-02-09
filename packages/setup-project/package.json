@@ -38,7 +38,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsup",
-    "demo": "tsx src/index.ts"
+    "demo": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
