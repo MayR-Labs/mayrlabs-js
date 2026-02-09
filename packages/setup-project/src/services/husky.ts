@@ -1,11 +1,7 @@
 import { select, text } from "@clack/prompts";
-import { installPackages } from "../utils/pm.js";
+import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
-/*
-For husky:
-Ask if the user would like to use lint-staged or a custom script. If the user selects lint-staged then lint-staged would be added to the services irregardless of if the user earlier selected it.
-*/
 
 export async function setupHusky(config: any) {
   // Install husky

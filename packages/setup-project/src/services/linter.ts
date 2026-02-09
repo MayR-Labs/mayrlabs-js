@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import { installPackages } from "../utils/pm.js";
+import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 
 export async function setupLinter(config: any, preSelected?: string) {
@@ -33,7 +33,5 @@ export async function setupLinter(config: any, preSelected?: string) {
     await fs.writeJson(".eslintrc.json", configContent, { spaces: 2 });
   } else if (linter === "oxlint") {
     await installPackages(["oxlint"], true);
-    // oxlint usually runs without config or minimal config
-    // It can use .oxlintrc.json
   }
 }

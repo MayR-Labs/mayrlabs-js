@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import { installPackages } from "../utils/pm.js";
+import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 
 export async function setupFormatter(config: any, preSelected?: string) {
@@ -15,7 +15,6 @@ export async function setupFormatter(config: any, preSelected?: string) {
     })) as string;
   }
 
-  // Save choice to config for other tools to use
   config.formatterChoice = formatter;
 
   if (formatter === "prettier") {
@@ -29,10 +28,6 @@ export async function setupFormatter(config: any, preSelected?: string) {
     };
     await fs.writeJson(".prettierrc", configContent, { spaces: 2 });
   } else if (formatter === "oxfmt") {
-    // oxfmt setup
     await installPackages(["oxfmt"], true);
-    // oxfmt is mostly zero-config but we can create a basic one if needed
-    // or just rely on defaults.
-    // It supports .oxfmtrc.json
   }
 }

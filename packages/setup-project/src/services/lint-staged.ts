@@ -1,7 +1,7 @@
 import { multiselect, select } from "@clack/prompts";
-import { installPackages } from "../utils/pm.js";
-import { setupFormatter } from "./formatter.js";
-import { setupLinter } from "./linter.js";
+import { installPackages } from "@/utils/pm";
+import { setupFormatter } from "@/services/formatter";
+import { setupLinter } from "@/services/linter";
 import fs from "fs-extra";
 
 export async function setupLintStaged(config: any) {
@@ -33,13 +33,7 @@ export async function setupLintStaged(config: any) {
   // Handle Linting
   const lintExts = lintExtensions as string[];
   if (lintExts.length > 0) {
-    // Ensure linter is setup
     if (!config.linterChoice) {
-      // If user didn't select linter earlier, prompt now
-      // We might need to run setupLinter to install it.
-      // If config.linter was false, we should technically install it now.
-
-      // Check if we should prompt or if they intentionally skipped (but they selected lint extensions now)
       const linterChoice = (await select({
         message: "No linter selected. Which one should lint-staged use?",
         options: [
@@ -48,7 +42,6 @@ export async function setupLintStaged(config: any) {
         ],
       })) as string;
 
-      // Run setup to install deps and config
       await setupLinter(config, linterChoice);
     }
 
@@ -56,7 +49,6 @@ export async function setupLintStaged(config: any) {
     if (config.linterChoice === "oxlint") {
       lintStagedConfig[glob] = ["npx oxlint --fix"];
     } else {
-      // Default to eslint
       lintStagedConfig[glob] = ["eslint --fix"];
     }
   }

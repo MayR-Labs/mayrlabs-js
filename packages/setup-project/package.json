@@ -15,7 +15,7 @@
     "eslint"
   ],
   "bin": {
-    "setup-project": "dist/src/index.js"
+    "setup-project": "dist/index.js"
   },
   "files": [
     "dist"
@@ -32,21 +32,22 @@
   "license": "MIT",
   "author": "Aghogho Meyoron <youngmayor.dev@gmail.com>",
   "type": "module",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsup src/index.ts --format esm --clean"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
-    "picocolors": "^1.0.0",
     "commander": "^11.1.0",
-    "fs-extra": "^11.2.0",
     "execa": "^8.0.1",
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.16",
+    "tsup": "^8.5.1",
     "typescript": "^5.3.3"
   }
 }

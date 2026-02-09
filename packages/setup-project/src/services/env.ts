@@ -1,5 +1,5 @@
 import { select, confirm, text, multiselect } from "@clack/prompts";
-import { installPackages } from "../utils/pm.js";
+import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import path from "path";
 
@@ -53,8 +53,6 @@ export async function setupEnv(config: any) {
       required: false,
     });
 
-    // We would ideally generate code that imports these presets.
-    // For now, we will just note them or generate basic comments/imports if we were generating full code.
     config.envPresets = presets;
   }
 

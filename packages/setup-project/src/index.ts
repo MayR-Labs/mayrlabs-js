@@ -3,12 +3,12 @@
 import { intro, outro, multiselect, isCancel, cancel } from "@clack/prompts";
 import pc from "picocolors";
 import { program } from "commander";
-import { setupHusky } from "./services/husky.js";
+import { setupFormatter } from "@/services/formatter";
+import { setupHusky } from "@/services/husky";
+import { setupLinter } from "@/services/linter";
+import { setupLintStaged } from "@/services/lint-staged";
+import { setupEnv } from "@/services/env";
 import packageJson from "../package.json" with { type: "json" };
-import { setupFormatter } from "./services/formatter.js";
-import { setupLinter } from "./services/linter.js";
-import { setupLintStaged } from "./services/lint-staged.js";
-import { setupEnv } from "./services/env.js";
 
 async function main() {
   intro(pc.bgCyan(pc.black(" @mayrlabs/setup-project ")));
