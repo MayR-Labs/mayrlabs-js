@@ -2,6 +2,7 @@
   "name": "@mayrlabs/hello",
   "version": "1.0.0",
   "description": "A simple hello world for MayR Labs",
+  "private": false,
   "keywords": [
     "MayR",
     "Labs"
@@ -12,13 +13,14 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/MayR-Labs/mayrlabs-js#readme",
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/hello#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git"
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/hello"
   },
   "license": "MIT",
   "author": "Aghogho Meyoron <youngmayor.dev@gmail.com>",
