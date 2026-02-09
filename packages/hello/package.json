@@ -1,0 +1,36 @@
+{
+  "name": "@mayrlabs/hello",
+  "version": "1.0.0",
+  "description": "A simple hello world for MayR Labs",
+  "keywords": [
+    "MayR",
+    "Labs"
+  ],
+  "bin": {
+    "hello": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git"
+  },
+  "license": "MIT",
+  "author": "Aghogho Meyoron <youngmayor.dev@gmail.com>",
+  "type": "commonjs",
+  "main": "index.ts",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "node scripts/add-shebang.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.10",
+    "typescript": "^5.9.2"
+  }
+}
