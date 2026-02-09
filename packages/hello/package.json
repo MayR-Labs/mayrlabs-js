@@ -1,14 +1,17 @@
 {
   "name": "@mayrlabs/hello",
-  "version": "2.0.0",
+  "version": "0.1.0",
   "description": "A simple hello world for MayR Labs",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "MayR",
     "Labs"
   ],
   "bin": {
-    "hello": "./dist/index.js"
+    "hello": "dist/index.js"
   },
   "files": [
     "dist"
