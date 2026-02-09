@@ -61,7 +61,7 @@ export async function promptEnv(config: any) {
   config.envSplit = split;
 
   const location = await text({
-    message: "Where to create them?",
+    message: "Where should the environment files be created?",
     initialValue: "src/lib",
     placeholder: "src/lib",
   });

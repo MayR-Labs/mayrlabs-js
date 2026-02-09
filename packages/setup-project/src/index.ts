@@ -18,7 +18,6 @@ import { promptLinter, installLinter } from "@/services/linter";
 import { promptLintStaged, installLintStaged } from "@/services/lint-staged";
 import { promptEnv, installEnv } from "@/services/env";
 import { isGitDirty, commitChanges, isGitRepository } from "@/utils/git";
-import { saveConfig, readConfig } from "@/utils/config-store";
 import packageJson from "../package.json";
 
 async function main() {
@@ -87,10 +86,7 @@ async function main() {
   if (config.lintStaged) await promptLintStaged(config);
   if (config.env) await promptEnv(config);
 
-  // 3. Save Config
-  await saveConfig(config);
-
-  // 4. Summary & Confirmation
+  // 3. Summary & Confirmation
   let summary = "The following actions will be performed:\n\n";
   if (config.husky) summary += "- Install and configure Husky\n";
   if (config.formatter)
