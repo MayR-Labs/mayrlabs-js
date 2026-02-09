@@ -3,34 +3,20 @@ import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
 
-export async function setupHusky(config: any) {
-  // Install husky
-  await installPackages(["husky"], true);
-
-  // Init husky
-  // For Husky v9, 'husky init' is the recommended way.
-  try {
-    await execa("npx", ["husky", "init"]);
-  } catch (e) {
-    // Fallback: manual setup
-    await execa("npm", ["pkg", "set", "scripts.prepare=husky"]);
-    await execa("npm", ["run", "prepare"]);
-  }
-
-  const hookType = await select({
+export async function promptHusky(config: any) {
+  const hookType = (await select({
     message: "What pre-commit hook would you like to use?",
     options: [
       { value: "lint-staged", label: "lint-staged" },
       { value: "custom", label: "Custom script" },
       { value: "none", label: "None" },
     ],
-  });
+  })) as string;
+
+  config.huskyHookType = hookType;
 
   if (hookType === "lint-staged") {
-    config.lintStaged = true;
-    await fs.outputFile(".husky/pre-commit", "npx lint-staged\n", {
-      mode: 0o755,
-    });
+    config.lintStaged = true; // Implicitly enable lint-staged
   } else if (hookType === "custom") {
     const script = await text({
       message: "Enter your custom pre-commit script:",
@@ -40,8 +26,29 @@ export async function setupHusky(config: any) {
       },
     });
 
-    if (typeof script === "string") {
-      await fs.outputFile(".husky/pre-commit", `${script}\n`, { mode: 0o755 });
-    }
+    config.huskyCustomScript = script;
+  }
+}
+
+export async function installHusky(config: any) {
+  // Install husky
+  await installPackages(["husky"], true);
+
+  // Init husky
+  try {
+    await execa("npx", ["husky", "init"]);
+  } catch (e) {
+    await execa("npm", ["pkg", "set", "scripts.prepare=husky"]);
+    await execa("npm", ["run", "prepare"]);
+  }
+
+  if (config.huskyHookType === "lint-staged") {
+    await fs.outputFile(".husky/pre-commit", "npx lint-staged\n", {
+      mode: 0o755,
+    });
+  } else if (config.huskyHookType === "custom" && config.huskyCustomScript) {
+    await fs.outputFile(".husky/pre-commit", `${config.huskyCustomScript}\n`, {
+      mode: 0o755,
+    });
   }
 }

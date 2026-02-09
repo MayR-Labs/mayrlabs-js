@@ -1,12 +1,10 @@
 import { multiselect, select } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
-import { setupFormatter } from "@/services/formatter";
-import { setupLinter } from "@/services/linter";
+import { promptFormatter, installFormatter } from "@/services/formatter";
+import { promptLinter, installLinter } from "@/services/linter";
 import fs from "fs-extra";
 
-export async function setupLintStaged(config: any) {
-  await installPackages(["lint-staged"], true);
-
+export async function promptLintStaged(config: any) {
   const lintExtensions = await multiselect({
     message: "Select extensions to lint:",
     options: [
@@ -14,6 +12,9 @@ export async function setupLintStaged(config: any) {
       { value: "ts", label: "ts" },
       { value: "jsx", label: "jsx" },
       { value: "tsx", label: "tsx" },
+      { value: "html", label: "html" },
+      { value: "vue", label: "vue" },
+      { value: "svelte", label: "svelte" },
     ],
     required: false,
   });
@@ -23,53 +24,62 @@ export async function setupLintStaged(config: any) {
     options: [
       { value: "md", label: "md" },
       { value: "css", label: "css" },
+      { value: "scss", label: "scss" },
       { value: "json", label: "json" },
+      { value: "yaml", label: "yaml" },
+      { value: "html", label: "html" },
+      { value: "js", label: "js" },
+      { value: "ts", label: "ts" },
+      { value: "jsx", label: "jsx" },
+      { value: "tsx", label: "tsx" },
+      { value: "vue", label: "vue" },
+      { value: "svelte", label: "svelte" },
     ],
     required: false,
   });
 
+  config.lintStagedLintExtensions = lintExtensions;
+  config.lintStagedFormatExtensions = formatExtensions;
+
+  // Trigger prompt for dependencies if extensions are selected
+  if ((lintExtensions as string[]).length > 0 && !config.linterChoice) {
+    // Ask prompts immediately so config is captured
+    await promptLinter(config);
+    config.linter = true; // Ensure it gets installed
+  }
+
+  if ((formatExtensions as string[]).length > 0 && !config.formatterChoice) {
+    await promptFormatter(config);
+    config.formatter = true; // Ensure it gets installed
+  }
+}
+
+export async function installLintStaged(config: any) {
+  await installPackages(["lint-staged"], true);
+
   const lintStagedConfig: any = {};
+  const lintExts = (config.lintStagedLintExtensions as string[]) || [];
+  const formatExts = (config.lintStagedFormatExtensions as string[]) || [];
 
-  // Handle Linting
-  const lintExts = lintExtensions as string[];
+  // Ensure dependencies are installed (idempotent)
   if (lintExts.length > 0) {
-    if (!config.linterChoice) {
-      const linterChoice = (await select({
-        message: "No linter selected. Which one should lint-staged use?",
-        options: [
-          { value: "eslint", label: "ESLint" },
-          { value: "oxlint", label: "Oxlint" },
-        ],
-      })) as string;
-
-      await setupLinter(config, linterChoice);
-    }
+    await installLinter(config);
 
     const glob = `*.{${lintExts.join(",")}}`;
     if (config.linterChoice === "oxlint") {
+      // oxlint might not fix everything or support all exts, but generic logic here
       lintStagedConfig[glob] = ["npx oxlint --fix"];
     } else {
       lintStagedConfig[glob] = ["eslint --fix"];
     }
   }
 
-  // Handle Formatting
-  const formatExts = formatExtensions as string[];
   if (formatExts.length > 0) {
-    if (!config.formatterChoice) {
-      const formatterChoice = (await select({
-        message: "No formatter selected. Which one should lint-staged use?",
-        options: [
-          { value: "prettier", label: "Prettier" },
-          { value: "oxfmt", label: "Oxfmt" },
-        ],
-      })) as string;
-
-      await setupFormatter(config, formatterChoice);
-    }
+    await installFormatter(config);
 
     const glob = `*.{${formatExts.join(",")}}`;
     if (config.formatterChoice === "oxfmt") {
+      // Filter exts supported by oxfmt if needed, or assume it handles them
       lintStagedConfig[glob] = ["npx oxfmt"];
     } else {
       lintStagedConfig[glob] = ["prettier --write"];

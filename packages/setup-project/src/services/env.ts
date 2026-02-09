@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import path from "path";
 
-export async function setupEnv(config: any) {
+export async function promptEnv(config: any) {
   const variant = (await select({
     message: "Which @t3-oss/env variant?",
     options: [
@@ -12,6 +12,7 @@ export async function setupEnv(config: any) {
       { value: "@t3-oss/env-core", label: "Core" },
     ],
   })) as string;
+  config.envVariant = variant;
 
   const validator = (await select({
     message: "Which validator?",
@@ -21,19 +22,14 @@ export async function setupEnv(config: any) {
       { value: "arktype", label: "Arktype" },
     ],
   })) as string;
-
-  await installPackages([variant, validator], true);
+  config.envValidator = validator;
 
   const installPresets = await confirm({
     message: "Install presets?",
   });
+  config.envInstallPresets = installPresets;
 
   if (installPresets) {
-    // logic to install presets
-    const presetPackage = `@t3-oss/env-core/presets-${validator}`;
-    await installPackages([presetPackage], true);
-
-    // Select specific presets
     const presets = await multiselect({
       message: "Select preset to extend:",
       options: [
@@ -52,7 +48,6 @@ export async function setupEnv(config: any) {
       ],
       required: false,
     });
-
     config.envPresets = presets;
   }
 
@@ -63,15 +58,25 @@ export async function setupEnv(config: any) {
       { value: "joined", label: "Joined (env.ts)" },
     ],
   });
+  config.envSplit = split;
 
   const location = await text({
     message: "Where to create them?",
     initialValue: "src/lib",
     placeholder: "src/lib",
   });
+  config.envLocation = location;
+}
 
-  // Create files based on selection
-  const targetDir = location as string;
+export async function installEnv(config: any) {
+  await installPackages([config.envVariant, config.envValidator], true);
+
+  if (config.envInstallPresets) {
+    const presetPackage = `@t3-oss/env-core/presets-${config.envValidator}`;
+    await installPackages([presetPackage], true);
+  }
+
+  const targetDir = config.envLocation as string;
   await fs.ensureDir(targetDir);
 
   const presetImport =
@@ -79,10 +84,9 @@ export async function setupEnv(config: any) {
       ? `// Presets: ${config.envPresets.join(", ")}\n`
       : "";
 
-  // Basic scaffold content
-  const content = `import { createEnv } from "${variant}";\nimport { ${validator} } from "${validator}";\n\n${presetImport}`;
+  const content = `import { createEnv } from "${config.envVariant}";\nimport { ${config.envValidator} } from "${config.envValidator}";\n\n${presetImport}`;
 
-  if (split === "split") {
+  if (config.envSplit === "split") {
     await fs.outputFile(
       path.join(targetDir, "env/server.ts"),
       `${content}\n// Server env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  experimental__runtimeEnv: process.env\n});`,

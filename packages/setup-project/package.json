@@ -20,7 +20,8 @@
   "files": [
     "dist",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "package.json"
   ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/setup-project#readme",
   "bugs": {
@@ -36,7 +37,8 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "demo": "tsx src/index.ts"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
