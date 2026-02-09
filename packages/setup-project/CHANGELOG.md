@@ -1,5 +1,11 @@
 # @mayrlabs/setup-project
 
+## 0.1.3
+
+### Patch Changes
+
+- 7e2fb31: Added prepublish
+
 ## 0.1.2
 
 ### Patch Changes
