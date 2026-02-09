@@ -11,6 +11,7 @@ import {
   spinner,
 } from "@clack/prompts";
 import pc from "picocolors";
+import figlet from "figlet";
 import { program } from "commander";
 import { promptHusky, installHusky } from "@/services/husky";
 import { promptFormatter, installFormatter } from "@/services/formatter";
