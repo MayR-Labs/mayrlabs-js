@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/setup-project",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Interactive CLI to setup project tools",
   "private": false,
   "publishConfig": {
