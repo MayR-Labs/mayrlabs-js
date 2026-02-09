@@ -1,5 +1,11 @@
 # @mayrlabs/setup-project
 
+## 0.1.4
+
+### Patch Changes
+
+- bcab5ef: Error handling, and new services
+
 ## 0.1.3
 
 ### Patch Changes
