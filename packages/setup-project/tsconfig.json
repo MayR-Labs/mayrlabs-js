@@ -1,8 +1,10 @@
 {
+  "entry": ["src/index.ts"],
+  "format": ["esm", "cjs"],
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "lib": ["ES2022"],
     "outDir": "dist",
     "strict": true,

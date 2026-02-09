@@ -18,7 +18,9 @@
     "setup-project": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/setup-project#readme",
   "bugs": {
@@ -31,10 +33,10 @@
   },
   "license": "MIT",
   "author": "Aghogho Meyoron <youngmayor.dev@gmail.com>",
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm --clean"
+    "build": "tsup"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",

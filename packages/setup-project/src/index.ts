@@ -8,7 +8,7 @@ import { setupHusky } from "@/services/husky";
 import { setupLinter } from "@/services/linter";
 import { setupLintStaged } from "@/services/lint-staged";
 import { setupEnv } from "@/services/env";
-import packageJson from "../package.json" with { type: "json" };
+import packageJson from "../package.json";
 
 async function main() {
   intro(pc.bgCyan(pc.black(" @mayrlabs/setup-project ")));
