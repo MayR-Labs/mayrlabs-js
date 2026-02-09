@@ -1,10 +1,13 @@
-import { multiselect, select } from "@clack/prompts";
+import { multiselect, select, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import { promptFormatter, installFormatter } from "@/services/formatter";
 import { promptLinter, installLinter } from "@/services/linter";
 import fs from "fs-extra";
+import pc from "picocolors";
 
 export async function promptLintStaged(config: any) {
+  log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
+
   const lintExtensions = await multiselect({
     message: "Select extensions to lint:",
     options: [

@@ -1,9 +1,11 @@
-import { select } from "@clack/prompts";
+import { select, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
+import pc from "picocolors";
 
 export async function promptFormatter(config: any) {
   if (!config.formatterChoice) {
+    log.message(pc.bgBlue(pc.black(" Formatter Configuration ")));
     const formatter = (await select({
       message: "Select a formatter:",
       options: [

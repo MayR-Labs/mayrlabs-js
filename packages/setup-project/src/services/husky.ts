@@ -1,9 +1,12 @@
-import { select, text } from "@clack/prompts";
+import { select, text, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
+import pc from "picocolors";
 
 export async function promptHusky(config: any) {
+  log.message(pc.bgMagenta(pc.black(" Husky Configuration ")));
+
   const hookType = (await select({
     message: "What pre-commit hook would you like to use?",
     options: [

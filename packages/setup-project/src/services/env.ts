@@ -1,9 +1,12 @@
-import { select, confirm, text, multiselect } from "@clack/prompts";
+import { select, confirm, text, multiselect, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import path from "path";
+import pc from "picocolors";
 
 export async function promptEnv(config: any) {
+  log.message(pc.bgCyan(pc.black(" Env Validation Configuration ")));
+
   const variant = (await select({
     message: "Which @t3-oss/env variant?",
     options: [
@@ -70,11 +73,6 @@ export async function promptEnv(config: any) {
 
 export async function installEnv(config: any) {
   await installPackages([config.envVariant, config.envValidator], true);
-
-  if (config.envInstallPresets) {
-    const presetPackage = `@t3-oss/env-core/presets-${config.envValidator}`;
-    await installPackages([presetPackage], true);
-  }
 
   const targetDir = config.envLocation as string;
   await fs.ensureDir(targetDir);

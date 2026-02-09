@@ -29,7 +29,13 @@ import { logError } from "@/utils/logger";
 
 async function main() {
   try {
-    intro(pc.bgCyan(pc.black(" @mayrlabs/setup-project ")));
+    console.log();
+    intro(
+      pc.inverse(
+        pc.bold(pc.cyan(` @mayrlabs/setup-project v${packageJson.version} `)),
+      ),
+    );
+    console.log();
 
     // 1. Git Check
     if (await isGitRepository()) {

@@ -1,7 +1,10 @@
-import { select } from "@clack/prompts";
+import { select, log } from "@clack/prompts";
 import fs from "fs-extra";
+import pc from "picocolors";
 
 export async function promptEditorConfig(config: any) {
+  log.message(pc.bgWhite(pc.black(" EditorConfig Configuration ")));
+
   const preset = (await select({
     message: "Select EditorConfig preset:",
     options: [

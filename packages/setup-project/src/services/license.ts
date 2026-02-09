@@ -1,8 +1,11 @@
-import { text, select } from "@clack/prompts";
+import { text, select, log } from "@clack/prompts";
 import fs from "fs-extra";
 import path from "path";
+import pc from "picocolors";
 
 export async function promptLicense(config: any) {
+  log.message(pc.bgGreen(pc.black(" License Configuration ")));
+
   const name = await text({
     message: "License Holder Name:",
     placeholder: "John Doe",
