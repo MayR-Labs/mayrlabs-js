@@ -1,4 +1,4 @@
-import { select, text, log } from "@clack/prompts";
+import { log, select, text } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
@@ -19,7 +19,7 @@ export async function promptHusky(config: any) {
   config.huskyHookType = hookType;
 
   if (hookType === "lint-staged") {
-    config.lintStaged = true; // Implicitly enable lint-staged
+    config.lintStaged = true;
   } else if (hookType === "custom") {
     const script = await text({
       message: "Enter your custom pre-commit script:",

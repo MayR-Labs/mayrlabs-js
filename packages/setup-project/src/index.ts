@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import {
-  intro,
   outro,
   multiselect,
   isCancel,
@@ -11,7 +10,6 @@ import {
   spinner,
 } from "@clack/prompts";
 import pc from "picocolors";
-import figlet from "figlet";
 import { program } from "commander";
 import { promptHusky, installHusky } from "@/services/husky";
 import { promptFormatter, installFormatter } from "@/services/formatter";
@@ -24,48 +22,16 @@ import {
   installEditorConfig,
 } from "@/services/editor-config";
 import { promptLicense, installLicense } from "@/services/license";
-import { isGitDirty, commitChanges, isGitRepository } from "@/utils/git";
 import packageJson from "../package.json";
 import { logError } from "@/utils/logger";
+import gitCheck from "./steps/git-check";
+import { introScreen } from "./utils/display";
 
 async function main() {
   try {
-    console.log();
-    intro(
-      pc.inverse(
-        pc.bold(pc.cyan(` @mayrlabs/setup-project v${packageJson.version} `)),
-      ),
-    );
-    console.log();
+    introScreen();
 
-    // 1. Git Check
-    if (await isGitRepository()) {
-      if (await isGitDirty()) {
-        const shouldCommit = await confirm({
-          message:
-            "Your working directory is dirty. Would you like to commit changes before proceeding?",
-        });
-
-        if (shouldCommit) {
-          const message = await import("@clack/prompts").then((m) =>
-            m.text({
-              message: "Enter commit message:",
-              placeholder: "wip: pre-setup commit",
-              validate(value) {
-                if (value.length === 0) return "Commit message is required";
-              },
-            }),
-          );
-
-          if (typeof message === "string") {
-            const s = spinner();
-            s.start("Committing changes...");
-            await commitChanges(message);
-            s.stop("Changes committed.");
-          }
-        }
-      }
-    }
+    await gitCheck();
 
     // 2. Survey Phase
     const tools = await multiselect({
@@ -156,7 +122,6 @@ async function main() {
       s.stop(`${config.linterChoice} setup complete.`);
     }
 
-    // specific check because husky might have enabled it
     if (config.lintStaged) {
       s.start("Setting up Lint-staged...");
       await installLintStaged(config);
