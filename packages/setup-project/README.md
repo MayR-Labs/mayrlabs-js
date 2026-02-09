@@ -1,65 +1,36 @@
 # @mayrlabs/setup-project
 
-An interactive CLI tool to quickly scaffold and configure common development tools for your projects.
+Interactive CLI to verify and configure common project tools for modern JavaScript/TypeScript applications.
 
 ## Features
 
-- **Interactive UI**: Uses `@clack/prompts` for a beautiful terminal experience.
-- **Tool Selection**: Multi-select support for:
-  - Husky (Git hooks)
-  - Prettier or Oxfmt (Formatter)
-  - ESLint or Oxlint (Linter)
-  - Lint-staged
-  - @t3-oss/env (Environment validation)
-- **Smart Configuration**:
-  - Automatically installs dependencies.
-  - Creates configuration files (`.prettierrc`, `.eslintrc.json`, `.lintstagedrc`, etc.).
-  - Sets up `pre-commit` hooks.
-  - Generates typesafe environment validation files (`env.ts` or `env/server.ts` + `env/client.ts`).
+- 🐶 **Husky**: Set up git hooks effortlessly.
+- 💅 **Formatter**: Choose between **Prettier** or **Oxfmt**.
+- 🧹 **Linter**: Choose between **ESLint** or **Oxlint**.
+- 🚫 **Lint-staged**: Automatically lint/format staged files with broad extension support.
+- 🌳 **Env Validation**: Set up **@t3-oss/env** for Next.js, Nuxt, or Core, with optional presets.
+- 🧪 **Testing**: Configure **Vitest** or **Jest**.
+- ⚙️ **EditorConfig**: Generate standardized `.editorconfig` files.
+- 📄 **License**: Generate MIT, ISC, or Apache-2.0 licenses.
+- 🛡️ **Git Safety**: Checks for uncommitted changes before making modifications.
 
 ## Usage
 
-Run the following command in your project root:
+Run the following command in your project directory:
 
 ```bash
 npx @mayrlabs/setup-project@latest
 ```
 
-Follow the interactive prompts to select the tools you need.
+The CLI will guide you through an interactive survey to select the tools you want to configure. No changes are made until you confirm the summary at the end.
 
-> [!WARNING]
-> This tool modifies configuration files. It is recommended to use it on a fresh project or commit your changes before running it.
+## How it works
 
-## Configuration Details
-
-### Husky
-
-- Initializes Husky.
-- Options to set up `lint-staged` or a custom script as a pre-commit hook.
-
-### Formatter
-
-- Choose between **Prettier** and **Oxfmt**.
-- Generates standard configuration.
-
-### Linter
-
-- Choose between **ESLint** and **Oxlint**.
-- Generates standard configuration.
-
-### Lint-staged
-
-- configure linting for js, ts, jsx, tsx.
-- configure formatting for md, css, json.
-- Automatically uses the selected linter and formatter.
-
-### Env Validation
-
-- Supports Next.js, Nuxt, and Core variants.
-- Choose validator: Zod, Valibot, or Arktype.
-- Install presets for common platforms (Vercel, Railway, etc.).
-- Generate split (`env/client.ts`, `env/server.ts`) or joined (`env.ts`) files.
+1. **Git Check**: Ensures your working directory is clean (or offers to commit changes).
+2. **Survey**: Asks you which tools you want to set up and collects your preferences.
+3. **Summary**: Shows a summary of the actions to be taken.
+4. **Execution**: Installs dependencies and creates configuration files tailored to your choices.
 
 ## License
 
-MIT
+MIT © [MayR Labs](https://mayrlabs.com)

@@ -33,7 +33,11 @@
     "directory": "packages/setup-project"
   },
   "license": "MIT",
-  "author": "Aghogho Meyoron <youngmayor.dev@gmail.com>",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
