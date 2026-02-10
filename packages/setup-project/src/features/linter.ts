@@ -43,5 +43,5 @@ export async function installLinter(config: Config) {
 
   if (!shouldConfigure) return;
 
-  installPlugins(linter as PluginableToolType);
+  await installPlugins(linter as PluginableToolType);
 }
