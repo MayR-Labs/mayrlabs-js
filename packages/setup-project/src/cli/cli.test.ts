@@ -5,7 +5,7 @@ import * as husky from "@/features/husky";
 import * as formatter from "@/features/formatter";
 import * as linter from "@/features/linter";
 import { prompts } from "@/utils/prompts";
-import * as git from "@/steps/git-check";
+
 import * as pluginInstaller from "@/steps/install-plugin";
 import { config } from "@/core/config";
 

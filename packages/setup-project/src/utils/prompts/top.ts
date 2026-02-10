@@ -29,7 +29,7 @@ export class TopCliProvider implements PromptProvider {
           },
         ],
       });
-    } catch (e) {
+    } catch {
       return CANCEL_SYMBOL;
     }
   }
@@ -42,7 +42,7 @@ export class TopCliProvider implements PromptProvider {
       return await confirm(opts.message, {
         initial: opts.initialValue,
       });
-    } catch (e) {
+    } catch {
       return CANCEL_SYMBOL;
     }
   }
@@ -72,7 +72,7 @@ export class TopCliProvider implements PromptProvider {
       });
 
       return optionMap.get(resultKey) as T;
-    } catch (e) {
+    } catch {
       return CANCEL_SYMBOL;
     }
   }
@@ -112,7 +112,7 @@ export class TopCliProvider implements PromptProvider {
 
       // resultKeys should be string[]
       return resultKeys.map((k) => optionMap.get(k) as T);
-    } catch (e) {
+    } catch {
       return CANCEL_SYMBOL;
     }
   }

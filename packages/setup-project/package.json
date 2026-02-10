@@ -42,6 +42,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsup",
+    "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
     "test": "vitest",
     "prepublishOnly": "npm run build"
@@ -58,10 +59,12 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@repo/eslint-config": "^0.0.0",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.16",
     "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^9.39.2",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3",

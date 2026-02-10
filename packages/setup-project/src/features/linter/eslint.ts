@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import { installPackages } from "@/utils/pm";
 import { PLUGINS } from "@/constants/plugins";
-import { resolveConfigFile, writeConfig } from "@/utils/config-file";
+import { resolveConfigFile } from "@/utils/config-file";
 
 export async function installEslint() {
   const packages = ["eslint", "globals", "@eslint/js", "typescript-eslint"];

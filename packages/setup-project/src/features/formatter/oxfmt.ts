@@ -5,5 +5,5 @@ export async function installOxfmt() {
 }
 
 export async function configureOxfmtPlugins(plugins: string[]) {
-  // No-op for now
+  console.log(plugins);
 }

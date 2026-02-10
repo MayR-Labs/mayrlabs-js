@@ -43,7 +43,7 @@ export async function installHusky(config: Config) {
 
   try {
     await execa("npx", ["husky", "init"]);
-  } catch (e) {
+  } catch {
     await execa("npm", ["pkg", "set", "scripts.prepare=husky"]);
     await execa("npm", ["run", "prepare"]);
   }

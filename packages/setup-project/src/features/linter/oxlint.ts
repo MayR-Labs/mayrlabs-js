@@ -5,5 +5,5 @@ export async function installOxlint() {
 }
 
 export async function configureOxlintPlugins(plugins: string[]) {
-  // Oxlint configuration
+  console.log(plugins);
 }

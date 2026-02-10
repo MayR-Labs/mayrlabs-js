@@ -7,10 +7,13 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "release": "npx changeset publish --provenance"
+    "release": "npx changeset publish --provenance",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
     "turbo": "^2.8.3",
     "typescript": "5.9.2"
@@ -26,5 +29,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,md}": [
+      "prettier --write"
+    ]
   }
 }

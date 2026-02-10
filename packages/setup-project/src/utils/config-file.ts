@@ -24,7 +24,10 @@ export async function resolveConfigFile(
   return response;
 }
 
-export async function writeConfig(filePath: string, config: any) {
+export async function writeConfig(
+  filePath: string,
+  config: Record<string, unknown>,
+) {
   const ext = path.extname(filePath);
 
   if (ext === ".json" || ext === "") {

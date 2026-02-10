@@ -2,7 +2,7 @@ import { prompts } from "@/utils/prompts";
 import { installPackages } from "@/utils/pm";
 import { promptFormatter, installFormatter } from "@/features/formatter";
 import { promptLinter, installLinter } from "@/features/linter";
-import fs from "fs-extra";
+
 import pc from "picocolors";
 import { Config } from "@/core/config";
 import {
@@ -59,7 +59,7 @@ export async function installLintStaged(config: Config) {
     ".lintstagedrc.mjs",
   ]);
 
-  const lintStagedConfig: any = {};
+  const lintStagedConfig: Record<string, unknown> = {};
   const lintStagedOptions = config.get("lintStaged").options;
   const lintExts = lintStagedOptions?.lintExtensions || [];
   const formatExts = lintStagedOptions?.formatExtensions || [];
