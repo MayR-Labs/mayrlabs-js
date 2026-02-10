@@ -16,11 +16,14 @@ import {
 import { promptLicense, installLicense } from "@/services/license";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { introScreen } from "@/utils/display";
+import gitCheck from "@/steps/git-check";
 
 export async function configure(toolName?: string) {
   introScreen();
 
   intro(pc.inverse(pc.bold(pc.blue(" Configuration Mode "))));
+
+  await gitCheck();
 
   let selectedTool: Tool | undefined;
 

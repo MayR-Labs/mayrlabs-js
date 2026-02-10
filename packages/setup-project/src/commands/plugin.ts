@@ -9,11 +9,16 @@ import { withCancelHandling } from "@/utils/handle-cancel";
 import { introScreen } from "@/utils/display";
 import { installPackages } from "@/utils/pm";
 import { Tool } from "@/config/types";
+import gitCheck from "@/steps/git-check";
+import { configurePrettierPlugins } from "@/services/formatter/prettier";
+import { configureEslintPlugins } from "@/services/linter/eslint";
 
 export async function plugin(toolName?: string) {
   introScreen();
 
   intro(pc.inverse(pc.bold(pc.magenta(" Plugin Manager "))));
+
+  await gitCheck();
 
   let selectedTool = toolName;
 
@@ -27,7 +32,7 @@ export async function plugin(toolName?: string) {
         options: [
           { value: "eslint", label: "ESLint" },
           { value: "prettier", label: "Prettier" },
-        ],
+        ] as any,
       }),
     )) as string as Tool;
 
@@ -73,18 +78,13 @@ export async function plugin(toolName?: string) {
 
   await installPackages(packagesToInstall, true);
 
-  // @ai: Implement this
-  // Todo: configuring the plugins automatically in .eslintrc or .prettierrc is complex
-  // without parsing existing config. For now, we simple install them.
-  // The user request says "Select and install plugins".
-  // Adding to config might be an enhancement.
-  // For prettier, mostly adding to "plugins": [] in .prettierrc (if generic).
-  // For eslint, extends or plugins array.
+  if (selectedTool === "prettier") {
+    await configurePrettierPlugins(packagesToInstall);
+    outro(pc.green("Prettier plugins configured in .prettierrc"));
+  } else if (selectedTool === "eslint") {
+    await configureEslintPlugins(packagesToInstall);
+    outro(pc.green("ESLint plugins configured in .eslintrc.json"));
+  }
 
   outro(pc.green("Plugins installed successfully!"));
-  console.log(
-    pc.dim(
-      "Note: You may need to manually add these plugins to your configuration file.",
-    ),
-  );
 }

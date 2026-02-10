@@ -1,10 +1,10 @@
 import { select, log } from "@clack/prompts";
-import { installPackages } from "@/utils/pm";
-import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
 import { FORMATTER_OPTIONS, FormatterValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { installPrettier } from "./formatter/prettier";
+import { installOxfmt } from "./formatter/oxfmt";
 
 export async function promptFormatter(config: Config) {
   const formatterConfig = config.get("formatter");
@@ -23,20 +23,12 @@ export async function promptFormatter(config: Config) {
 }
 
 export async function installFormatter(config: Config) {
-  const choice = config.get("formatter").options.choice;
-  if (choice === "prettier") {
-    await installPackages(["prettier"], true);
+  const formatter = config.get("formatter").options.choice;
 
-    const configContent = {
-      semi: true,
-      singleQuote: true,
-      trailingComma: "all",
-      printWidth: 80,
-      tabWidth: 2,
-    };
+  if (!formatter) return;
 
-    await fs.writeJson(".prettierrc", configContent, { spaces: 2 });
-  } else if (choice === "oxfmt") {
-    await installPackages(["oxfmt"], true);
-  }
+  log.message(pc.white(pc.bgBlack(` Installing ${formatter}... `)));
+
+  if (formatter === "prettier") await installPrettier();
+  else if (formatter === "oxfmt") await installOxfmt();
 }

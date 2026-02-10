@@ -1,10 +1,10 @@
 import { select, log } from "@clack/prompts";
-import { installPackages } from "@/utils/pm";
-import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
 import { LINTER_OPTIONS, LinterValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { installEslint } from "./linter/eslint";
+import { installOxlint } from "./linter/oxlint";
 
 export async function promptLinter(config: Config) {
   const linterConfig = config.get("linter");
@@ -22,22 +22,11 @@ export async function promptLinter(config: Config) {
 }
 
 export async function installLinter(config: Config) {
-  const choice = config.get("linter").options.choice;
-  if (choice === "eslint") {
-    await installPackages(["eslint"], true);
-    const configContent = {
-      extends: ["eslint:recommended"],
-      env: {
-        node: true,
-        es2021: true,
-      },
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-      },
-    };
-    await fs.writeJson(".eslintrc.json", configContent, { spaces: 2 });
-  } else if (choice === "oxlint") {
-    await installPackages(["oxlint"], true);
-  }
+  const linter = config.get("linter").options.choice;
+  if (!linter) return;
+
+  log.message(pc.white(pc.bgBlack(` Installing ${linter}... `)));
+
+  if (linter === "eslint") await installEslint();
+  else if (linter === "oxlint") await installOxlint();
 }
