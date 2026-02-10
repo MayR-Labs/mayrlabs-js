@@ -106,7 +106,7 @@ describe("Features", () => {
 
       expect(pm.installPackages).toHaveBeenCalledWith(
         expect.arrayContaining(["eslint"]),
-        true,
+        true
       );
     });
 
@@ -131,18 +131,18 @@ export default [
       expect(fs.writeFile).toHaveBeenCalledWith(
         "eslint.config.mjs",
         expect.stringContaining(
-          'import reactPlugin from "eslint-plugin-react";',
-        ),
+          'import reactPlugin from "eslint-plugin-react";'
+        )
       );
       expect(fs.writeFile).toHaveBeenCalledWith(
         "eslint.config.mjs",
         expect.stringContaining(
-          'import reacthooksPlugin from "eslint-plugin-react-hooks";',
-        ),
+          'import reacthooksPlugin from "eslint-plugin-react-hooks";'
+        )
       );
       expect(fs.writeFile).toHaveBeenCalledWith(
         "eslint.config.mjs",
-        expect.stringContaining('"react": reactPlugin'),
+        expect.stringContaining('"react": reactPlugin')
       );
     });
   });
@@ -200,7 +200,7 @@ export default [
 
       expect(pm.installPackages).toHaveBeenCalledWith(
         ["@t3-oss/env-nextjs", "zod"],
-        false,
+        false
       );
     });
   });

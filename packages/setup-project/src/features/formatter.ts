@@ -18,7 +18,7 @@ export async function promptFormatter(config: Config) {
       message: "Select a formatter:",
       options: FORMATTER_OPTIONS,
       initialValue: formatterConfig.options.choice,
-    }),
+    })
   )) as FormatterValue;
 
   formatterConfig.options = { choice: formatter };
@@ -40,7 +40,7 @@ export async function installFormatter(config: Config) {
     prompts.confirm({
       message: `Do you want to install plugins for ${formatter}?`,
       initialValue: true,
-    }),
+    })
   )) as boolean;
 
   if (!shouldConfigure) return;

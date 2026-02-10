@@ -27,7 +27,7 @@ async function main() {
     introScreen();
 
     prompts.intro(
-      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard "))),
+      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard ")))
     );
 
     await gitCheck();
@@ -37,7 +37,7 @@ async function main() {
         message: "Select tools to configure:",
         options: TOOL_OPTIONS,
         required: false,
-      }),
+      })
     )) as string[] as Tool[];
 
     tools.forEach((tool) => config.enableTool(tool));
@@ -56,7 +56,7 @@ async function main() {
     const proceed = (await withCancelHandling(async () =>
       prompts.confirm({
         message: "Do you want to proceed with the installation?",
-      }),
+      })
     )) as boolean;
 
     if (!proceed) {
@@ -71,7 +71,7 @@ async function main() {
     const logPath = await logError(error);
 
     prompts.outro(
-      pc.red(`\nSomething went wrong!\nError log saved to: ${logPath}`),
+      pc.red(`\nSomething went wrong!\nError log saved to: ${logPath}`)
     );
 
     process.exit(1);

@@ -23,20 +23,20 @@ export async function promptEnv(config: Config) {
     prompts.select({
       message: "Which @t3-oss/env variant?",
       options: ENV_VARIANT_OPTIONS,
-    }),
+    })
   )) as EnvVariantValue;
 
   const validator = (await withCancelHandling(async () =>
     prompts.select({
       message: "Which validator?",
       options: ENV_VALIDATOR_OPTIONS,
-    }),
+    })
   )) as EnvValidatorValue;
 
   const installPresets = (await withCancelHandling(async () =>
     prompts.confirm({
       message: "Install presets?",
-    }),
+    })
   )) as boolean;
 
   let presets: EnvPresetValue[] | undefined;
@@ -46,7 +46,7 @@ export async function promptEnv(config: Config) {
         message: "Select preset to extend:",
         options: ENV_PRESET_OPTIONS,
         required: false,
-      }),
+      })
     )) as EnvPresetValue[];
   }
 
@@ -54,7 +54,7 @@ export async function promptEnv(config: Config) {
     prompts.select({
       message: "Split or Joined env files?",
       options: ENV_SPLIT_OPTIONS,
-    }),
+    })
   )) as EnvSplitValue;
 
   const location = (await withCancelHandling(async () =>
@@ -62,7 +62,7 @@ export async function promptEnv(config: Config) {
       message: "Where should the environment files be created?",
       initialValue: config.get("env").options.location || "src/lib",
       placeholder: "src/lib",
-    }),
+    })
   )) as string;
 
   config.get("env").options = {
@@ -92,16 +92,16 @@ export async function installEnv(config: Config) {
   if (split === "split") {
     await fs.outputFile(
       path.join(location, "env/server.ts"),
-      `${content}\n// Server env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  experimental__runtimeEnv: process.env\n});`,
+      `${content}\n// Server env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  experimental__runtimeEnv: process.env\n});`
     );
     await fs.outputFile(
       path.join(location, "env/client.ts"),
-      `${content}\n// Client env definition\nexport const env = createEnv({\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`,
+      `${content}\n// Client env definition\nexport const env = createEnv({\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`
     );
   } else {
     await fs.outputFile(
       path.join(location, "env.ts"),
-      `${content}\n// Joined env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`,
+      `${content}\n// Joined env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`
     );
   }
 }

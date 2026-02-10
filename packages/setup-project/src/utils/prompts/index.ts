@@ -42,7 +42,7 @@ export class Prompts implements PromptProvider {
   }
 
   confirm(
-    opts: Parameters<PromptProvider["confirm"]>[0],
+    opts: Parameters<PromptProvider["confirm"]>[0]
   ): Promise<boolean | symbol> {
     return this.provider.confirm(opts);
   }

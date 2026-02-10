@@ -17,7 +17,7 @@ export async function promptLinter(config: Config) {
       message: "Select a linter:",
       options: LINTER_OPTIONS,
       initialValue: linterConfig.options.choice,
-    }),
+    })
   )) as LinterValue;
 
   linterConfig.options = { choice: linter };
@@ -38,7 +38,7 @@ export async function installLinter(config: Config) {
     prompts.confirm({
       message: `Do you want to install plugins for ${linter}?`,
       initialValue: true,
-    }),
+    })
   )) as boolean;
 
   if (!shouldConfigure) return;

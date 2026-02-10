@@ -2,7 +2,7 @@ import { prompts } from "@/utils/prompts";
 
 export async function handleCancel<T>(
   response: T | symbol,
-  message: string = "Operation cancelled.",
+  message: string = "Operation cancelled."
 ): Promise<T> {
   if (prompts.isCancel(response)) {
     const shouldCancel = await prompts.confirm({
@@ -22,7 +22,7 @@ export async function handleCancel<T>(
 
 export async function withCancelHandling<T>(
   promptFn: () => Promise<T | symbol>,
-  cancelMessage: string = "Operation cancelled.",
+  cancelMessage: string = "Operation cancelled."
 ): Promise<T> {
   while (true) {
     const response = await promptFn();

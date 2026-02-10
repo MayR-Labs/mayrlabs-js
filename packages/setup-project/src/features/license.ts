@@ -16,7 +16,7 @@ export async function promptLicense(config: Config) {
       message: "License Holder Name:",
       placeholder: "John Doe",
       initialValue: licenseOptions.name,
-    }),
+    })
   );
 
   licenseOptions.email = await withCancelHandling(async () =>
@@ -24,7 +24,7 @@ export async function promptLicense(config: Config) {
       message: "License Holder Email:",
       placeholder: "john@example.com",
       initialValue: licenseOptions.email,
-    }),
+    })
   );
 
   licenseOptions.website = await withCancelHandling(async () =>
@@ -32,14 +32,14 @@ export async function promptLicense(config: Config) {
       message: "License Holder Website:",
       placeholder: "https://example.com",
       initialValue: licenseOptions.website,
-    }),
+    })
   );
 
   licenseOptions.type = (await withCancelHandling(async () =>
     prompts.select({
       message: "Select License Type:",
       options: LICENSE_TYPE_OPTIONS,
-    }),
+    })
   )) as LicenseTypeValue;
 }
 

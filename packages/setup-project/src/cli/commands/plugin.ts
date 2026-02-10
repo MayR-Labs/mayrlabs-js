@@ -22,7 +22,7 @@ export async function plugin(toolName?: PluginableToolType) {
           { value: "eslint", label: "ESLint" },
           { value: "prettier", label: "Prettier" },
         ] satisfies Option<PluginableToolType>[],
-      }),
+      })
     )) as PluginableToolType;
   }
 

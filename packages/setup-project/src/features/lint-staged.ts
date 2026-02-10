@@ -19,7 +19,7 @@ export async function promptLintStaged(config: Config) {
       message: "Select extensions to lint:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
-    }),
+    })
   )) as LintStagedExtensionValue[];
 
   const formatExtensions = (await withCancelHandling(async () =>
@@ -27,7 +27,7 @@ export async function promptLintStaged(config: Config) {
       message: "Select extensions to format:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
-    }),
+    })
   )) as LintStagedExtensionValue[];
 
   config.get("lintStaged").options = {

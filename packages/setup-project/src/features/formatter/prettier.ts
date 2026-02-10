@@ -34,7 +34,7 @@ coverage
 build
 .astro
 .output
-`,
+`
     );
   }
 }

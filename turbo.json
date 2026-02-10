@@ -18,8 +18,8 @@
       "cache": false,
       "persistent": true
     },
-    "//#format": {},
-    "//#format:fix": {
+    "//#fmt": {},
+    "//#fmt:fix": {
       "cache": false
     }
   }

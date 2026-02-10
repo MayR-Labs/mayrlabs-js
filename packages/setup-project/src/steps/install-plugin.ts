@@ -15,7 +15,7 @@ export async function installPlugins(tool: PluginableToolType) {
       options: pluginsList,
       required: true,
       initialValue: [],
-    }),
+    })
   )) as string[];
 
   if (selectedPlugins.length === 0) {
@@ -29,7 +29,7 @@ export async function installPlugins(tool: PluginableToolType) {
   });
 
   prompts.outro(
-    pc.blue(`Installing ${packagesToInstall.length} plugins for ${tool}...`),
+    pc.blue(`Installing ${packagesToInstall.length} plugins for ${tool}...`)
   );
 
   await installPackages(packagesToInstall, true);
@@ -39,13 +39,13 @@ export async function installPlugins(tool: PluginableToolType) {
 
 export async function configurePlugins(
   tool: PluginableToolType,
-  plugins: string[],
+  plugins: string[]
 ) {
   const shouldConfigure = (await withCancelHandling(async () =>
     prompts.confirm({
       message: `Do you want to configure the selected plugins in your ${tool} config file?`,
       initialValue: true,
-    }),
+    })
   )) as boolean;
 
   if (!shouldConfigure) {

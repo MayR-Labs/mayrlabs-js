@@ -5,7 +5,7 @@ import path from "node:path";
 
 export async function resolveConfigFile(
   toolName: string,
-  candidates: string[],
+  candidates: string[]
 ): Promise<string> {
   // 1. Check existing
   for (const file of candidates) {
@@ -18,7 +18,7 @@ export async function resolveConfigFile(
       message: `Where do you want to store the ${toolName} config?`,
       options: candidates.map((c) => ({ value: c, label: c })),
       initialValue: candidates[0],
-    }),
+    })
   )) as string;
 
   return response;
@@ -26,7 +26,7 @@ export async function resolveConfigFile(
 
 export async function writeConfig(
   filePath: string,
-  config: Record<string, unknown>,
+  config: Record<string, unknown>
 ) {
   const ext = path.extname(filePath);
 

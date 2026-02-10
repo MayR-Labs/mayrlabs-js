@@ -15,7 +15,7 @@ export async function promptEditorConfig(config: Config) {
       message: "Select EditorConfig preset:",
       options: EDITOR_CONFIG_OPTIONS,
       initialValue: currentPreset,
-    }),
+    })
   )) as EditorConfigValue;
 
   config.get("editorConfig").options = { preset };

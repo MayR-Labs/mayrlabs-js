@@ -34,7 +34,7 @@ export async function configure(toolName?: string) {
       selectedTool = tool.value as Tool;
     } else {
       console.log(
-        pc.yellow(`Tool '${toolName}' not found or not configurable.`),
+        pc.yellow(`Tool '${toolName}' not found or not configurable.`)
       );
     }
   }
@@ -44,7 +44,7 @@ export async function configure(toolName?: string) {
       prompts.select({
         message: "Select a tool to configure:",
         options: TOOL_OPTIONS,
-      }),
+      })
     )) as string as Tool;
 
     selectedTool = selection;

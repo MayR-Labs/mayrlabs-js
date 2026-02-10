@@ -14,7 +14,7 @@ export async function promptHusky(config: Config) {
     prompts.select({
       message: "What pre-commit hook would you like to use?",
       options: HUSKY_HOOK_OPTIONS,
-    }),
+    })
   )) as HuskyHookValue;
 
   const huskyConfig = config.get("husky");
@@ -31,7 +31,7 @@ export async function promptHusky(config: Config) {
         validate(value) {
           if (value.length === 0) return "Value is required!";
         },
-      }),
+      })
     )) as string;
 
     huskyConfig.options.customScript = script;
