@@ -60,10 +60,21 @@ export class TopCliProvider implements PromptProvider {
 
         optionMap.set(key, o.value);
 
-        return { label: o.label, value: key, description: o.hint };
+        const isSelected = opts.initialValue === o.value;
+
+        return {
+          label: o.label,
+          value: key,
+          description: o.hint,
+          selected: isSelected,
+        };
       });
 
-      const resultKey = await select(opts.message, { choices });
+      const resultKey = await select(opts.message, {
+        choices,
+        autocomplete: true,
+        maxVisible: 10,
+      });
 
       return optionMap.get(resultKey) as T;
     } catch {
