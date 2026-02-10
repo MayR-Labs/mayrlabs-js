@@ -21,7 +21,7 @@ export async function promptHusky(config: Config) {
 
   huskyConfig.options = { hookType };
 
-  if (hookType === "lint-staged") {
+  if (hookType === "lintStaged") {
     config.enableTool("lintStaged");
   } else if (hookType === "custom") {
     const script = (await withCancelHandling(async () =>
@@ -52,7 +52,7 @@ export async function installHusky(config: Config) {
   const hookType = husky.options.hookType;
   const customScript = husky.options.customScript;
 
-  if (hookType === "lint-staged") {
+  if (hookType === "lintStaged") {
     await fs.outputFile(".husky/pre-commit", "npx lint-staged\n", {
       mode: 0o755,
     });

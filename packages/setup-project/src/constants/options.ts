@@ -13,7 +13,7 @@ export const TOOL_OPTIONS = [
   { value: "husky", label: "Husky" },
   { value: "formatter", label: "Formatter (Prettier/Oxfmt)" },
   { value: "linter", label: "Linter (Eslint/Oxlint)" },
-  { value: "lint-staged", label: "Lint-staged" },
+  { value: "lintStaged", label: "Lint-staged" },
   { value: "env", label: "Env Validation (@t3-oss/env)" },
   { value: "test", label: "Test Runner (Vitest/Jest)" },
   { value: "editorConfig", label: "EditorConfig" },
@@ -23,7 +23,7 @@ export const TOOL_OPTIONS = [
 export type ToolValue = OptionValue<typeof TOOL_OPTIONS>;
 
 export const HUSKY_HOOK_OPTIONS = [
-  { value: "lint-staged", label: "lint-staged" },
+  { value: "lintStaged", label: "lint-staged" },
   { value: "custom", label: "Custom script" },
   { value: "none", label: "None" },
 ] as const satisfies Option<string>[];

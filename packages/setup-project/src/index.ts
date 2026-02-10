@@ -16,7 +16,6 @@ import { withCancelHandling } from "@/utils/handle-cancel";
 import { TOOL_OPTIONS } from "@/constants/options";
 import { Tool } from "@/config/types";
 import { execution } from "@/steps/execution";
-import packageJson from "../package.json";
 import { logError } from "@/utils/logger";
 import gitCheck from "@/steps/git-check";
 import { introScreen, showAbout, showVisit, showManual } from "@/utils/display";
