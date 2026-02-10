@@ -30,7 +30,7 @@ export async function promptLintStaged(config: Config) {
     }),
   )) as LintStagedExtensionValue[];
 
-  config.get("lintStaged").config = {
+  config.get("lintStaged").options = {
     lintExtensions,
     formatExtensions,
   };
@@ -52,7 +52,7 @@ export async function installLintStaged(config: Config) {
   await installPackages(["lint-staged"], true);
 
   const lintStagedConfig: any = {};
-  const lintStagedOptions = config.get("lintStaged").config;
+  const lintStagedOptions = config.get("lintStaged").options;
   const lintExts = lintStagedOptions?.lintExtensions || [];
   const formatExts = lintStagedOptions?.formatExtensions || [];
 
@@ -61,7 +61,7 @@ export async function installLintStaged(config: Config) {
     await installLinter(config);
 
     const glob = `*.{${lintExts.join(",")}}`;
-    if (config.get("linter").config?.choice === "oxlint") {
+    if (config.get("linter").options.choice === "oxlint") {
       // oxlint might not fix everything or support all exts, but generic logic here
       lintStagedConfig[glob] = ["npx oxlint --fix"];
     } else {
@@ -73,7 +73,7 @@ export async function installLintStaged(config: Config) {
     await installFormatter(config);
 
     const glob = `*.{${formatExts.join(",")}}`;
-    if (config.get("formatter").config?.choice === "oxfmt") {
+    if (config.get("formatter").options.choice === "oxfmt") {
       // Filter exts supported by oxfmt if needed, or assume it handles them
       lintStagedConfig[glob] = ["npx oxfmt"];
     } else {

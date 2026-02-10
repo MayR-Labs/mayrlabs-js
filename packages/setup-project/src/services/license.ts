@@ -9,33 +9,33 @@ import { withCancelHandling } from "@/utils/handle-cancel";
 export async function promptLicense(config: Config) {
   log.message(pc.bgGreen(pc.black(" License Configuration ")));
 
-  const licenseConfig = config.get("license");
+  const licenseOptions = config.get("license").options;
 
-  licenseConfig.config.name = await withCancelHandling(async () =>
+  licenseOptions.name = await withCancelHandling(async () =>
     text({
       message: "License Holder Name:",
       placeholder: "John Doe",
-      initialValue: licenseConfig.config.name,
+      initialValue: licenseOptions.name,
     }),
   );
 
-  licenseConfig.config.email = await withCancelHandling(async () =>
+  licenseOptions.email = await withCancelHandling(async () =>
     text({
       message: "License Holder Email:",
       placeholder: "john@example.com",
-      initialValue: licenseConfig.config.email,
+      initialValue: licenseOptions.email,
     }),
   );
 
-  licenseConfig.config.website = await withCancelHandling(async () =>
+  licenseOptions.website = await withCancelHandling(async () =>
     text({
       message: "License Holder Website:",
       placeholder: "https://example.com",
-      initialValue: licenseConfig.config.website,
+      initialValue: licenseOptions.website,
     }),
   );
 
-  licenseConfig.config.type = (await withCancelHandling(async () =>
+  licenseOptions.type = (await withCancelHandling(async () =>
     select({
       message: "Select License Type:",
       options: LICENSE_TYPE_OPTIONS,
@@ -44,9 +44,9 @@ export async function promptLicense(config: Config) {
 }
 
 export async function installLicense(config: Config) {
-  const licenseConfig = config.get("license");
+  const licenseOptions = config.get("license").options;
 
-  const { type, name, email, website } = licenseConfig.config;
+  const { type, name, email, website } = licenseOptions;
 
   if (type !== "UNLICENSED") {
     const year = new Date().getFullYear().toString();

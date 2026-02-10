@@ -19,14 +19,14 @@ export async function execution(config: Config) {
   }
 
   if (config.get("formatter").selected) {
-    const choice = config.get("formatter").config?.choice;
+    const choice = config.get("formatter").options.choice;
     s.start(`Setting up ${choice}...`);
     await installFormatter(config);
     s.stop(`${choice} setup complete.`);
   }
 
   if (config.get("linter").selected) {
-    const choice = config.get("linter").config?.choice;
+    const choice = config.get("linter").options.choice;
     s.start(`Setting up ${choice}...`);
     await installLinter(config);
     s.stop(`${choice} setup complete.`);
@@ -45,7 +45,7 @@ export async function execution(config: Config) {
   }
 
   if (config.get("test").selected) {
-    const runner = config.get("test").config?.runner;
+    const runner = config.get("test").options.runner;
     s.start(`Setting up ${runner}...`);
     await installTest(config);
     s.stop(`${runner} setup complete.`);

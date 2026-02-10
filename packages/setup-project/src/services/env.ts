@@ -60,28 +60,25 @@ export async function promptEnv(config: Config) {
   const location = (await withCancelHandling(async () =>
     text({
       message: "Where should the environment files be created?",
-      initialValue: config.get("env").config?.location || "src/lib",
+      initialValue: config.get("env").options.location || "src/lib",
       placeholder: "src/lib",
     }),
   )) as string;
 
-  config.get("env").config = {
+  config.get("env").options = {
     variant,
     validator,
     installPresets,
-    presets,
+    presets: presets || [],
     split,
     location,
   };
 }
 
 export async function installEnv(config: Config) {
-  const envConfig = config.get("env").config;
-  if (!envConfig) return;
+  const envOptions = config.get("env").options;
 
-  const { variant, validator, location, presets, split } = envConfig;
-
-  if (!variant || !validator || !location) return;
+  const { variant, validator, location, presets, split } = envOptions;
 
   await installPackages([variant, validator], true);
 

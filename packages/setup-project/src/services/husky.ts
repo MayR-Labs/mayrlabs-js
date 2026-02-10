@@ -17,8 +17,9 @@ export async function promptHusky(config: Config) {
     }),
   )) as HuskyHookValue;
 
-  const husky = config.get("husky");
-  husky.config = { hookType };
+  const huskyConfig = config.get("husky");
+
+  huskyConfig.options = { hookType };
 
   if (hookType === "lint-staged") {
     config.enableTool("lintStaged");
@@ -26,14 +27,14 @@ export async function promptHusky(config: Config) {
     const script = (await withCancelHandling(async () =>
       text({
         message: "Enter your custom pre-commit script:",
-        placeholder: "npm test",
+        placeholder: huskyConfig.options.customScript,
         validate(value) {
           if (value.length === 0) return "Value is required!";
         },
       }),
     )) as string;
 
-    husky.config.customScript = script;
+    huskyConfig.options.customScript = script;
   }
 }
 
@@ -48,8 +49,8 @@ export async function installHusky(config: Config) {
   }
 
   const husky = config.get("husky");
-  const hookType = husky.config?.hookType;
-  const customScript = husky.config?.customScript;
+  const hookType = husky.options.hookType;
+  const customScript = husky.options.customScript;
 
   if (hookType === "lint-staged") {
     await fs.outputFile(".husky/pre-commit", "npx lint-staged\n", {

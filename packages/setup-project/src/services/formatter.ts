@@ -9,22 +9,21 @@ import { withCancelHandling } from "@/utils/handle-cancel";
 export async function promptFormatter(config: Config) {
   const formatterConfig = config.get("formatter");
 
-  if (!formatterConfig.config?.choice) {
-    log.message(pc.bgBlue(pc.black(" Formatter Configuration ")));
+  log.message(pc.bgBlue(pc.black(" Formatter Configuration ")));
 
-    const formatter = (await withCancelHandling(async () =>
-      select({
-        message: "Select a formatter:",
-        options: FORMATTER_OPTIONS,
-      }),
-    )) as FormatterValue;
+  const formatter = (await withCancelHandling(async () =>
+    select({
+      message: "Select a formatter:",
+      options: FORMATTER_OPTIONS,
+      initialValue: formatterConfig.options.choice,
+    }),
+  )) as FormatterValue;
 
-    formatterConfig.config = { choice: formatter };
-  }
+  formatterConfig.options = { choice: formatter };
 }
 
 export async function installFormatter(config: Config) {
-  const choice = config.get("formatter").config?.choice;
+  const choice = config.get("formatter").options.choice;
   if (choice === "prettier") {
     await installPackages(["prettier"], true);
     const configContent = {

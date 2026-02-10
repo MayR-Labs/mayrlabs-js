@@ -16,11 +16,11 @@ export async function promptTest(config: Config) {
     }),
   )) as TestRunnerValue;
 
-  config.get("test").config = { runner };
+  config.get("test").options = { runner };
 }
 
 export async function installTest(config: Config) {
-  const runner = config.get("test").config?.runner;
+  const runner = config.get("test").options.runner;
 
   if (runner === "vitest") {
     await installPackages(["vitest"], true);

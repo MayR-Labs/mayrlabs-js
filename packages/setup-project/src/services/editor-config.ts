@@ -8,21 +8,24 @@ import { withCancelHandling } from "@/utils/handle-cancel";
 export async function promptEditorConfig(config: Config) {
   log.message(pc.bgWhite(pc.black(" EditorConfig Configuration ")));
 
+  const currentPreset = config.get("editorConfig").options.preset;
+
   const preset = (await withCancelHandling(async () =>
     select({
       message: "Select EditorConfig preset:",
       options: EDITOR_CONFIG_OPTIONS,
+      initialValue: currentPreset,
     }),
   )) as EditorConfigValue;
 
-  config.get("editorConfig").config = { preset };
+  config.get("editorConfig").options = { preset };
 }
 
 export async function installEditorConfig(config: Config) {
   let content =
     "root = true\n\n[*]\ncharset = utf-8\nend_of_line = lf\ninsert_final_newline = true\ntrim_trailing_whitespace = true\n";
 
-  const preset = config.get("editorConfig").config?.preset;
+  const preset = config.get("editorConfig").options.preset;
 
   if (preset === "default") {
     content += "indent_style = space\nindent_size = 2\n";

@@ -18,42 +18,42 @@ export interface Option {
   hint?: string;
 }
 
-export interface HuskyConfig {
+export interface HuskyOptions {
   hookType: HuskyHookValue;
   customScript?: string;
 }
 
-export interface FormatterConfig {
+export interface FormatterOptions {
   choice: FormatterValue;
 }
 
-export interface LinterConfig {
+export interface LinterOptions {
   choice: LinterValue;
 }
 
-export interface LintStagedConfig {
+export interface LintStagedOptions {
   lintExtensions: LintStagedExtensionValue[];
   formatExtensions: LintStagedExtensionValue[];
 }
 
-export interface EnvConfig {
+export interface EnvOptions {
   variant: EnvVariantValue;
   validator: EnvValidatorValue;
-  installPresets?: boolean;
-  presets?: EnvPresetValue[];
-  split?: EnvSplitValue;
-  location?: string;
+  installPresets: boolean;
+  presets: EnvPresetValue[];
+  split: EnvSplitValue;
+  location: string;
 }
 
-export interface TestConfig {
+export interface TestOptions {
   runner: TestRunnerValue;
 }
 
-export interface EditorConfigConfig {
+export interface EditorConfigOptions {
   preset: EditorConfigValue;
 }
 
-export interface LicenseConfig {
+export interface LicenseOptions {
   type: LicenseTypeValue;
   name: string;
   email: string;
@@ -61,14 +61,14 @@ export interface LicenseConfig {
 }
 
 export interface ProjectConfig {
-  husky: { selected: boolean; config?: HuskyConfig };
-  formatter: { selected: boolean; config?: FormatterConfig };
-  linter: { selected: boolean; config?: LinterConfig };
-  lintStaged: { selected: boolean; config?: LintStagedConfig };
-  env: { selected: boolean; config?: EnvConfig };
-  test: { selected: boolean; config?: TestConfig };
-  editorConfig: { selected: boolean; config?: EditorConfigConfig };
-  license: { selected: boolean; config: LicenseConfig };
+  husky: { selected: boolean; options: HuskyOptions };
+  formatter: { selected: boolean; options: FormatterOptions };
+  linter: { selected: boolean; options: LinterOptions };
+  lintStaged: { selected: boolean; options: LintStagedOptions };
+  env: { selected: boolean; options: EnvOptions };
+  test: { selected: boolean; options: TestOptions };
+  editorConfig: { selected: boolean; options: EditorConfigOptions };
+  license: { selected: boolean; options: LicenseOptions };
 }
 
 export type Tool = keyof ProjectConfig;
