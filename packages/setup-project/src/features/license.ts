@@ -2,7 +2,7 @@ import { text, select, log } from "@clack/prompts";
 import fs from "fs-extra";
 import path from "path";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import { LICENSE_TYPE_OPTIONS, LicenseTypeValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 

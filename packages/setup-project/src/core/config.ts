@@ -30,7 +30,7 @@ export class Config {
           installPresets: false,
           presets: [],
           split: "split",
-          location: "src/env",
+          location: "src/lib",
         },
       },
       test: {

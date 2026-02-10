@@ -1,13 +1,13 @@
 import { spinner } from "@clack/prompts";
-import { Config } from "@/config/config";
-import { installHusky } from "@/services/husky";
-import { installFormatter } from "@/services/formatter";
-import { installLinter } from "@/services/linter";
-import { installLintStaged } from "@/services/lint-staged";
-import { installEnv } from "@/services/env";
-import { installTest } from "@/services/test";
-import { installEditorConfig } from "@/services/editor-config";
-import { installLicense } from "@/services/license";
+import { Config } from "@/core/config";
+import { installHusky } from "@/features/husky";
+import { installFormatter } from "@/features/formatter";
+import { installLinter } from "@/features/linter";
+import { installLintStaged } from "@/features/lint-staged";
+import { installEnv } from "@/features/env";
+import { installTest } from "@/features/test";
+import { installEditorConfig } from "@/features/editor-config";
+import { installLicense } from "@/features/license";
 
 export async function execution(config: Config) {
   const s = spinner();

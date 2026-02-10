@@ -1,5 +1,5 @@
 {
-  "entry": ["src/index.ts"],
+  "entry": ["src/cli/index.ts"],
   "format": ["esm", "cjs"],
   "compilerOptions": {
     "target": "ES2022",

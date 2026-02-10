@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import { HUSKY_HOOK_OPTIONS, HuskyHookValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 

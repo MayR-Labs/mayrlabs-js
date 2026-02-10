@@ -2,12 +2,12 @@ import { select, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import { TEST_RUNNER_OPTIONS, TestRunnerValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptTest(config: Config) {
-  log.message(pc.bgRed(pc.black(" Test Runner Configuration ")));
+  log.message(pc.bgRed(pc.white(" Test Runner Configuration ")));
 
   const runner = (await withCancelHandling(async () =>
     select({

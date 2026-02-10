@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import path from "path";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import {
   ENV_VARIANT_OPTIONS,
   ENV_VALIDATOR_OPTIONS,
@@ -80,7 +80,7 @@ export async function installEnv(config: Config) {
 
   const { variant, validator, location, presets, split } = envOptions;
 
-  await installPackages([variant, validator], true);
+  await installPackages([variant, validator], false);
 
   await fs.ensureDir(location);
 
