@@ -35,16 +35,14 @@ export async function promptLintStaged(config: Config) {
     formatExtensions,
   };
 
-  // Trigger prompt for dependencies if extensions are selected
   if (lintExtensions.length > 0 && !config.get("linter").selected) {
-    // Ask prompts immediately so config is captured
     await promptLinter(config);
-    config.enableTool("linter"); // Ensure it gets installed
+    config.enableTool("linter");
   }
 
   if (formatExtensions.length > 0 && !config.get("formatter").selected) {
     await promptFormatter(config);
-    config.enableTool("formatter"); // Ensure it gets installed
+    config.enableTool("formatter");
   }
 }
 
@@ -56,13 +54,11 @@ export async function installLintStaged(config: Config) {
   const lintExts = lintStagedOptions?.lintExtensions || [];
   const formatExts = lintStagedOptions?.formatExtensions || [];
 
-  // Ensure dependencies are installed (idempotent)
   if (lintExts.length > 0) {
     await installLinter(config);
 
     const glob = `*.{${lintExts.join(",")}}`;
     if (config.get("linter").options.choice === "oxlint") {
-      // oxlint might not fix everything or support all exts, but generic logic here
       lintStagedConfig[glob] = ["npx oxlint --fix"];
     } else {
       lintStagedConfig[glob] = ["eslint --fix"];
@@ -74,7 +70,6 @@ export async function installLintStaged(config: Config) {
 
     const glob = `*.{${formatExts.join(",")}}`;
     if (config.get("formatter").options.choice === "oxfmt") {
-      // Filter exts supported by oxfmt if needed, or assume it handles them
       lintStagedConfig[glob] = ["npx oxfmt"];
     } else {
       lintStagedConfig[glob] = ["prettier --write"];

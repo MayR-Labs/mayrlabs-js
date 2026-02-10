@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { outro, multiselect, note, confirm } from "@clack/prompts";
+import { outro, multiselect, note, confirm, intro } from "@clack/prompts";
 import pc from "picocolors";
 import { program } from "commander";
 import { promptHusky } from "@/services/husky";
@@ -18,12 +18,16 @@ import { Tool } from "@/config/types";
 import { execution } from "@/steps/execution";
 import packageJson from "../package.json";
 import { logError } from "@/utils/logger";
-import gitCheck from "./steps/git-check";
-import { introScreen } from "./utils/display";
+import gitCheck from "@/steps/git-check";
+import { introScreen, showAbout, showVisit, showManual } from "@/utils/display";
 
 async function main() {
   try {
     introScreen();
+
+    intro(
+      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard "))),
+    );
 
     await gitCheck();
 
@@ -71,10 +75,58 @@ async function main() {
   }
 }
 
+// Disable default help and version to handle them manually as requested
+program.helpOption(false);
+
 program
   .name("setup-project")
   .description("Interactive setup for common project tools")
-  .version(packageJson.version)
-  .action(main);
+  .option("-a, --about", "Show project details")
+  .option("-v, --version", "Show version info")
+  .option("-V, --visit", "Visit project homepage")
+  .option("-h, --help", "Show help");
+
+// Commands
+program.command("about").action(() => {
+  showAbout();
+  process.exit(0);
+});
+
+program.command("version").action(() => {
+  introScreen();
+  process.exit(0);
+});
+
+program.command("visit").action(() => {
+  showVisit();
+  process.exit(0);
+});
+
+program.command("help").action(() => {
+  showManual();
+  process.exit(0);
+});
+
+// Root action
+program.action(async (options) => {
+  if (options.about) {
+    showAbout();
+    process.exit(0);
+  }
+  if (options.version) {
+    introScreen();
+    process.exit(0);
+  }
+  if (options.visit) {
+    showVisit();
+    process.exit(0);
+  }
+  if (options.help) {
+    showManual();
+    process.exit(0);
+  }
+
+  await main();
+});
 
 program.parse();
