@@ -29,16 +29,16 @@ Follow the prompts to select your tools. That's it!
 
 We support configuration for the following tools:
 
-| Feature | Description |
-| :--- | :--- |
-| 🐶 **Husky** | Robust git hooks to ensure quality before commits. |
-| 💅 **Formatter** | **Prettier** or **Biome** (coming soon) for consistent code style. |
-| 🧹 **Linter** | **ESLint** configured with modern best practices. |
-| 🚫 **Lint-staged** | Run linters/formatters only on changed files. Fast. |
-| 🌳 **Env Validation** | Type-safe environment variables with **@t3-oss/env**. |
-| 🧪 **Testing** | Ready-to-go **Vitest** configuration. |
-| ⚙️ **EditorConfig** | Consistent coding styles between different editors. |
-| 📄 **License** | Generate standard MIT, Apache, or ISC licenses instantly. |
+| Feature               | Description                                                        |
+| :-------------------- | :----------------------------------------------------------------- |
+| 🐶 **Husky**          | Robust git hooks to ensure quality before commits.                 |
+| 💅 **Formatter**      | **Prettier** or **Biome** (coming soon) for consistent code style. |
+| 🧹 **Linter**         | **ESLint** configured with modern best practices.                  |
+| 🚫 **Lint-staged**    | Run linters/formatters only on changed files. Fast.                |
+| 🌳 **Env Validation** | Type-safe environment variables with **@t3-oss/env**.              |
+| 🧪 **Testing**        | Ready-to-go **Vitest** configuration.                              |
+| ⚙️ **EditorConfig**   | Consistent coding styles between different editors.                |
+| 📄 **License**        | Generate standard MIT, Apache, or ISC licenses instantly.          |
 
 ## Advanced Usage
 
