@@ -17,6 +17,10 @@ vi.mock("@/utils/pm");
 vi.mock("@clack/prompts");
 vi.mock("fs-extra");
 vi.mock("execa");
+vi.mock("@/utils/config-file", () => ({
+  resolveConfigFile: vi.fn(),
+  writeConfig: vi.fn(),
+}));
 
 describe("Features", () => {
   let config: Config;
@@ -102,8 +106,11 @@ export default [
   {files: ["**/*.js"]},
 ];`;
 
-      vi.spyOn(fs, "pathExists").mockResolvedValue();
-      vi.spyOn(fs, "readFile").mockResolvedValue();
+      const { resolveConfigFile } = await import("@/utils/config-file");
+      vi.mocked(resolveConfigFile).mockResolvedValue("eslint.config.mjs");
+
+      vi.spyOn(fs, "pathExists").mockResolvedValue(true);
+      vi.spyOn(fs, "readFile").mockResolvedValue(initialConfig);
       vi.spyOn(fs, "writeFile").mockResolvedValue();
 
       await configureEslintPlugins(["react", "react-hooks"]);
