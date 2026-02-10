@@ -15,7 +15,7 @@ export function introScreen() {
       }),
     ),
   );
-  console.log(pc.cyan(`@mayrlabs/setup-project v${packageJson.version}`));
+  console.log(pc.cyan(`${packageJson.name} - v${packageJson.version}`));
   console.log();
 }
 
