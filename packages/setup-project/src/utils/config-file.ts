@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import { select } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import path from "node:path";
 
@@ -14,7 +14,7 @@ export async function resolveConfigFile(
 
   // 2. Prompt
   const response = (await withCancelHandling(async () =>
-    select({
+    prompts.select({
       message: `Where do you want to store the ${toolName} config?`,
       options: candidates.map((c) => ({ value: c, label: c })),
       initialValue: candidates[0],

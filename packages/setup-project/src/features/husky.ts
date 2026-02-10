@@ -1,4 +1,4 @@
-import { select, log, text } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
@@ -8,10 +8,10 @@ import { HUSKY_HOOK_OPTIONS, HuskyHookValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptHusky(config: Config) {
-  log.message(pc.bgMagenta(pc.black(" Husky Configuration ")));
+  prompts.log.message(pc.bgMagenta(pc.black(" Husky Configuration ")));
 
   const hookType = (await withCancelHandling(async () =>
-    select({
+    prompts.select({
       message: "What pre-commit hook would you like to use?",
       options: HUSKY_HOOK_OPTIONS,
     }),
@@ -25,7 +25,7 @@ export async function promptHusky(config: Config) {
     config.enableTool("lintStaged");
   } else if (hookType === "custom") {
     const script = (await withCancelHandling(async () =>
-      text({
+      prompts.text({
         message: "Enter your custom pre-commit script:",
         placeholder: huskyConfig.options.customScript,
         validate(value) {

@@ -9,17 +9,35 @@ import { promptEditorConfig, installEditorConfig } from "./editor-config";
 import { promptLicense, installLicense } from "./license";
 import { Config } from "@/core/config";
 import * as pm from "@/utils/pm";
-import * as prompts from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import fs from "fs-extra";
 import { configureEslintPlugins } from "@/features/linter/eslint";
 
 vi.mock("@/utils/pm");
-vi.mock("@clack/prompts");
 vi.mock("fs-extra");
 vi.mock("execa");
 vi.mock("@/utils/config-file", () => ({
   resolveConfigFile: vi.fn(),
   writeConfig: vi.fn(),
+}));
+vi.mock("@/utils/prompts", () => ({
+  prompts: {
+    intro: vi.fn(),
+    outro: vi.fn(),
+    select: vi.fn(),
+    text: vi.fn(),
+    confirm: vi.fn(),
+    multiselect: vi.fn(),
+    isCancel: vi.fn((val) => val === Symbol("cancel")),
+    log: {
+      message: vi.fn(),
+      step: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      info: vi.fn(),
+      success: vi.fn(),
+    },
+  },
 }));
 
 describe("Features", () => {
@@ -29,24 +47,16 @@ describe("Features", () => {
     config = new Config();
     vi.clearAllMocks();
     // Default mock implementation for prompts to avoid hanging
-    vi.spyOn(prompts, "select").mockResolvedValue("some-value" as any);
-    vi.spyOn(prompts, "text").mockResolvedValue("some-text" as any);
-    vi.spyOn(prompts, "confirm").mockResolvedValue(true as any);
-    vi.spyOn(prompts, "multiselect").mockResolvedValue([] as any);
-    vi.spyOn(prompts, "log", "get").mockReturnValue({
-      message: vi.fn(),
-      step: vi.fn(),
-      error: vi.fn(),
-      warn: vi.fn(),
-      info: vi.fn(),
-      success: vi.fn(),
-    } as any);
+    vi.mocked(prompts.select).mockResolvedValue("some-value" as any);
+    vi.mocked(prompts.text).mockResolvedValue("some-text" as any);
+    vi.mocked(prompts.confirm).mockResolvedValue(true as any);
+    vi.mocked(prompts.multiselect).mockResolvedValue([] as any);
   });
 
   describe("Husky", () => {
     it("should prompt for husky options", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("custom");
-      vi.spyOn(prompts, "text").mockResolvedValue("echo test");
+      vi.mocked(prompts.select).mockResolvedValue("custom" as any);
+      vi.mocked(prompts.text).mockResolvedValue("echo test" as any);
 
       await promptHusky(config);
 
@@ -66,14 +76,14 @@ describe("Features", () => {
 
   describe("Formatter", () => {
     it("should prompt for formatter", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("prettier");
+      vi.mocked(prompts.select).mockResolvedValue("prettier" as any);
       await promptFormatter(config);
       expect(config.get("formatter").options.choice).toBe("prettier");
     });
 
     it("should install prettier", async () => {
       config.get("formatter").options.choice = "prettier";
-      vi.spyOn(prompts, "confirm").mockResolvedValue(false); // Don't install plugins
+      vi.mocked(prompts.confirm).mockResolvedValue(false as any); // Don't install plugins
 
       await installFormatter(config);
 
@@ -83,14 +93,14 @@ describe("Features", () => {
 
   describe("Linter", () => {
     it("should prompt for linter", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("eslint");
+      vi.mocked(prompts.select).mockResolvedValue("eslint" as any);
       await promptLinter(config);
       expect(config.get("linter").options.choice).toBe("eslint");
     });
 
     it("should install eslint", async () => {
       config.get("linter").options.choice = "eslint";
-      vi.spyOn(prompts, "confirm").mockResolvedValue(false);
+      vi.mocked(prompts.confirm).mockResolvedValue(false as any);
 
       await installLinter(config);
 
@@ -109,7 +119,9 @@ export default [
       const { resolveConfigFile } = await import("@/utils/config-file");
       vi.mocked(resolveConfigFile).mockResolvedValue("eslint.config.mjs");
 
+      // @ts-ignore
       vi.spyOn(fs, "pathExists").mockResolvedValue(true);
+      // @ts-ignore
       vi.spyOn(fs, "readFile").mockResolvedValue(initialConfig);
       vi.spyOn(fs, "writeFile").mockResolvedValue();
 
@@ -137,7 +149,7 @@ export default [
 
   describe("Lint Staged", () => {
     it("should prompt for lint-staged", async () => {
-      vi.spyOn(prompts, "multiselect").mockResolvedValue(["ts"]);
+      vi.mocked(prompts.multiselect).mockResolvedValue(["ts"] as any);
 
       await promptLintStaged(config);
 
@@ -161,12 +173,12 @@ export default [
 
   describe("Env", () => {
     it("should prompt for env", async () => {
-      vi.spyOn(prompts, "select")
+      vi.mocked(prompts.select)
         .mockResolvedValueOnce("@t3-oss/env-nextjs" as any)
         .mockResolvedValueOnce("zod" as any)
         .mockResolvedValueOnce("split" as any);
-      vi.spyOn(prompts, "confirm").mockResolvedValue(false);
-      vi.spyOn(prompts, "text").mockResolvedValue("src/env");
+      vi.mocked(prompts.confirm).mockResolvedValue(false as any);
+      vi.mocked(prompts.text).mockResolvedValue("src/env" as any);
 
       await promptEnv(config);
 
@@ -195,7 +207,7 @@ export default [
 
   describe("Test", () => {
     it("should prompt for test runner", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("vitest");
+      vi.mocked(prompts.select).mockResolvedValue("vitest" as any);
       await promptTest(config);
       expect(config.get("test").options.runner).toBe("vitest");
     });
@@ -209,7 +221,7 @@ export default [
 
   describe("EditorConfig", () => {
     it("should prompt for editorconfig", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("default");
+      vi.mocked(prompts.select).mockResolvedValue("default" as any);
       await promptEditorConfig(config);
       expect(config.get("editorConfig").options.preset).toBe("default");
     });
@@ -223,8 +235,8 @@ export default [
 
   describe("License", () => {
     it("should prompt for license", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("MIT");
-      vi.spyOn(prompts, "text").mockResolvedValue("Author");
+      vi.mocked(prompts.select).mockResolvedValue("MIT" as any);
+      vi.mocked(prompts.text).mockResolvedValue("Author" as any);
 
       await promptLicense(config);
 
@@ -239,7 +251,8 @@ export default [
         website: "website.com",
       };
 
-      vi.spyOn(fs, "pathExists").mockResolvedValue();
+      // @ts-ignore
+      vi.spyOn(fs, "pathExists").mockResolvedValue(false);
       vi.spyOn(fs, "readJson").mockResolvedValue({});
 
       await installLicense(config);

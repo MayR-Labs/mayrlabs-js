@@ -1,4 +1,4 @@
-import { multiselect, log } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import { installPackages } from "@/utils/pm";
 import { promptFormatter, installFormatter } from "@/features/formatter";
 import { promptLinter, installLinter } from "@/features/linter";
@@ -12,10 +12,10 @@ import {
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptLintStaged(config: Config) {
-  log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
+  prompts.log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
 
   const lintExtensions = (await withCancelHandling(async () =>
-    multiselect({
+    prompts.multiselect({
       message: "Select extensions to lint:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
@@ -23,7 +23,7 @@ export async function promptLintStaged(config: Config) {
   )) as LintStagedExtensionValue[];
 
   const formatExtensions = (await withCancelHandling(async () =>
-    multiselect({
+    prompts.multiselect({
       message: "Select extensions to format:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,

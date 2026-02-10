@@ -1,20 +1,20 @@
-import { cancel, isCancel, confirm } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 
 export async function handleCancel<T>(
   response: T | symbol,
   message: string = "Operation cancelled.",
 ): Promise<T> {
-  if (isCancel(response)) {
-    const shouldCancel = await confirm({
+  if (prompts.isCancel(response)) {
+    const shouldCancel = await prompts.confirm({
       message: "Do you really want to cancel?",
     });
 
     if (shouldCancel) {
-      cancel(message);
+      prompts.cancel(message);
       process.exit(1);
     }
 
-    cancel(message);
+    prompts.cancel(message);
     process.exit(0);
   }
   return response as T;
@@ -27,13 +27,13 @@ export async function withCancelHandling<T>(
   while (true) {
     const response = await promptFn();
 
-    if (isCancel(response)) {
-      const shouldCancel = await confirm({
+    if (prompts.isCancel(response)) {
+      const shouldCancel = await prompts.confirm({
         message: "Do you really want to cancel options selection?",
       });
 
-      if (isCancel(shouldCancel) || shouldCancel) {
-        cancel(cancelMessage);
+      if (prompts.isCancel(shouldCancel) || shouldCancel) {
+        prompts.cancel(cancelMessage);
         process.exit(0);
       }
 

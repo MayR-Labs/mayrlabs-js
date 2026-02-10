@@ -1,4 +1,4 @@
-import { text, select, log } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import fs from "fs-extra";
 import path from "path";
 import pc from "picocolors";
@@ -7,12 +7,12 @@ import { LICENSE_TYPE_OPTIONS, LicenseTypeValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptLicense(config: Config) {
-  log.message(pc.bgGreen(pc.black(" License Configuration ")));
+  prompts.log.message(pc.bgGreen(pc.black(" License Configuration ")));
 
   const licenseOptions = config.get("license").options;
 
   licenseOptions.name = await withCancelHandling(async () =>
-    text({
+    prompts.text({
       message: "License Holder Name:",
       placeholder: "John Doe",
       initialValue: licenseOptions.name,
@@ -20,7 +20,7 @@ export async function promptLicense(config: Config) {
   );
 
   licenseOptions.email = await withCancelHandling(async () =>
-    text({
+    prompts.text({
       message: "License Holder Email:",
       placeholder: "john@example.com",
       initialValue: licenseOptions.email,
@@ -28,7 +28,7 @@ export async function promptLicense(config: Config) {
   );
 
   licenseOptions.website = await withCancelHandling(async () =>
-    text({
+    prompts.text({
       message: "License Holder Website:",
       placeholder: "https://example.com",
       initialValue: licenseOptions.website,
@@ -36,7 +36,7 @@ export async function promptLicense(config: Config) {
   );
 
   licenseOptions.type = (await withCancelHandling(async () =>
-    select({
+    prompts.select({
       message: "Select License Type:",
       options: LICENSE_TYPE_OPTIONS,
     }),

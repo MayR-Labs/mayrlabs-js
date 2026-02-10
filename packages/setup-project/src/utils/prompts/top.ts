@@ -1,0 +1,144 @@
+import { confirm, question, select, multiselect } from "@topcli/prompts";
+import pc from "picocolors";
+import { PromptOption, PromptProvider } from "./types";
+
+const CANCEL_SYMBOL = Symbol("cancel");
+
+export class TopCliProvider implements PromptProvider {
+  intro(message: string): void {
+    console.log(pc.bgCyan(pc.black(` ${message} `)));
+  }
+
+  outro(message: string): void {
+    console.log(pc.bgCyan(pc.black(` ${message} `)));
+  }
+
+  async text(opts: {
+    message: string;
+    placeholder?: string;
+    initialValue?: string;
+    defaultValue?: string;
+    validate?: (value: string) => string | void;
+  }): Promise<string | symbol> {
+    try {
+      return await question(opts.message, {
+        defaultValue: opts.initialValue || opts.defaultValue,
+        validators: [
+          {
+            validate: (value) => opts.validate?.(value) || "",
+          },
+        ],
+      });
+    } catch (e) {
+      return CANCEL_SYMBOL;
+    }
+  }
+
+  async confirm(opts: {
+    message: string;
+    initialValue?: boolean;
+  }): Promise<boolean | symbol> {
+    try {
+      return await confirm(opts.message, {
+        initial: opts.initialValue,
+      });
+    } catch (e) {
+      return CANCEL_SYMBOL;
+    }
+  }
+
+  async select<T>(opts: {
+    message: string;
+    options: PromptOption<T>[];
+    initialValue?: T;
+  }): Promise<T | symbol> {
+    try {
+      // Map options to string values for the prompt
+      // We need to store original values to return the correct type
+      const optionMap = new Map<string, T>();
+      const choices = opts.options.map((o) => {
+        const key = String(o.value); // usage of string key
+        optionMap.set(key, o.value);
+
+        return {
+          label: o.label,
+          value: key,
+          description: o.hint,
+        };
+      });
+
+      const resultKey = await select(opts.message, {
+        choices,
+      });
+
+      return optionMap.get(resultKey) as T;
+    } catch (e) {
+      return CANCEL_SYMBOL;
+    }
+  }
+
+  async multiselect<T>(opts: {
+    message: string;
+    options: PromptOption<T>[];
+    initialValue?: T[];
+    required?: boolean;
+  }): Promise<T[] | symbol> {
+    try {
+      const optionMap = new Map<string, T>();
+
+      // Convert initialValue T[] to string[] for topcli prompts if supported?
+      // TopCLI prompts doesn't seem to have explicit 'initial' for multiselect in the same way, or it uses 'selected' property in choices.
+
+      const choices = opts.options.map((o) => {
+        const key = String(o.value);
+        optionMap.set(key, o.value);
+
+        // Checking if initialValue contains this option's value
+        // Use loose equality or strict check. Assuming T can be primitive or object ref.
+        const isSelected = opts.initialValue?.some((iv) => iv === o.value);
+
+        return {
+          label: o.label,
+          value: key,
+          description: o.hint,
+          selected: isSelected,
+        };
+      });
+
+      const resultKeys = await multiselect(opts.message, {
+        choices,
+        // min: opts.required ? 1 : 0
+      });
+
+      // resultKeys should be string[]
+      return resultKeys.map((k) => optionMap.get(k) as T);
+    } catch (e) {
+      return CANCEL_SYMBOL;
+    }
+  }
+
+  note(message: string, title?: string): void {
+    if (title) {
+      console.log(pc.blue(pc.bold(`${title}`)));
+    }
+    console.log(pc.dim(message));
+  }
+
+  isCancel(value: unknown): boolean {
+    return value === CANCEL_SYMBOL;
+  }
+
+  cancel(message?: string): void {
+    if (message) console.log(pc.red(pc.bold("×")) + " " + message);
+    else console.log(pc.red(pc.bold("×")) + " Operation cancelled.");
+  }
+
+  log = {
+    message: (msg: string) => console.log(msg),
+    info: (msg: string) => console.log(pc.blue(pc.bold("INFO")) + " " + msg),
+    success: (msg: string) =>
+      console.log(pc.green(pc.bold("SUCCESS")) + " " + msg),
+    warn: (msg: string) => console.log(pc.yellow(pc.bold("WARN")) + " " + msg),
+    error: (msg: string) => console.log(pc.red(pc.bold("ERROR")) + " " + msg),
+  };
+}

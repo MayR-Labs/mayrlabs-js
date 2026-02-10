@@ -1,16 +1,17 @@
 import { commitChanges, isGitDirty, isGitRepository } from "@/utils/git";
-import { confirm, spinner, text } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
+import { spinner } from "@/utils/spinner";
 
 export default async function gitCheck() {
   if (await isGitRepository()) {
     if (await isGitDirty()) {
-      const shouldCommit = await confirm({
+      const shouldCommit = await prompts.confirm({
         message:
           "Your working directory is dirty. Would you like to commit changes before proceeding?",
       });
 
       if (shouldCommit) {
-        const message = await text({
+        const message = await prompts.text({
           message: "Enter commit message:",
           placeholder: "wip: pre-setup commit",
           validate(value) {

@@ -1,4 +1,4 @@
-import { spinner } from "@clack/prompts";
+import { spinner } from "@/utils/spinner";
 import { Config } from "@/core/config";
 import { installHusky } from "@/features/husky";
 import { installFormatter } from "@/features/formatter";

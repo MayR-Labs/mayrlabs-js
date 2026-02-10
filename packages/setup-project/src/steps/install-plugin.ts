@@ -3,22 +3,23 @@ import { configurePrettierPlugins } from "@/features/formatter/prettier";
 import { configureEslintPlugins } from "@/features/linter/eslint";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { installPackages } from "@/utils/pm";
-import { multiselect, outro, confirm } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
 
 export async function installPlugins(tool: PluginableToolType) {
   const pluginsList = PLUGINS[tool];
 
   const selectedPlugins = (await withCancelHandling(async () =>
-    multiselect({
+    prompts.multiselect({
       message: `Select ${tool} plugins to install:`,
       options: pluginsList,
       required: true,
+      initialValue: [],
     }),
   )) as string[];
 
   if (selectedPlugins.length === 0) {
-    outro(pc.yellow("No plugins selected."));
+    prompts.outro(pc.yellow("No plugins selected."));
     return;
   }
 
@@ -27,7 +28,7 @@ export async function installPlugins(tool: PluginableToolType) {
     return p ? p.package : val;
   });
 
-  outro(
+  prompts.outro(
     pc.blue(`Installing ${packagesToInstall.length} plugins for ${tool}...`),
   );
 
@@ -41,14 +42,14 @@ export async function configurePlugins(
   plugins: string[],
 ) {
   const shouldConfigure = (await withCancelHandling(async () =>
-    confirm({
+    prompts.confirm({
       message: `Do you want to configure the selected plugins in your ${tool} config file?`,
       initialValue: true,
     }),
   )) as boolean;
 
   if (!shouldConfigure) {
-    outro(pc.yellow("Skipping configuration."));
+    prompts.outro(pc.yellow("Skipping configuration."));
     return;
   }
 
@@ -56,13 +57,13 @@ export async function configurePlugins(
     case "prettier":
       await configurePrettierPlugins(plugins);
 
-      outro(pc.green("Prettier plugins configured in .prettierrc"));
+      prompts.outro(pc.green("Prettier plugins configured in .prettierrc"));
       break;
 
     case "eslint":
       await configureEslintPlugins(plugins);
 
-      outro(pc.green("ESLint plugins configured in .eslintrc.json"));
+      prompts.outro(pc.green("ESLint plugins configured in .eslintrc.json"));
       break;
   }
 }
