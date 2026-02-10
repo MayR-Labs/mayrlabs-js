@@ -1,5 +1,11 @@
 # @mayrlabs/setup-project
 
+## 0.1.8
+
+### Patch Changes
+
+- 3e3b7f3: Enhancements v2
+
 ## 0.1.7
 
 ### Patch Changes
