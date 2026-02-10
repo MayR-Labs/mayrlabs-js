@@ -1,5 +1,11 @@
 # @mayrlabs/setup-project
 
+## 0.1.9
+
+### Patch Changes
+
+- a8ec57b: Overhaul
+
 ## 0.1.8
 
 ### Patch Changes
