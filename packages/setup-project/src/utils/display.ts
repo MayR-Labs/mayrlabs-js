@@ -49,6 +49,8 @@ export function showManual() {
   console.log("  version            Show version information");
   console.log("  visit              Visit project homepage");
   console.log("  help               Show this help message");
+  console.log("  configure [tool]   Configure a specific tool");
+  console.log("  plugin [tool]      Manage plugins for tools");
   console.log("");
   console.log(pc.bold("Options:"));
   console.log("  -a, --about        Show project details");

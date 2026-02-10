@@ -19,6 +19,8 @@ import { execution } from "@/steps/execution";
 import { logError } from "@/utils/logger";
 import gitCheck from "@/steps/git-check";
 import { introScreen, showAbout, showVisit, showManual } from "@/utils/display";
+import { configure } from "@/commands/configure";
+import { plugin } from "@/commands/plugin";
 
 async function main() {
   try {
@@ -74,7 +76,6 @@ async function main() {
   }
 }
 
-// Disable default help and version to handle them manually as requested
 program.helpOption(false);
 
 program
@@ -105,6 +106,24 @@ program.command("help").action(() => {
   showManual();
   process.exit(0);
 });
+
+program
+  .command("configure [tool]")
+  .description("Configure a specific tool")
+  .action(async (tool) => {
+    await configure(tool);
+
+    process.exit(0);
+  });
+
+program
+  .command("plugin [tool]")
+  .description("Manage plugins for tools")
+  .action(async (tool) => {
+    await plugin(tool);
+
+    process.exit(0);
+  });
 
 // Root action
 program.action(async (options) => {
