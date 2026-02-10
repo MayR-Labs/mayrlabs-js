@@ -7,7 +7,7 @@ import { TEST_RUNNER_OPTIONS, TestRunnerValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptTest(config: Config) {
-  log.message(pc.bgRed(pc.black(" Test Runner Configuration ")));
+  log.message(pc.bgRed(pc.white(" Test Runner Configuration ")));
 
   const runner = (await withCancelHandling(async () =>
     select({

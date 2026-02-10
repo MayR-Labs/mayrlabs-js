@@ -80,7 +80,7 @@ export async function installEnv(config: Config) {
 
   const { variant, validator, location, presets, split } = envOptions;
 
-  await installPackages([variant, validator], true);
+  await installPackages([variant, validator], false);
 
   await fs.ensureDir(location);
 

@@ -9,7 +9,7 @@ import { withCancelHandling } from "@/utils/handle-cancel";
 export async function promptFormatter(config: Config) {
   const formatterConfig = config.get("formatter");
 
-  log.message(pc.bgBlue(pc.black(" Formatter Configuration ")));
+  log.message(pc.bgBlue(pc.white(" Formatter Configuration ")));
 
   const formatter = (await withCancelHandling(async () =>
     select({
@@ -26,6 +26,7 @@ export async function installFormatter(config: Config) {
   const choice = config.get("formatter").options.choice;
   if (choice === "prettier") {
     await installPackages(["prettier"], true);
+
     const configContent = {
       semi: true,
       singleQuote: true,
@@ -33,6 +34,7 @@ export async function installFormatter(config: Config) {
       printWidth: 80,
       tabWidth: 2,
     };
+
     await fs.writeJson(".prettierrc", configContent, { spaces: 2 });
   } else if (choice === "oxfmt") {
     await installPackages(["oxfmt"], true);
