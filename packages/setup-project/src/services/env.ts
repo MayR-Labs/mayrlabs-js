@@ -3,99 +3,106 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import path from "path";
 import pc from "picocolors";
+import { Config } from "@/config/config";
+import {
+  ENV_VARIANT_OPTIONS,
+  ENV_VALIDATOR_OPTIONS,
+  ENV_PRESET_OPTIONS,
+  ENV_SPLIT_OPTIONS,
+} from "@/constants/options";
+import { withCancelHandling } from "@/utils/handle-cancel";
 
-export async function promptEnv(config: any) {
+export async function promptEnv(config: Config) {
   log.message(pc.bgCyan(pc.black(" Env Validation Configuration ")));
 
-  const variant = (await select({
-    message: "Which @t3-oss/env variant?",
-    options: [
-      { value: "@t3-oss/env-nextjs", label: "Next.js" },
-      { value: "@t3-oss/env-nuxt", label: "Nuxt" },
-      { value: "@t3-oss/env-core", label: "Core" },
-    ],
-  })) as string;
-  config.envVariant = variant;
+  const variant = (await withCancelHandling(async () =>
+    select({
+      message: "Which @t3-oss/env variant?",
+      options: ENV_VARIANT_OPTIONS,
+    }),
+  )) as string as
+    | "@t3-oss/env-nextjs"
+    | "@t3-oss/env-nuxt"
+    | "@t3-oss/env-core";
 
-  const validator = (await select({
-    message: "Which validator?",
-    options: [
-      { value: "zod", label: "Zod" },
-      { value: "valibot", label: "Valibot" },
-      { value: "arktype", label: "Arktype" },
-    ],
-  })) as string;
-  config.envValidator = validator;
+  const validator = (await withCancelHandling(async () =>
+    select({
+      message: "Which validator?",
+      options: ENV_VALIDATOR_OPTIONS,
+    }),
+  )) as string as "zod" | "valibot" | "arktype";
 
-  const installPresets = await confirm({
-    message: "Install presets?",
-  });
-  config.envInstallPresets = installPresets;
+  const installPresets = (await withCancelHandling(async () =>
+    confirm({
+      message: "Install presets?",
+    }),
+  )) as boolean;
 
+  let presets: string[] | undefined;
   if (installPresets) {
-    const presets = await multiselect({
-      message: "Select preset to extend:",
-      options: [
-        { value: "netlify", label: "Netlify" },
-        { value: "vercel", label: "Vercel" },
-        { value: "neonVercel", label: "Neon (Vercel)" },
-        { value: "supabaseVercel", label: "Supabase (Vercel)" },
-        { value: "uploadThing", label: "UploadThing" },
-        { value: "render", label: "Render" },
-        { value: "railway", label: "Railway" },
-        { value: "fly.io", label: "Fly.io" },
-        { value: "upstashRedis", label: "Upstash Redis" },
-        { value: "coolify", label: "Coolify" },
-        { value: "vite", label: "Vite" },
-        { value: "wxt", label: "WXT" },
-      ],
-      required: false,
-    });
-    config.envPresets = presets;
+    presets = (await withCancelHandling(async () =>
+      multiselect({
+        message: "Select preset to extend:",
+        options: ENV_PRESET_OPTIONS,
+        required: false,
+      }),
+    )) as string[];
   }
 
-  const split = await select({
-    message: "Split or Joined env files?",
-    options: [
-      { value: "split", label: "Split (env/server.ts, env/client.ts)" },
-      { value: "joined", label: "Joined (env.ts)" },
-    ],
-  });
-  config.envSplit = split;
+  const split = (await withCancelHandling(async () =>
+    select({
+      message: "Split or Joined env files?",
+      options: ENV_SPLIT_OPTIONS,
+    }),
+  )) as string as "split" | "joined";
 
-  const location = await text({
-    message: "Where should the environment files be created?",
-    initialValue: "src/lib",
-    placeholder: "src/lib",
-  });
-  config.envLocation = location;
+  const location = (await withCancelHandling(async () =>
+    text({
+      message: "Where should the environment files be created?",
+      initialValue: config.get("env").config?.location || "src/lib",
+      placeholder: "src/lib",
+    }),
+  )) as string;
+
+  config.get("env").config = {
+    variant,
+    validator,
+    installPresets,
+    presets,
+    split,
+    location,
+  };
 }
 
-export async function installEnv(config: any) {
-  await installPackages([config.envVariant, config.envValidator], true);
+export async function installEnv(config: Config) {
+  const envConfig = config.get("env").config;
+  if (!envConfig) return;
 
-  const targetDir = config.envLocation as string;
-  await fs.ensureDir(targetDir);
+  const { variant, validator, location, presets, split } = envConfig;
+
+  if (!variant || !validator || !location) return;
+
+  await installPackages([variant, validator], true);
+
+  await fs.ensureDir(location);
 
   const presetImport =
-    config.envPresets && config.envPresets.length > 0
-      ? `// Presets: ${config.envPresets.join(", ")}\n`
-      : "";
+    presets && presets.length > 0 ? `// Presets: ${presets.join(", ")}\n` : "";
 
-  const content = `import { createEnv } from "${config.envVariant}";\nimport { ${config.envValidator} } from "${config.envValidator}";\n\n${presetImport}`;
+  const content = `import { createEnv } from "${variant}";\nimport { ${validator} } from "${validator}";\n\n${presetImport}`;
 
-  if (config.envSplit === "split") {
+  if (split === "split") {
     await fs.outputFile(
-      path.join(targetDir, "env/server.ts"),
+      path.join(location, "env/server.ts"),
       `${content}\n// Server env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  experimental__runtimeEnv: process.env\n});`,
     );
     await fs.outputFile(
-      path.join(targetDir, "env/client.ts"),
+      path.join(location, "env/client.ts"),
       `${content}\n// Client env definition\nexport const env = createEnv({\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`,
     );
   } else {
     await fs.outputFile(
-      path.join(targetDir, "env.ts"),
+      path.join(location, "env.ts"),
       `${content}\n// Joined env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`,
     );
   }

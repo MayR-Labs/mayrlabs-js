@@ -1,43 +1,45 @@
-import { log, select, text } from "@clack/prompts";
+import { select, log, text } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
 import pc from "picocolors";
+import { Config } from "@/config/config";
+import { HUSKY_HOOK_OPTIONS } from "@/constants/options";
+import { withCancelHandling } from "@/utils/handle-cancel";
 
-export async function promptHusky(config: any) {
+export async function promptHusky(config: Config) {
   log.message(pc.bgMagenta(pc.black(" Husky Configuration ")));
 
-  const hookType = (await select({
-    message: "What pre-commit hook would you like to use?",
-    options: [
-      { value: "lint-staged", label: "lint-staged" },
-      { value: "custom", label: "Custom script" },
-      { value: "none", label: "None" },
-    ],
-  })) as string;
+  const hookType = (await withCancelHandling(async () =>
+    select({
+      message: "What pre-commit hook would you like to use?",
+      options: HUSKY_HOOK_OPTIONS,
+    }),
+  )) as string as "lint-staged" | "custom" | "none";
 
-  config.huskyHookType = hookType;
+  const husky = config.get("husky");
+  husky.config = { hookType };
 
   if (hookType === "lint-staged") {
-    config.lintStaged = true;
+    config.enableTool("lintStaged");
   } else if (hookType === "custom") {
-    const script = await text({
-      message: "Enter your custom pre-commit script:",
-      placeholder: "npm test",
-      validate(value: string) {
-        if (value.length === 0) return "Value is required!";
-      },
-    });
+    const script = (await withCancelHandling(async () =>
+      text({
+        message: "Enter your custom pre-commit script:",
+        placeholder: "npm test",
+        validate(value) {
+          if (value.length === 0) return "Value is required!";
+        },
+      }),
+    )) as string;
 
-    config.huskyCustomScript = script;
+    husky.config.customScript = script;
   }
 }
 
-export async function installHusky(config: any) {
-  // Install husky
+export async function installHusky(config: Config) {
   await installPackages(["husky"], true);
 
-  // Init husky
   try {
     await execa("npx", ["husky", "init"]);
   } catch (e) {
@@ -45,12 +47,16 @@ export async function installHusky(config: any) {
     await execa("npm", ["run", "prepare"]);
   }
 
-  if (config.huskyHookType === "lint-staged") {
+  const husky = config.get("husky");
+  const hookType = husky.config?.hookType;
+  const customScript = husky.config?.customScript;
+
+  if (hookType === "lint-staged") {
     await fs.outputFile(".husky/pre-commit", "npx lint-staged\n", {
       mode: 0o755,
     });
-  } else if (config.huskyHookType === "custom" && config.huskyCustomScript) {
-    await fs.outputFile(".husky/pre-commit", `${config.huskyCustomScript}\n`, {
+  } else if (hookType === "custom" && customScript) {
+    await fs.outputFile(".husky/pre-commit", `${customScript}\n`, {
       mode: 0o755,
     });
   }

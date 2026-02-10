@@ -2,23 +2,30 @@ import { select, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import pc from "picocolors";
+import { Config } from "@/config/config";
+import { FORMATTER_OPTIONS } from "@/constants/options";
+import { withCancelHandling } from "@/utils/handle-cancel";
 
-export async function promptFormatter(config: any) {
-  if (!config.formatterChoice) {
+export async function promptFormatter(config: Config) {
+  const formatterConfig = config.get("formatter");
+
+  if (!formatterConfig.config?.choice) {
     log.message(pc.bgBlue(pc.black(" Formatter Configuration ")));
-    const formatter = (await select({
-      message: "Select a formatter:",
-      options: [
-        { value: "prettier", label: "Prettier" },
-        { value: "oxfmt", label: "Oxfmt" },
-      ],
-    })) as string;
-    config.formatterChoice = formatter;
+
+    const formatter = (await withCancelHandling(async () =>
+      select({
+        message: "Select a formatter:",
+        options: FORMATTER_OPTIONS,
+      }),
+    )) as string as "prettier" | "oxfmt";
+
+    formatterConfig.config = { choice: formatter };
   }
 }
 
-export async function installFormatter(config: any) {
-  if (config.formatterChoice === "prettier") {
+export async function installFormatter(config: Config) {
+  const choice = config.get("formatter").config?.choice;
+  if (choice === "prettier") {
     await installPackages(["prettier"], true);
     const configContent = {
       semi: true,
@@ -28,7 +35,7 @@ export async function installFormatter(config: any) {
       tabWidth: 2,
     };
     await fs.writeJson(".prettierrc", configContent, { spaces: 2 });
-  } else if (config.formatterChoice === "oxfmt") {
+  } else if (choice === "oxfmt") {
     await installPackages(["oxfmt"], true);
   }
 }
