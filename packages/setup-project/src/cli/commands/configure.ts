@@ -1,19 +1,19 @@
 import { intro, outro, select } from "@clack/prompts";
 import pc from "picocolors";
-import { config } from "@/config/config";
-import { Tool } from "@/config/types";
+import { config } from "@/core/config";
+import { Tool } from "@/core/types";
 import { TOOL_OPTIONS } from "@/constants/options";
-import { promptHusky, installHusky } from "@/services/husky";
-import { promptFormatter, installFormatter } from "@/services/formatter";
-import { promptLinter, installLinter } from "@/services/linter";
-import { promptLintStaged, installLintStaged } from "@/services/lint-staged";
-import { promptEnv, installEnv } from "@/services/env";
-import { promptTest, installTest } from "@/services/test";
+import { promptHusky, installHusky } from "@/features/husky";
+import { promptFormatter, installFormatter } from "@/features/formatter";
+import { promptLinter, installLinter } from "@/features/linter";
+import { promptLintStaged, installLintStaged } from "@/features/lint-staged";
+import { promptEnv, installEnv } from "@/features/env";
+import { promptTest, installTest } from "@/features/test";
 import {
   promptEditorConfig,
   installEditorConfig,
-} from "@/services/editor-config";
-import { promptLicense, installLicense } from "@/services/license";
+} from "@/features/editor-config";
+import { promptLicense, installLicense } from "@/features/license";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { introScreen } from "@/utils/display";
 import gitCheck from "@/steps/git-check";

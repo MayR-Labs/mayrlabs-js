@@ -1,6 +1,6 @@
 import { PluginableToolType, PLUGINS } from "@/constants/plugins";
-import { configurePrettierPlugins } from "@/services/formatter/prettier";
-import { configureEslintPlugins } from "@/services/linter/eslint";
+import { configurePrettierPlugins } from "@/features/formatter/prettier";
+import { configureEslintPlugins } from "@/features/linter/eslint";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { installPackages } from "@/utils/pm";
 import { multiselect, outro } from "@clack/prompts";

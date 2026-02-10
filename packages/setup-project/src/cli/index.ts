@@ -3,24 +3,24 @@
 import { outro, multiselect, note, confirm, intro } from "@clack/prompts";
 import pc from "picocolors";
 import { program } from "commander";
-import { promptHusky } from "@/services/husky";
-import { promptFormatter } from "@/services/formatter";
-import { promptLinter } from "@/services/linter";
-import { promptLintStaged } from "@/services/lint-staged";
-import { promptEnv } from "@/services/env";
-import { promptTest } from "@/services/test";
-import { promptEditorConfig } from "@/services/editor-config";
-import { promptLicense } from "@/services/license";
-import { config } from "@/config/config";
+import { promptHusky } from "@/features/husky";
+import { promptFormatter } from "@/features/formatter";
+import { promptLinter } from "@/features/linter";
+import { promptLintStaged } from "@/features/lint-staged";
+import { promptEnv } from "@/features/env";
+import { promptTest } from "@/features/test";
+import { promptEditorConfig } from "@/features/editor-config";
+import { promptLicense } from "@/features/license";
+import { config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { TOOL_OPTIONS } from "@/constants/options";
-import { Tool } from "@/config/types";
+import { Tool } from "@/core/types";
 import { execution } from "@/steps/execution";
 import { logError } from "@/utils/logger";
 import gitCheck from "@/steps/git-check";
 import { introScreen, showAbout, showVisit, showManual } from "@/utils/display";
-import { configure } from "@/commands/configure";
-import { plugin } from "@/commands/plugin";
+import { configure } from "@/cli/commands/configure";
+import { plugin } from "@/cli/commands/plugin";
 
 async function main() {
   try {

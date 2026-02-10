@@ -1,6 +1,6 @@
 import { select, log, confirm } from "@clack/prompts";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import { LINTER_OPTIONS, LinterValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { installEslint } from "./linter/eslint";

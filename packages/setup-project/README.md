@@ -31,6 +31,35 @@ The CLI will guide you through an interactive survey to select the tools you wan
 3. **Summary**: Shows a summary of the actions to be taken.
 4. **Execution**: Installs dependencies and creates configuration files tailored to your choices.
 
+## Development
+
+### Directory Structure
+
+The project follows a feature-based architecture:
+
+- `src/features/`: Contains logic for each tool (e.g., `husky`, `prettier`).
+- `src/core/`: Core application logic and configuration management.
+- `src/cli/`: CLI entry point and command handlers.
+- `src/utils/`: Shared utilities.
+
+### Running Tests
+
+This project uses **Vitest** for testing.
+
+```bash
+npm test
+```
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/my-feature`).
+3. Make your changes.
+4. Run tests (`npm test`).
+5. Commit your changes (`git commit -m 'Add some feature'`).
+6. Push to the branch (`git push origin feature/my-feature`).
+7. Open a Pull Request.
+
 ## License
 
 MIT © [MayR Labs](https://mayrlabs.com)

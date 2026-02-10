@@ -1,7 +1,7 @@
 import { select, log } from "@clack/prompts";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import { EDITOR_CONFIG_OPTIONS, EditorConfigValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 

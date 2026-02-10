@@ -1,4 +1,4 @@
-import { Option } from "@/config/types";
+import { Option } from "@/core/types";
 
 export interface PluginOption extends Option {
   package: string;

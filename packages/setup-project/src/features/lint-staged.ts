@@ -1,10 +1,10 @@
 import { multiselect, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
-import { promptFormatter, installFormatter } from "@/services/formatter";
-import { promptLinter, installLinter } from "@/services/linter";
+import { promptFormatter, installFormatter } from "@/features/formatter";
+import { promptLinter, installLinter } from "@/features/linter";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import {
   LINT_STAGED_EXTENSIONS,
   LintStagedExtensionValue,

@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import path from "path";
 import pc from "picocolors";
-import { Config } from "@/config/config";
+import { Config } from "@/core/config";
 import {
   ENV_VARIANT_OPTIONS,
   ENV_VALIDATOR_OPTIONS,

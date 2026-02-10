@@ -42,7 +42,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsup",
-    "demo": "tsx src/index.ts",
+    "demo": "tsx src/cli/index.ts",
+    "test": "vitest",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -60,6 +61,7 @@
     "@types/node": "^20.11.16",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.18"
   }
 }
