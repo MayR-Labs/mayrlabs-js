@@ -1,14 +1,31 @@
 import fs from "fs-extra";
 import { installPackages } from "@/utils/pm";
+import { PLUGINS } from "@/constants/plugins";
+import { resolveConfigFile, writeConfig } from "@/utils/config-file";
 
 export async function installEslint() {
   const packages = ["eslint", "globals", "@eslint/js", "typescript-eslint"];
 
   await installPackages(packages, true);
 
-  if (!(await fs.pathExists("eslint.config.mjs"))) {
+  const configFile = await resolveConfigFile("ESLint", [
+    "eslint.config.mjs",
+    "eslint.config.js",
+    "eslint.config.cjs",
+  ]);
+
+  if (!(await fs.pathExists(configFile))) {
+    // For now, valid for mjs/js/cjs if we write export default
+    // But we need to handle format differences if we want to support CJS fully?
+    // The current template uses ESM syntax (import/export default).
+    // If user selects .cjs, this template fails.
+    // If user selects .js, and package.json type is module, it works.
+    // If user selects .js and commonjs, it fails.
+    // simpler: valid for mjs.
+    // Let's assume for this MVP we write the ESM format which works for .mjs and .js type=module
+
     await fs.writeFile(
-      "eslint.config.mjs",
+      configFile,
       `import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
@@ -25,30 +42,64 @@ export default [
 }
 
 export async function configureEslintPlugins(plugins: string[]) {
-  const configFile = ".eslintrc.json";
-  let currentConfig: any = {};
+  const configFile = await resolveConfigFile("ESLint", [
+    "eslint.config.mjs",
+    "eslint.config.js",
+    "eslint.config.cjs",
+  ]);
 
-  if (await fs.pathExists(configFile)) {
-    try {
-      currentConfig = await fs.readJson(configFile);
-    } catch (e) {
-      // ignore
+  if (!(await fs.pathExists(configFile))) {
+    return;
+  }
+
+  let configContent = await fs.readFile(configFile, "utf-8");
+
+  const newImports: string[] = [];
+  const newPluginConfigs: string[] = [];
+
+  for (const pluginName of plugins) {
+    const pluginDef = PLUGINS.eslint.find((p) => p.value === pluginName);
+    const packageName = pluginDef?.package || `eslint-plugin-${pluginName}`;
+
+    const safeVarName = pluginName.replace(/[^a-zA-Z0-9]/g, "") + "Plugin";
+
+    if (!configContent.includes(`import ${safeVarName}`)) {
+      newImports.push(`import ${safeVarName} from "${packageName}";`);
+    }
+
+    const shorPluginName = pluginName.replace(/^eslint-plugin-/, "");
+    newPluginConfigs.push(`"${shorPluginName}": ${safeVarName}`);
+  }
+
+  if (newImports.length > 0) {
+    const lastImportIndex = configContent.lastIndexOf("import ");
+    const endOfLastImport = configContent.indexOf("\n", lastImportIndex) + 1;
+
+    configContent =
+      configContent.slice(0, endOfLastImport) +
+      newImports.join("\n") +
+      "\n" +
+      configContent.slice(endOfLastImport);
+  }
+
+  if (newPluginConfigs.length > 0) {
+    const exportDefaultStart = configContent.indexOf("export default [");
+
+    if (exportDefaultStart !== -1) {
+      const pluginsBlock = `
+  {
+    plugins: {
+      ${newPluginConfigs.join(",\n      ")}
+    }
+  },`;
+
+      const insertPos = exportDefaultStart + "export default [".length;
+      configContent =
+        configContent.slice(0, insertPos) +
+        pluginsBlock +
+        configContent.slice(insertPos);
     }
   }
 
-  // Add to plugins array
-  const existingPlugins = currentConfig.plugins || [];
-  // Plugins often drop "eslint-plugin-" prefix in config, but keeping full name is safer or strictly following convention
-  // Convention: "eslint-plugin-react" -> "react"
-  // We will add the simple name if it starts with eslint-plugin-
-
-  const simplifiedPlugins = plugins.map((p) => p.replace("eslint-plugin-", ""));
-
-  const newPlugins = [...new Set([...existingPlugins, ...simplifiedPlugins])];
-  currentConfig.plugins = newPlugins;
-
-  // We might also want to extend "plugin:package/recommended" but that's heuristic.
-  // For now, just adding to plugins.
-
-  await fs.writeJson(configFile, currentConfig, { spaces: 2 });
+  await fs.writeFile(configFile, configContent);
 }

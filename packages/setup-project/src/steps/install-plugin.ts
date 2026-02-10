@@ -33,7 +33,7 @@ export async function installPlugins(tool: PluginableToolType) {
 
   await installPackages(packagesToInstall, true);
 
-  configurePlugins(tool, selectedPlugins);
+  await configurePlugins(tool, selectedPlugins);
 }
 
 export async function configurePlugins(

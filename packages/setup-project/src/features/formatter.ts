@@ -45,5 +45,5 @@ export async function installFormatter(config: Config) {
 
   if (!shouldConfigure) return;
 
-  installPlugins(formatter as PluginableToolType);
+  await installPlugins(formatter as PluginableToolType);
 }

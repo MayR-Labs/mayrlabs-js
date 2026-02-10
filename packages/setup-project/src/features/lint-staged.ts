@@ -46,8 +46,18 @@ export async function promptLintStaged(config: Config) {
   }
 }
 
+import { resolveConfigFile, writeConfig } from "@/utils/config-file";
+
 export async function installLintStaged(config: Config) {
   await installPackages(["lint-staged"], true);
+
+  const configFile = await resolveConfigFile("Lint-Staged", [
+    ".lintstagedrc",
+    ".lintstagedrc.json",
+    "lint-staged.config.js",
+    ".lintstagedrc.js",
+    ".lintstagedrc.mjs",
+  ]);
 
   const lintStagedConfig: any = {};
   const lintStagedOptions = config.get("lintStaged").options;
@@ -76,5 +86,5 @@ export async function installLintStaged(config: Config) {
     }
   }
 
-  await fs.writeJson(".lintstagedrc", lintStagedConfig, { spaces: 2 });
+  await writeConfig(configFile, lintStagedConfig);
 }
