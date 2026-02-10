@@ -4,7 +4,7 @@ export interface PluginOption extends Option {
   package: string;
 }
 
-export const ESLINT_PLUGINS: PluginOption[] = [
+const ESLINT_PLUGINS: PluginOption[] = [
   {
     value: "depend",
     label: "depend",
@@ -161,7 +161,7 @@ export const ESLINT_PLUGINS: PluginOption[] = [
   { value: "standard", label: "standard", package: "eslint-plugin-standard" },
 ];
 
-export const PRETTIER_PLUGINS: PluginOption[] = [
+const PRETTIER_PLUGINS: PluginOption[] = [
   {
     value: "tailwindcss",
     label: "tailwindcss",
@@ -193,3 +193,12 @@ export const PRETTIER_PLUGINS: PluginOption[] = [
     hint: "Format package.json",
   },
 ];
+
+export const PLUGINS = {
+  eslint: ESLINT_PLUGINS,
+  prettier: PRETTIER_PLUGINS,
+};
+
+export const PLUGINABLE_TOOLS = Object.keys(PLUGINS);
+
+export type PluginableToolType = keyof typeof PLUGINS;
