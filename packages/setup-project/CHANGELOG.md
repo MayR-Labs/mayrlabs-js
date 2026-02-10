@@ -1,5 +1,11 @@
 # @mayrlabs/setup-project
 
+## 0.1.6
+
+### Patch Changes
+
+- 7a92694: Fixed git check commit message
+
 ## 0.1.5
 
 ### Patch Changes
