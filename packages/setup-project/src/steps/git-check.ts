@@ -10,7 +10,7 @@ export default async function gitCheck() {
       });
 
       if (shouldCommit) {
-        const message = text({
+        const message = await text({
           message: "Enter commit message:",
           placeholder: "wip: pre-setup commit",
           validate(value) {
