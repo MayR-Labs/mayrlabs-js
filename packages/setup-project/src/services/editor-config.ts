@@ -2,7 +2,7 @@ import { select, log } from "@clack/prompts";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { EDITOR_CONFIG_OPTIONS } from "@/constants/options";
+import { EDITOR_CONFIG_OPTIONS, EditorConfigValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptEditorConfig(config: Config) {
@@ -13,7 +13,7 @@ export async function promptEditorConfig(config: Config) {
       message: "Select EditorConfig preset:",
       options: EDITOR_CONFIG_OPTIONS,
     }),
-  )) as string as "default" | "spaces4" | "tabs";
+  )) as EditorConfigValue;
 
   config.get("editorConfig").config = { preset };
 }

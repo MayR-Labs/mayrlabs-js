@@ -1,3 +1,5 @@
+import { EditorConfigValue } from "@/constants/options";
+
 export interface Option {
   value: string;
   label: string;
@@ -36,7 +38,7 @@ export interface TestConfig {
 }
 
 export interface EditorConfigConfig {
-  preset: "default" | "spaces4" | "tabs";
+  preset: EditorConfigValue;
 }
 
 export interface LicenseConfig {

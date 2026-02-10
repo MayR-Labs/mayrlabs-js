@@ -1,3 +1,18 @@
+export type Option<V extends string> = {
+  value: V;
+  label: string;
+};
+
+export type OptionValue<T extends readonly Option<string>[]> =
+  T[number]["value"];
+
+export type OptionLabel<T extends readonly Option<string>[]> =
+  T[number]["label"];
+
+export type OptionOf<T extends readonly Option<string>[]> = Option<
+  OptionValue<T>
+>;
+
 export const TOOL_OPTIONS = [
   { value: "husky", label: "Husky" },
   { value: "formatter", label: "Formatter (Prettier/Oxfmt)" },
@@ -81,7 +96,9 @@ export const EDITOR_CONFIG_OPTIONS = [
   { value: "default", label: "Default (Spaces 2)" },
   { value: "spaces4", label: "Spaces 4" },
   { value: "tabs", label: "Tabs" },
-];
+] as const satisfies Option<string>[];
+
+export type EditorConfigValue = OptionValue<typeof EDITOR_CONFIG_OPTIONS>;
 
 export const LICENSE_TYPE_OPTIONS = [
   { value: "MIT", label: "MIT" },
