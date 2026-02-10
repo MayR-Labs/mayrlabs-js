@@ -8,8 +8,8 @@ export async function logError(error: unknown): Promise<string> {
   try {
     await fs.ensureDir(ERRORS_DIR);
 
-    // Ensure .gitignore exists to ignore logs
     const gitignorePath = path.join(LOG_DIR, ".gitignore");
+
     if (!(await fs.pathExists(gitignorePath))) {
       await fs.outputFile(gitignorePath, "*\n");
     }
@@ -19,6 +19,7 @@ export async function logError(error: unknown): Promise<string> {
 
     const errorMessage =
       error instanceof Error ? error.stack || error.message : String(error);
+
     const logContent = `Timestamp: ${new Date().toISOString()}\n\nError:\n${errorMessage}\n`;
 
     await fs.outputFile(logFile, logContent);

@@ -1,22 +1,29 @@
-import { select } from "@clack/prompts";
+import { select, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
+import pc from "picocolors";
+import { Config } from "@/config/config";
+import { LINTER_OPTIONS, LinterValue } from "@/constants/options";
+import { withCancelHandling } from "@/utils/handle-cancel";
 
-export async function promptLinter(config: any) {
-  if (!config.linterChoice) {
-    const linter = (await select({
+export async function promptLinter(config: Config) {
+  const linterConfig = config.get("linter");
+
+  log.message(pc.bgYellow(pc.black(" Linter Configuration ")));
+  const linter = (await withCancelHandling(async () =>
+    select({
       message: "Select a linter:",
-      options: [
-        { value: "eslint", label: "ESLint" },
-        { value: "oxlint", label: "Oxlint" },
-      ],
-    })) as string;
-    config.linterChoice = linter;
-  }
+      options: LINTER_OPTIONS,
+      initialValue: linterConfig.options.choice,
+    }),
+  )) as LinterValue;
+
+  linterConfig.options = { choice: linter };
 }
 
-export async function installLinter(config: any) {
-  if (config.linterChoice === "eslint") {
+export async function installLinter(config: Config) {
+  const choice = config.get("linter").options.choice;
+  if (choice === "eslint") {
     await installPackages(["eslint"], true);
     const configContent = {
       extends: ["eslint:recommended"],
@@ -30,7 +37,7 @@ export async function installLinter(config: any) {
       },
     };
     await fs.writeJson(".eslintrc.json", configContent, { spaces: 2 });
-  } else if (config.linterChoice === "oxlint") {
+  } else if (choice === "oxlint") {
     await installPackages(["oxlint"], true);
   }
 }

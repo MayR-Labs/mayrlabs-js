@@ -1,73 +1,64 @@
-import { multiselect, select } from "@clack/prompts";
+import { multiselect, log } from "@clack/prompts";
 import { installPackages } from "@/utils/pm";
 import { promptFormatter, installFormatter } from "@/services/formatter";
 import { promptLinter, installLinter } from "@/services/linter";
 import fs from "fs-extra";
+import pc from "picocolors";
+import { Config } from "@/config/config";
+import {
+  LINT_STAGED_EXTENSIONS,
+  LintStagedExtensionValue,
+} from "@/constants/options";
+import { withCancelHandling } from "@/utils/handle-cancel";
 
-export async function promptLintStaged(config: any) {
-  const lintExtensions = await multiselect({
-    message: "Select extensions to lint:",
-    options: [
-      { value: "js", label: "js" },
-      { value: "ts", label: "ts" },
-      { value: "jsx", label: "jsx" },
-      { value: "tsx", label: "tsx" },
-      { value: "html", label: "html" },
-      { value: "vue", label: "vue" },
-      { value: "svelte", label: "svelte" },
-    ],
-    required: false,
-  });
+export async function promptLintStaged(config: Config) {
+  log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
 
-  const formatExtensions = await multiselect({
-    message: "Select extensions to format:",
-    options: [
-      { value: "md", label: "md" },
-      { value: "css", label: "css" },
-      { value: "scss", label: "scss" },
-      { value: "json", label: "json" },
-      { value: "yaml", label: "yaml" },
-      { value: "html", label: "html" },
-      { value: "js", label: "js" },
-      { value: "ts", label: "ts" },
-      { value: "jsx", label: "jsx" },
-      { value: "tsx", label: "tsx" },
-      { value: "vue", label: "vue" },
-      { value: "svelte", label: "svelte" },
-    ],
-    required: false,
-  });
+  const lintExtensions = (await withCancelHandling(async () =>
+    multiselect({
+      message: "Select extensions to lint:",
+      options: LINT_STAGED_EXTENSIONS,
+      required: false,
+    }),
+  )) as LintStagedExtensionValue[];
 
-  config.lintStagedLintExtensions = lintExtensions;
-  config.lintStagedFormatExtensions = formatExtensions;
+  const formatExtensions = (await withCancelHandling(async () =>
+    multiselect({
+      message: "Select extensions to format:",
+      options: LINT_STAGED_EXTENSIONS,
+      required: false,
+    }),
+  )) as LintStagedExtensionValue[];
 
-  // Trigger prompt for dependencies if extensions are selected
-  if ((lintExtensions as string[]).length > 0 && !config.linterChoice) {
-    // Ask prompts immediately so config is captured
+  config.get("lintStaged").options = {
+    lintExtensions,
+    formatExtensions,
+  };
+
+  if (lintExtensions.length > 0 && !config.get("linter").selected) {
     await promptLinter(config);
-    config.linter = true; // Ensure it gets installed
+    config.enableTool("linter");
   }
 
-  if ((formatExtensions as string[]).length > 0 && !config.formatterChoice) {
+  if (formatExtensions.length > 0 && !config.get("formatter").selected) {
     await promptFormatter(config);
-    config.formatter = true; // Ensure it gets installed
+    config.enableTool("formatter");
   }
 }
 
-export async function installLintStaged(config: any) {
+export async function installLintStaged(config: Config) {
   await installPackages(["lint-staged"], true);
 
   const lintStagedConfig: any = {};
-  const lintExts = (config.lintStagedLintExtensions as string[]) || [];
-  const formatExts = (config.lintStagedFormatExtensions as string[]) || [];
+  const lintStagedOptions = config.get("lintStaged").options;
+  const lintExts = lintStagedOptions?.lintExtensions || [];
+  const formatExts = lintStagedOptions?.formatExtensions || [];
 
-  // Ensure dependencies are installed (idempotent)
   if (lintExts.length > 0) {
     await installLinter(config);
 
     const glob = `*.{${lintExts.join(",")}}`;
-    if (config.linterChoice === "oxlint") {
-      // oxlint might not fix everything or support all exts, but generic logic here
+    if (config.get("linter").options.choice === "oxlint") {
       lintStagedConfig[glob] = ["npx oxlint --fix"];
     } else {
       lintStagedConfig[glob] = ["eslint --fix"];
@@ -78,8 +69,7 @@ export async function installLintStaged(config: any) {
     await installFormatter(config);
 
     const glob = `*.{${formatExts.join(",")}}`;
-    if (config.formatterChoice === "oxfmt") {
-      // Filter exts supported by oxfmt if needed, or assume it handles them
+    if (config.get("formatter").options.choice === "oxfmt") {
       lintStagedConfig[glob] = ["npx oxfmt"];
     } else {
       lintStagedConfig[glob] = ["prettier --write"];
