@@ -1,19 +1,31 @@
 {
   "name": "@mayrlabs/setup-project",
   "version": "0.1.8",
-  "description": "Interactive CLI to setup project tools",
   "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
+  "description": "Interactive CLI to setup project tools",
   "keywords": [
-    "setup",
     "cli",
-    "scaffold",
+    "eslint",
     "husky",
     "prettier",
-    "eslint"
+    "scaffold",
+    "setup"
   ],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/setup-project#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/setup-project"
+  },
   "bin": {
     "setup-project": "dist/index.js"
   },
@@ -23,23 +35,11 @@
     "CHANGELOG.md",
     "package.json"
   ],
-  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/setup-project#readme",
-  "bugs": {
-    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
-    "directory": "packages/setup-project"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Aghogho Meyoron",
-    "email": "youngmayor.dev@gmail.com",
-    "url": "https://mayrlabs.com"
-  },
   "type": "commonjs",
   "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "lint": "eslint . --max-warnings 0",

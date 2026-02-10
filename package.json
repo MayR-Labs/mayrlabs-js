@@ -1,6 +1,14 @@
 {
   "name": "mayrlabs-js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -21,21 +29,13 @@
     "turbo": "^2.8.3",
     "typescript": "5.9.2"
   },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "npm@11.8.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git"
-  },
   "lint-staged": {
     "**/*.{ts,tsx,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@11.8.0"
 }
