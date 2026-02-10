@@ -3,7 +3,7 @@ import { configurePrettierPlugins } from "@/features/formatter/prettier";
 import { configureEslintPlugins } from "@/features/linter/eslint";
 import { withCancelHandling } from "@/utils/handle-cancel";
 import { installPackages } from "@/utils/pm";
-import { multiselect, outro } from "@clack/prompts";
+import { multiselect, outro, confirm } from "@clack/prompts";
 import pc from "picocolors";
 
 export async function installPlugins(tool: PluginableToolType) {
@@ -40,7 +40,17 @@ export async function configurePlugins(
   tool: PluginableToolType,
   plugins: string[],
 ) {
-  // @ai: Ask if the user want to configure the plugins
+  const shouldConfigure = (await withCancelHandling(async () =>
+    confirm({
+      message: `Do you want to configure the selected plugins in your ${tool} config file?`,
+      initialValue: true,
+    }),
+  )) as boolean;
+
+  if (!shouldConfigure) {
+    outro(pc.yellow("Skipping configuration."));
+    return;
+  }
 
   switch (tool) {
     case "prettier":

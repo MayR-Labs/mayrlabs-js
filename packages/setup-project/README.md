@@ -1,64 +1,68 @@
 # @mayrlabs/setup-project
 
-Interactive CLI to verify and configure common project tools for modern JavaScript/TypeScript applications.
+**Interactive CLI to fast-track your project setup.**
 
-## Features
+🚀 **Spin up a production-ready environment in seconds.**
 
-- 🐶 **Husky**: Set up git hooks effortlessly.
-- 💅 **Formatter**: Choose between **Prettier** or **Oxfmt**.
-- 🧹 **Linter**: Choose between **ESLint** or **Oxlint**.
-- 🚫 **Lint-staged**: Automatically lint/format staged files with broad extension support.
-- 🌳 **Env Validation**: Set up **@t3-oss/env** for Next.js, Nuxt, or Core, with optional presets.
-- 🧪 **Testing**: Configure **Vitest** or **Jest**.
-- ⚙️ **EditorConfig**: Generate standardized `.editorconfig` files.
-- 📄 **License**: Generate MIT, ISC, or Apache-2.0 licenses.
-- 🛡️ **Git Safety**: Checks for uncommitted changes before making modifications.
+Starting a new project often involves hours of repetitive configuration: setting up linting, formatting, git hooks, testing frameworks, and more. `@mayrlabs/setup-project` automates this entirely.
 
-## Usage
+Instead of copy-pasting `.eslintrc` files or manually installing dependencies, just run one command and let our interactive CLI handle the rest.
 
-Run the following command in your project directory:
+## Why use this?
+
+- **Zero Config Fatigue**: No more wrestling with disparate config files. We provide sensible, battle-tested defaults.
+- **Modern Stack Support**: Best-in-class support for the tools you actually use: Prettier, ESLint, Husky, Vitest, and more.
+- **Interactive & Safe**: The CLI iterates with you. Pick exactly what you need. It even checks for a clean git state before making changes.
+- **Extensible**: Need to add a Tailwind plugin to Prettier? We got you. The `plugin` command makes extending your tools a breeze.
+
+## Quick Start
+
+Run the CLI in your project root:
 
 ```bash
 npx @mayrlabs/setup-project@latest
 ```
 
-The CLI will guide you through an interactive survey to select the tools you want to configure. No changes are made until you confirm the summary at the end.
+Follow the prompts to select your tools. That's it!
 
-## How it works
+## What's Inside?
 
-1. **Git Check**: Ensures your working directory is clean (or offers to commit changes).
-2. **Survey**: Asks you which tools you want to set up and collects your preferences.
-3. **Summary**: Shows a summary of the actions to be taken.
-4. **Execution**: Installs dependencies and creates configuration files tailored to your choices.
+We support configuration for the following tools:
 
-## Development
+| Feature | Description |
+| :--- | :--- |
+| 🐶 **Husky** | Robust git hooks to ensure quality before commits. |
+| 💅 **Formatter** | **Prettier** or **Biome** (coming soon) for consistent code style. |
+| 🧹 **Linter** | **ESLint** configured with modern best practices. |
+| 🚫 **Lint-staged** | Run linters/formatters only on changed files. Fast. |
+| 🌳 **Env Validation** | Type-safe environment variables with **@t3-oss/env**. |
+| 🧪 **Testing** | Ready-to-go **Vitest** configuration. |
+| ⚙️ **EditorConfig** | Consistent coding styles between different editors. |
+| 📄 **License** | Generate standard MIT, Apache, or ISC licenses instantly. |
 
-### Directory Structure
+## Advanced Usage
 
-The project follows a feature-based architecture:
+### Manage Plugins
 
-- `src/features/`: Contains logic for each tool (e.g., `husky`, `prettier`).
-- `src/core/`: Core application logic and configuration management.
-- `src/cli/`: CLI entry point and command handlers.
-- `src/utils/`: Shared utilities.
-
-### Running Tests
-
-This project uses **Vitest** for testing.
+Want to add plugins to your existing tools?
 
 ```bash
-npm test
+npx @mayrlabs/setup-project plugin
+```
+
+This will guide you through adding plugins to ESLint or Prettier (e.g., `prettier-plugin-tailwindcss`).
+
+### Configure Single Tool
+
+Just need to set up one thing?
+
+```bash
+npx @mayrlabs/setup-project configure husky
 ```
 
 ## Contributing
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/my-feature`).
-3. Make your changes.
-4. Run tests (`npm test`).
-5. Commit your changes (`git commit -m 'Add some feature'`).
-6. Push to the branch (`git push origin feature/my-feature`).
-7. Open a Pull Request.
+We love contributions! If you're looking to help improve this package (add new tools, fix bugs), please check out our [Contributing Guide](./CONTRIBUTING.md).
 
 ## License
 
