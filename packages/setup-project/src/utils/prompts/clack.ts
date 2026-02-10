@@ -12,6 +12,12 @@ import {
 } from "@clack/prompts";
 import { PromptOption, PromptProvider } from "./types";
 
+type Primitive = Readonly<string | boolean | number>;
+
+type ClackOption<Value> = Value extends Primitive
+  ? { value: Value; label?: string; hint?: string }
+  : { value: Value; label: string; hint?: string };
+
 export class ClackProvider implements PromptProvider {
   intro(message: string): void {
     intro(message);
@@ -49,7 +55,7 @@ export class ClackProvider implements PromptProvider {
         label: o.label,
         value: o.value,
         hint: o.hint,
-      })),
+      })) as ClackOption<T>[],
     }) as Promise<T | symbol>;
   }
 
@@ -65,7 +71,7 @@ export class ClackProvider implements PromptProvider {
         label: o.label,
         value: o.value,
         hint: o.hint,
-      })),
+      })) as ClackOption<T>[],
     }) as Promise<T[] | symbol>;
   }
 

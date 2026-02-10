@@ -53,23 +53,17 @@ export class TopCliProvider implements PromptProvider {
     initialValue?: T;
   }): Promise<T | symbol> {
     try {
-      // Map options to string values for the prompt
-      // We need to store original values to return the correct type
       const optionMap = new Map<string, T>();
+
       const choices = opts.options.map((o) => {
-        const key = String(o.value); // usage of string key
+        const key = String(o.value);
+
         optionMap.set(key, o.value);
 
-        return {
-          label: o.label,
-          value: key,
-          description: o.hint,
-        };
+        return { label: o.label, value: key, description: o.hint };
       });
 
-      const resultKey = await select(opts.message, {
-        choices,
-      });
+      const resultKey = await select(opts.message, { choices });
 
       return optionMap.get(resultKey) as T;
     } catch {
@@ -86,15 +80,11 @@ export class TopCliProvider implements PromptProvider {
     try {
       const optionMap = new Map<string, T>();
 
-      // Convert initialValue T[] to string[] for topcli prompts if supported?
-      // TopCLI prompts doesn't seem to have explicit 'initial' for multiselect in the same way, or it uses 'selected' property in choices.
-
       const choices = opts.options.map((o) => {
         const key = String(o.value);
+
         optionMap.set(key, o.value);
 
-        // Checking if initialValue contains this option's value
-        // Use loose equality or strict check. Assuming T can be primitive or object ref.
         const isSelected = opts.initialValue?.some((iv) => iv === o.value);
 
         return {
@@ -107,10 +97,11 @@ export class TopCliProvider implements PromptProvider {
 
       const resultKeys = await multiselect(opts.message, {
         choices,
-        // min: opts.required ? 1 : 0
+        autocomplete: true,
+        maxVisible: 10,
+        showHint: true,
       });
 
-      // resultKeys should be string[]
       return resultKeys.map((k) => optionMap.get(k) as T);
     } catch {
       return CANCEL_SYMBOL;

@@ -47,7 +47,6 @@ export class Prompts implements PromptProvider {
     return this.provider.confirm(opts);
   }
 
-  // Explicitly typing generics for select/multiselect in implementation to avoid TS issues
   select<T>(opts: {
     message: string;
     options: PromptOption<T>[];
@@ -83,4 +82,5 @@ export class Prompts implements PromptProvider {
 }
 
 export const prompts = Prompts.getInstance();
+
 export { PromptProvider, PromptOption, PromptLogger };
