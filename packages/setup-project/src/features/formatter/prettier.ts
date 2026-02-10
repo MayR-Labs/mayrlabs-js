@@ -34,7 +34,7 @@ coverage
 build
 .astro
 .output
-`,
+`
     );
   }
 }
@@ -47,7 +47,7 @@ export async function configurePrettierPlugins(plugins: string[]) {
     ".prettierrc.js",
   ]);
 
-  let currentConfig: any = {};
+  let currentConfig: Record<string, unknown> = {};
 
   if (await fs.pathExists(configFile)) {
     try {
@@ -78,12 +78,12 @@ export async function configurePrettierPlugins(plugins: string[]) {
         return;
       }
       currentConfig = await fs.readJson(configFile);
-    } catch (e) {
+    } catch {
       // ignore
     }
   }
 
-  const existingPlugins = currentConfig.plugins || [];
+  const existingPlugins = (currentConfig.plugins as string[]) || [];
   const newPlugins = [...new Set([...existingPlugins, ...plugins])];
 
   currentConfig.plugins = newPlugins;

@@ -1,4 +1,4 @@
-import { intro, outro, select } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
 import { PluginableToolType } from "@/constants/plugins";
 import { withCancelHandling } from "@/utils/handle-cancel";
@@ -10,23 +10,23 @@ import { installPlugins } from "@/steps/install-plugin";
 export async function plugin(toolName?: PluginableToolType) {
   introScreen();
 
-  intro(pc.inverse(pc.bold(pc.magenta(" Plugin Manager "))));
+  prompts.intro(pc.inverse(pc.bold(pc.magenta(" Plugin Manager "))));
 
   await gitCheck();
 
   if (!toolName) {
     toolName = (await withCancelHandling(async () =>
-      select({
+      prompts.select({
         message: "Select a tool to add plugins to:",
         options: [
           { value: "eslint", label: "ESLint" },
           { value: "prettier", label: "Prettier" },
         ] satisfies Option<PluginableToolType>[],
-      }),
+      })
     )) as PluginableToolType;
   }
 
   await installPlugins(toolName);
 
-  outro(pc.green("Plugins installed successfully!"));
+  prompts.outro(pc.green("Plugins installed successfully!"));
 }

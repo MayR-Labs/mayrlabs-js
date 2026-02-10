@@ -16,7 +16,7 @@ export async function getPackageManager(): Promise<PackageManager> {
 
 export async function installPackages(
   packages: string[],
-  dev: boolean = false,
+  dev: boolean = false
 ) {
   const pm = await getPackageManager();
   const args = [];

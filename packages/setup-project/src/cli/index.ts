@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { outro, multiselect, note, confirm, intro } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
 import { program } from "commander";
 import { promptHusky } from "@/features/husky";
@@ -26,18 +26,18 @@ async function main() {
   try {
     introScreen();
 
-    intro(
-      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard "))),
+    prompts.intro(
+      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard ")))
     );
 
     await gitCheck();
 
     const tools = (await withCancelHandling(async () =>
-      multiselect({
+      prompts.multiselect({
         message: "Select tools to configure:",
         options: TOOL_OPTIONS,
         required: false,
-      }),
+      })
     )) as string[] as Tool[];
 
     tools.forEach((tool) => config.enableTool(tool));
@@ -51,26 +51,28 @@ async function main() {
     if (config.get("editorConfig").selected) await promptEditorConfig(config);
     if (config.get("license").selected) await promptLicense(config);
 
-    note(config.summary, "Configuration Summary");
+    prompts.note(config.summary, "Configuration Summary");
 
     const proceed = (await withCancelHandling(async () =>
-      confirm({
+      prompts.confirm({
         message: "Do you want to proceed with the installation?",
-      }),
+      })
     )) as boolean;
 
     if (!proceed) {
-      outro(pc.yellow("Installation cancelled."));
+      prompts.outro(pc.yellow("Installation cancelled."));
       process.exit(0);
     }
 
     await execution(config);
 
-    outro(pc.green("Setup complete!"));
+    prompts.outro(pc.green("Setup complete!"));
   } catch (error) {
     const logPath = await logError(error);
 
-    outro(pc.red(`\nSomething went wrong!\nError log saved to: ${logPath}`));
+    prompts.outro(
+      pc.red(`\nSomething went wrong!\nError log saved to: ${logPath}`)
+    );
 
     process.exit(1);
   }

@@ -48,6 +48,50 @@ export class Config {
     };
   }
 
+  clear() {
+    this.data = {
+      husky: {
+        selected: false,
+        options: { hookType: "none", customScript: "npm run test" },
+      },
+      formatter: {
+        selected: false,
+        options: { choice: "prettier" },
+      },
+      linter: {
+        selected: false,
+        options: { choice: "eslint" },
+      },
+      lintStaged: {
+        selected: false,
+        options: { lintExtensions: [], formatExtensions: [] },
+      },
+      env: {
+        selected: false,
+        options: {
+          variant: "@t3-oss/env-nextjs",
+          validator: "zod",
+          installPresets: false,
+          presets: [],
+          split: "split",
+          location: "src/lib",
+        },
+      },
+      test: {
+        selected: false,
+        options: { runner: "vitest" },
+      },
+      editorConfig: {
+        selected: false,
+        options: { preset: "default" },
+      },
+      license: {
+        selected: false,
+        options: { name: "", email: "", website: "", type: "MIT" },
+      },
+    };
+  }
+
   get<T extends Tool>(tool: T): ProjectConfig[T] {
     return this.data[tool];
   }

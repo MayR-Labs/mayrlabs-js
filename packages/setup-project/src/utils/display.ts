@@ -12,8 +12,8 @@ export function introScreen() {
         verticalLayout: "default",
         width: 80,
         whitespaceBreak: true,
-      }),
-    ),
+      })
+    )
   );
   console.log(pc.cyan(`${packageJson.name} - v${packageJson.version}`));
   console.log();
@@ -23,12 +23,12 @@ export function showAbout() {
   introScreen();
   console.log(pc.bold("About:"));
   console.log(
-    "  Interactive CLI to setup project tools like Husky, Prettier, ESLint, etc.",
+    "  Interactive CLI to setup project tools like Husky, Prettier, ESLint, etc."
   );
   console.log("");
   console.log(pc.bold("How to use:"));
   console.log(
-    "  Run 'npx @mayrlabs/setup-project' and follow the interactive prompts.",
+    "  Run 'npx @mayrlabs/setup-project' and follow the interactive prompts."
   );
   console.log("");
 }

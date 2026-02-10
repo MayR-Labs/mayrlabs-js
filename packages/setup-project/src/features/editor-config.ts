@@ -1,4 +1,4 @@
-import { select, log } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/core/config";
@@ -6,16 +6,16 @@ import { EDITOR_CONFIG_OPTIONS, EditorConfigValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptEditorConfig(config: Config) {
-  log.message(pc.bgWhite(pc.black(" EditorConfig Configuration ")));
+  prompts.log.message(pc.bgWhite(pc.black(" EditorConfig Configuration ")));
 
   const currentPreset = config.get("editorConfig").options.preset;
 
   const preset = (await withCancelHandling(async () =>
-    select({
+    prompts.select({
       message: "Select EditorConfig preset:",
       options: EDITOR_CONFIG_OPTIONS,
       initialValue: currentPreset,
-    }),
+    })
   )) as EditorConfigValue;
 
   config.get("editorConfig").options = { preset };

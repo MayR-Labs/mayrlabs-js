@@ -5,10 +5,6 @@ export type Option<V extends string> = {
 
 type OptionValue<T extends readonly Option<string>[]> = T[number]["value"];
 
-type OptionLabel<T extends readonly Option<string>[]> = T[number]["label"];
-
-type OptionOf<T extends readonly Option<string>[]> = Option<OptionValue<T>>;
-
 export const TOOL_OPTIONS = [
   { value: "husky", label: "Husky" },
   { value: "formatter", label: "Formatter (Prettier/Oxfmt)" },

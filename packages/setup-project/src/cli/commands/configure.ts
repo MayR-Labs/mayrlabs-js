@@ -1,4 +1,4 @@
-import { intro, outro, select } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
 import { config } from "@/core/config";
 import { Tool } from "@/core/types";
@@ -21,7 +21,7 @@ import gitCheck from "@/steps/git-check";
 export async function configure(toolName?: string) {
   introScreen();
 
-  intro(pc.inverse(pc.bold(pc.blue(" Configuration Mode "))));
+  prompts.intro(pc.inverse(pc.bold(pc.blue(" Configuration Mode "))));
 
   await gitCheck();
 
@@ -34,17 +34,17 @@ export async function configure(toolName?: string) {
       selectedTool = tool.value as Tool;
     } else {
       console.log(
-        pc.yellow(`Tool '${toolName}' not found or not configurable.`),
+        pc.yellow(`Tool '${toolName}' not found or not configurable.`)
       );
     }
   }
 
   if (!selectedTool) {
     const selection = (await withCancelHandling(async () =>
-      select({
+      prompts.select({
         message: "Select a tool to configure:",
         options: TOOL_OPTIONS,
-      }),
+      })
     )) as string as Tool;
 
     selectedTool = selection;
@@ -87,9 +87,9 @@ export async function configure(toolName?: string) {
         await installLicense(config);
         break;
     }
-    outro(pc.green(`${selectedTool} configured successfully!`));
+    prompts.outro(pc.green(`${selectedTool} configured successfully!`));
   } catch (error) {
-    outro(pc.red(`Failed to configure ${selectedTool}.`));
+    prompts.outro(pc.red(`Failed to configure ${selectedTool}.`));
     console.error(error);
     process.exit(1);
   }

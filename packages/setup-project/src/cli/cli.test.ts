@@ -4,8 +4,8 @@ import { plugin } from "./commands/plugin";
 import * as husky from "@/features/husky";
 import * as formatter from "@/features/formatter";
 import * as linter from "@/features/linter";
-import * as prompts from "@clack/prompts";
-import * as git from "@/steps/git-check";
+import { prompts } from "@/utils/prompts";
+
 import * as pluginInstaller from "@/steps/install-plugin";
 import { config } from "@/core/config";
 
@@ -17,7 +17,24 @@ vi.mock("@/features/env");
 vi.mock("@/features/test");
 vi.mock("@/features/editor-config");
 vi.mock("@/features/license");
-vi.mock("@clack/prompts");
+vi.mock("@/utils/prompts", () => ({
+  prompts: {
+    intro: vi.fn(),
+    outro: vi.fn(),
+    text: vi.fn(),
+    select: vi.fn(),
+    confirm: vi.fn(),
+    multiselect: vi.fn(),
+    isCancel: vi.fn((val) => val === Symbol("cancel")),
+    log: {
+      message: vi.fn(),
+      info: vi.fn(),
+      success: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    },
+  },
+}));
 vi.mock("@/utils/pm");
 vi.mock("@/steps/git-check");
 vi.mock("@/steps/install-plugin");
@@ -25,9 +42,7 @@ vi.mock("@/steps/install-plugin");
 describe("CLI", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(prompts, "intro").mockImplementation(() => {});
-    vi.spyOn(prompts, "outro").mockImplementation(() => {});
-    vi.spyOn(git, "default").mockResolvedValue();
+    config.clear(); // Ensure config is reset if it has state
   });
 
   describe("configure", () => {
@@ -45,7 +60,7 @@ describe("CLI", () => {
     });
 
     it("should prompt if no tool provided", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("linter");
+      vi.mocked(prompts.select).mockResolvedValue("linter" as any);
       await configure();
       expect(linter.promptLinter).toHaveBeenCalled();
       expect(linter.installLinter).toHaveBeenCalled();
@@ -59,7 +74,7 @@ describe("CLI", () => {
     });
 
     it("should prompt if no tool provided", async () => {
-      vi.spyOn(prompts, "select").mockResolvedValue("prettier");
+      vi.mocked(prompts.select).mockResolvedValue("prettier" as any);
       await plugin();
       expect(pluginInstaller.installPlugins).toHaveBeenCalledWith("prettier");
     });

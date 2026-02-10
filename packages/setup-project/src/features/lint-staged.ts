@@ -1,8 +1,8 @@
-import { multiselect, log } from "@clack/prompts";
+import { prompts } from "@/utils/prompts";
 import { installPackages } from "@/utils/pm";
 import { promptFormatter, installFormatter } from "@/features/formatter";
 import { promptLinter, installLinter } from "@/features/linter";
-import fs from "fs-extra";
+
 import pc from "picocolors";
 import { Config } from "@/core/config";
 import {
@@ -12,22 +12,22 @@ import {
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptLintStaged(config: Config) {
-  log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
+  prompts.log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
 
   const lintExtensions = (await withCancelHandling(async () =>
-    multiselect({
+    prompts.multiselect({
       message: "Select extensions to lint:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
-    }),
+    })
   )) as LintStagedExtensionValue[];
 
   const formatExtensions = (await withCancelHandling(async () =>
-    multiselect({
+    prompts.multiselect({
       message: "Select extensions to format:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
-    }),
+    })
   )) as LintStagedExtensionValue[];
 
   config.get("lintStaged").options = {
@@ -59,7 +59,7 @@ export async function installLintStaged(config: Config) {
     ".lintstagedrc.mjs",
   ]);
 
-  const lintStagedConfig: any = {};
+  const lintStagedConfig: Record<string, unknown> = {};
   const lintStagedOptions = config.get("lintStaged").options;
   const lintExts = lintStagedOptions?.lintExtensions || [];
   const formatExts = lintStagedOptions?.formatExtensions || [];
