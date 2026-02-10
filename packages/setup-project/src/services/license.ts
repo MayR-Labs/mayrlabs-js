@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { LICENSE_TYPE_OPTIONS } from "@/constants/options";
+import { LICENSE_TYPE_OPTIONS, LicenseTypeValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptLicense(config: Config) {
@@ -40,7 +40,7 @@ export async function promptLicense(config: Config) {
       message: "Select License Type:",
       options: LICENSE_TYPE_OPTIONS,
     }),
-  )) as string as "MIT" | "ISC" | "Apache-2.0" | "UNLICENSED";
+  )) as LicenseTypeValue;
 }
 
 export async function installLicense(config: Config) {

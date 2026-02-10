@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { LINTER_OPTIONS } from "@/constants/options";
+import { LINTER_OPTIONS, LinterValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptLinter(config: Config) {
@@ -15,7 +15,7 @@ export async function promptLinter(config: Config) {
         message: "Select a linter:",
         options: LINTER_OPTIONS,
       }),
-    )) as string as "eslint" | "oxlint";
+    )) as LinterValue;
 
     linterConfig.config = { choice: linter };
   }

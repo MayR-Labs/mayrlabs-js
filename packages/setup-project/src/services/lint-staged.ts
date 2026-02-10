@@ -5,7 +5,10 @@ import { promptLinter, installLinter } from "@/services/linter";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { LINT_STAGED_EXTENSIONS } from "@/constants/options";
+import {
+  LINT_STAGED_EXTENSIONS,
+  LintStagedExtensionValue,
+} from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptLintStaged(config: Config) {
@@ -17,7 +20,7 @@ export async function promptLintStaged(config: Config) {
       options: LINT_STAGED_EXTENSIONS,
       required: false,
     }),
-  )) as string[];
+  )) as LintStagedExtensionValue[];
 
   const formatExtensions = (await withCancelHandling(async () =>
     multiselect({
@@ -25,7 +28,7 @@ export async function promptLintStaged(config: Config) {
       options: LINT_STAGED_EXTENSIONS,
       required: false,
     }),
-  )) as string[];
+  )) as LintStagedExtensionValue[];
 
   config.get("lintStaged").config = {
     lintExtensions,

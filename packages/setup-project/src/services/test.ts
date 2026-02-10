@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { TEST_RUNNER_OPTIONS } from "@/constants/options";
+import { TEST_RUNNER_OPTIONS, TestRunnerValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptTest(config: Config) {
@@ -14,7 +14,7 @@ export async function promptTest(config: Config) {
       message: "Select a test runner:",
       options: TEST_RUNNER_OPTIONS,
     }),
-  )) as string as "vitest" | "jest";
+  )) as TestRunnerValue;
 
   config.get("test").config = { runner };
 }

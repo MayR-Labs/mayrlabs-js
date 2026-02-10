@@ -3,7 +3,7 @@ import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { FORMATTER_OPTIONS } from "@/constants/options";
+import { FORMATTER_OPTIONS, FormatterValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptFormatter(config: Config) {
@@ -17,7 +17,7 @@ export async function promptFormatter(config: Config) {
         message: "Select a formatter:",
         options: FORMATTER_OPTIONS,
       }),
-    )) as string as "prettier" | "oxfmt";
+    )) as FormatterValue;
 
     formatterConfig.config = { choice: formatter };
   }

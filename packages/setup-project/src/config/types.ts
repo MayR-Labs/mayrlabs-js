@@ -1,4 +1,16 @@
-import { EditorConfigValue } from "@/constants/options";
+import {
+  EditorConfigValue,
+  HuskyHookValue,
+  FormatterValue,
+  LinterValue,
+  LintStagedExtensionValue,
+  EnvVariantValue,
+  EnvValidatorValue,
+  EnvPresetValue,
+  EnvSplitValue,
+  TestRunnerValue,
+  LicenseTypeValue,
+} from "@/constants/options";
 
 export interface Option {
   value: string;
@@ -7,34 +19,34 @@ export interface Option {
 }
 
 export interface HuskyConfig {
-  hookType: "lint-staged" | "custom" | "none";
+  hookType: HuskyHookValue;
   customScript?: string;
 }
 
 export interface FormatterConfig {
-  choice: "prettier" | "oxfmt";
+  choice: FormatterValue;
 }
 
 export interface LinterConfig {
-  choice: "eslint" | "oxlint";
+  choice: LinterValue;
 }
 
 export interface LintStagedConfig {
-  lintExtensions: string[];
-  formatExtensions: string[];
+  lintExtensions: LintStagedExtensionValue[];
+  formatExtensions: LintStagedExtensionValue[];
 }
 
 export interface EnvConfig {
-  variant: "@t3-oss/env-nextjs" | "@t3-oss/env-nuxt" | "@t3-oss/env-core";
-  validator: "zod" | "valibot" | "arktype";
+  variant: EnvVariantValue;
+  validator: EnvValidatorValue;
   installPresets?: boolean;
-  presets?: string[];
-  split?: "split" | "joined";
+  presets?: EnvPresetValue[];
+  split?: EnvSplitValue;
   location?: string;
 }
 
 export interface TestConfig {
-  runner: "vitest" | "jest";
+  runner: TestRunnerValue;
 }
 
 export interface EditorConfigConfig {
@@ -42,7 +54,7 @@ export interface EditorConfigConfig {
 }
 
 export interface LicenseConfig {
-  type: "MIT" | "ISC" | "Apache-2.0" | "UNLICENSED";
+  type: LicenseTypeValue;
   name: string;
   email: string;
   website: string;

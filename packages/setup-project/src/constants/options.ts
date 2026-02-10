@@ -3,15 +3,11 @@ export type Option<V extends string> = {
   label: string;
 };
 
-export type OptionValue<T extends readonly Option<string>[]> =
-  T[number]["value"];
+type OptionValue<T extends readonly Option<string>[]> = T[number]["value"];
 
-export type OptionLabel<T extends readonly Option<string>[]> =
-  T[number]["label"];
+type OptionLabel<T extends readonly Option<string>[]> = T[number]["label"];
 
-export type OptionOf<T extends readonly Option<string>[]> = Option<
-  OptionValue<T>
->;
+type OptionOf<T extends readonly Option<string>[]> = Option<OptionValue<T>>;
 
 export const TOOL_OPTIONS = [
   { value: "husky", label: "Husky" },
@@ -22,23 +18,31 @@ export const TOOL_OPTIONS = [
   { value: "test", label: "Test Runner (Vitest/Jest)" },
   { value: "editorConfig", label: "EditorConfig" },
   { value: "license", label: "License" },
-];
+] as const satisfies Option<string>[];
+
+export type ToolValue = OptionValue<typeof TOOL_OPTIONS>;
 
 export const HUSKY_HOOK_OPTIONS = [
   { value: "lint-staged", label: "lint-staged" },
   { value: "custom", label: "Custom script" },
   { value: "none", label: "None" },
-];
+] as const satisfies Option<string>[];
+
+export type HuskyHookValue = OptionValue<typeof HUSKY_HOOK_OPTIONS>;
 
 export const FORMATTER_OPTIONS = [
   { value: "prettier", label: "Prettier" },
   { value: "oxfmt", label: "Oxfmt" },
-];
+] as const satisfies Option<string>[];
+
+export type FormatterValue = OptionValue<typeof FORMATTER_OPTIONS>;
 
 export const LINTER_OPTIONS = [
   { value: "eslint", label: "ESLint" },
   { value: "oxlint", label: "Oxlint" },
-];
+] as const satisfies Option<string>[];
+
+export type LinterValue = OptionValue<typeof LINTER_OPTIONS>;
 
 export const LINT_STAGED_EXTENSIONS = [
   { value: "js", label: "js" },
@@ -53,19 +57,27 @@ export const LINT_STAGED_EXTENSIONS = [
   { value: "json", label: "json" },
   { value: "yaml", label: "yaml" },
   { value: "md", label: "md" },
-];
+] as const satisfies Option<string>[];
+
+export type LintStagedExtensionValue = OptionValue<
+  typeof LINT_STAGED_EXTENSIONS
+>;
 
 export const ENV_VARIANT_OPTIONS = [
   { value: "@t3-oss/env-nextjs", label: "Next.js" },
   { value: "@t3-oss/env-nuxt", label: "Nuxt" },
   { value: "@t3-oss/env-core", label: "Core" },
-];
+] as const satisfies Option<string>[];
+
+export type EnvVariantValue = OptionValue<typeof ENV_VARIANT_OPTIONS>;
 
 export const ENV_VALIDATOR_OPTIONS = [
   { value: "zod", label: "Zod" },
   { value: "valibot", label: "Valibot" },
   { value: "arktype", label: "Arktype" },
-];
+] as const satisfies Option<string>[];
+
+export type EnvValidatorValue = OptionValue<typeof ENV_VALIDATOR_OPTIONS>;
 
 export const ENV_PRESET_OPTIONS = [
   { value: "netlify", label: "Netlify" },
@@ -80,17 +92,23 @@ export const ENV_PRESET_OPTIONS = [
   { value: "coolify", label: "Coolify" },
   { value: "vite", label: "Vite" },
   { value: "wxt", label: "WXT" },
-];
+] as const satisfies Option<string>[];
+
+export type EnvPresetValue = OptionValue<typeof ENV_PRESET_OPTIONS>;
 
 export const ENV_SPLIT_OPTIONS = [
   { value: "split", label: "Split (env/server.ts, env/client.ts)" },
   { value: "joined", label: "Joined (env.ts)" },
-];
+] as const satisfies Option<string>[];
+
+export type EnvSplitValue = OptionValue<typeof ENV_SPLIT_OPTIONS>;
 
 export const TEST_RUNNER_OPTIONS = [
   { value: "vitest", label: "Vitest" },
   { value: "jest", label: "Jest" },
-];
+] as const satisfies Option<string>[];
+
+export type TestRunnerValue = OptionValue<typeof TEST_RUNNER_OPTIONS>;
 
 export const EDITOR_CONFIG_OPTIONS = [
   { value: "default", label: "Default (Spaces 2)" },
@@ -105,4 +123,6 @@ export const LICENSE_TYPE_OPTIONS = [
   { value: "ISC", label: "ISC" },
   { value: "Apache-2.0", label: "Apache 2.0" },
   { value: "UNLICENSED", label: "UNLICENSED" },
-];
+] as const satisfies Option<string>[];
+
+export type LicenseTypeValue = OptionValue<typeof LICENSE_TYPE_OPTIONS>;

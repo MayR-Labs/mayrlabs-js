@@ -9,6 +9,10 @@ import {
   ENV_VALIDATOR_OPTIONS,
   ENV_PRESET_OPTIONS,
   ENV_SPLIT_OPTIONS,
+  EnvVariantValue,
+  EnvValidatorValue,
+  EnvPresetValue,
+  EnvSplitValue,
 } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
@@ -20,17 +24,14 @@ export async function promptEnv(config: Config) {
       message: "Which @t3-oss/env variant?",
       options: ENV_VARIANT_OPTIONS,
     }),
-  )) as string as
-    | "@t3-oss/env-nextjs"
-    | "@t3-oss/env-nuxt"
-    | "@t3-oss/env-core";
+  )) as EnvVariantValue;
 
   const validator = (await withCancelHandling(async () =>
     select({
       message: "Which validator?",
       options: ENV_VALIDATOR_OPTIONS,
     }),
-  )) as string as "zod" | "valibot" | "arktype";
+  )) as EnvValidatorValue;
 
   const installPresets = (await withCancelHandling(async () =>
     confirm({
@@ -38,7 +39,7 @@ export async function promptEnv(config: Config) {
     }),
   )) as boolean;
 
-  let presets: string[] | undefined;
+  let presets: EnvPresetValue[] | undefined;
   if (installPresets) {
     presets = (await withCancelHandling(async () =>
       multiselect({
@@ -46,7 +47,7 @@ export async function promptEnv(config: Config) {
         options: ENV_PRESET_OPTIONS,
         required: false,
       }),
-    )) as string[];
+    )) as EnvPresetValue[];
   }
 
   const split = (await withCancelHandling(async () =>
@@ -54,7 +55,7 @@ export async function promptEnv(config: Config) {
       message: "Split or Joined env files?",
       options: ENV_SPLIT_OPTIONS,
     }),
-  )) as string as "split" | "joined";
+  )) as EnvSplitValue;
 
   const location = (await withCancelHandling(async () =>
     text({

@@ -4,7 +4,7 @@ import { execa } from "execa";
 import fs from "fs-extra";
 import pc from "picocolors";
 import { Config } from "@/config/config";
-import { HUSKY_HOOK_OPTIONS } from "@/constants/options";
+import { HUSKY_HOOK_OPTIONS, HuskyHookValue } from "@/constants/options";
 import { withCancelHandling } from "@/utils/handle-cancel";
 
 export async function promptHusky(config: Config) {
@@ -15,7 +15,7 @@ export async function promptHusky(config: Config) {
       message: "What pre-commit hook would you like to use?",
       options: HUSKY_HOOK_OPTIONS,
     }),
-  )) as string as "lint-staged" | "custom" | "none";
+  )) as HuskyHookValue;
 
   const husky = config.get("husky");
   husky.config = { hookType };
