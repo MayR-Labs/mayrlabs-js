@@ -1,5 +1,11 @@
 # @mayrlabs/setup-project
 
+## 0.1.7
+
+### Patch Changes
+
+- ed8f000: Fixed lint-staged
+
 ## 0.1.6
 
 ### Patch Changes
