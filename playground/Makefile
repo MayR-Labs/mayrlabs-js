@@ -12,4 +12,4 @@ init-genesis-pg:
 	@echo "Initialising npm"
 	@cd $(GENESIS_PG_NAME) && npm init -y
 	@echo "Installing dependencies"
-	cd $(GENESIS_PG_NAME) && npm install "$(GENESIS_PKG_NAME)@file:$(GENESIS_PATH)"
+	@cd $(GENESIS_PG_NAME) && npm install "$(GENESIS_PKG_NAME)@file:$(GENESIS_PATH)"
