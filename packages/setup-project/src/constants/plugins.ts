@@ -94,12 +94,12 @@ const ESLINT_PLUGINS: PluginOption[] = [
     package: "eslint-plugin-css-modules",
     hint: "Lint css modules",
   },
-  {
-    value: "emotion",
-    label: "emotion",
-    package: "@emotion/eslint-plugin",
-    hint: "Rules for emotion",
-  },
+  // {
+  //   value: "emotion",
+  //   label: "emotion",
+  //   package: "@emotion/eslint-plugin",
+  //   hint: "Rules for emotion",
+  // },
   {
     value: "better-styled-components",
     label: "better-styled-components",
@@ -258,18 +258,18 @@ const ESLINT_PLUGINS: PluginOption[] = [
     package: "@babel/eslint-plugin",
     hint: "Babel features",
   },
-  {
-    value: "flowtype",
-    label: "flowtype",
-    package: "eslint-plugin-flowtype",
-    hint: "Flow type linting",
-  },
-  {
-    value: "flowtype-errors",
-    label: "flowtype-errors",
-    package: "eslint-plugin-flowtype-errors",
-    hint: "Run Flow as plugin",
-  },
+  // {
+  //   value: "flowtype",
+  //   label: "flowtype",
+  //   package: "eslint-plugin-flowtype",
+  //   hint: "Flow type linting",
+  // },
+  // {
+  //   value: "flowtype-errors",
+  //   label: "flowtype-errors",
+  //   package: "eslint-plugin-flowtype-errors",
+  //   hint: "Run Flow as plugin",
+  // },
   {
     value: "html-eslint",
     label: "html-eslint",
@@ -969,12 +969,12 @@ const PRETTIER_PLUGINS: PluginOption[] = [
     package: "prettier-plugin-elm",
     hint: "Prettier for Elm",
   },
-  {
-    value: "erb",
-    label: "erb",
-    package: "prettier-plugin-erb",
-    hint: "Prettier for ERB",
-  },
+  // {
+  //   value: "erb",
+  //   label: "erb",
+  //   package: "prettier-plugin-erb",
+  //   hint: "Prettier for ERB",
+  // },
   {
     value: "gherkin",
     label: "gherkin",
@@ -1011,12 +1011,12 @@ const PRETTIER_PLUGINS: PluginOption[] = [
     package: "prettier-plugin-jinja-template",
     hint: "Prettier for Jinja",
   },
-  {
-    value: "jsonata",
-    label: "jsonata",
-    package: "prettier-plugin-jsonata",
-    hint: "Prettier for JSONata",
-  },
+  // {
+  //   value: "jsonata",
+  //   label: "jsonata",
+  //   package: "prettier-plugin-jsonata",
+  //   hint: "Prettier for JSONata",
+  // },
   {
     value: "kotlin",
     label: "kotlin",

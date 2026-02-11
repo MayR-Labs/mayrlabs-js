@@ -25,7 +25,7 @@ export class TopCliProvider implements PromptProvider {
         defaultValue: opts.initialValue || opts.defaultValue,
         validators: [
           {
-            validate: (value) => opts.validate?.(value) || "",
+            validate: (value) => opts.validate?.(value) || null,
           },
         ],
       });
