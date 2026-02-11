@@ -1,0 +1,5 @@
+---
+"@mayrlabs/prunejs": patch
+---
+
+Implementation
