@@ -1,40 +1,53 @@
 {
-  "name": "prunejs",
-  "version": "1.0.1",
+  "name": "@mayrlabs/prunejs",
+  "version": "1.0.0",
+  "private": false,
   "description": "Scan JS/TS projects and detects unused files, functions, classes and exports",
-  "main": "index.js",
+  "keywords": [],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/prunejs#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/prunejs"
+  },
   "bin": {
     "prunejs": "bin/prune.js"
+  },
+  "type": "commonjs",
+  "main": "src/cli.js",
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "test": "jest",
     "format": "prettier --write .",
     "lint": "eslint .",
-    "check": "npm run format && npm run lint && npm run test && npm pkg fix"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Aghogho Meyoron",
-    "url": "https://founder.mayrlabs.com",
-    "email": "youngmayor.dev@gmail.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/YoungMayor/prunejs.git"
+    "check": "npm run format && npm run lint && npm run test && npm pkg fix",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^11.1.0",
+    "figlet": "^1.10.0",
+    "fs-extra": "^11.2.0",
     "ignore": "^7.0.5",
     "inquirer": "^8.2.7",
-    "ora": "^5.4.1"
+    "ora": "^5.4.1",
+    "picocolors": "^1.0.0"
   },
   "devDependencies": {
+    "@repo/eslint-config": "^0.0.0",
     "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.5.4",
-    "jest": "^30.2.0",
-    "prettier": "^3.6.2"
+    "jest": "^30.2.0"
   }
 }

@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const ignore = require('ignore');
+const fs = require("fs");
+const path = require("path");
+const ignore = require("ignore");
 
 class UnusedCodeFinder {
   constructor(projectRoot, config) {
@@ -9,7 +9,7 @@ class UnusedCodeFinder {
     this.nonExportedDeclarations = new Map();
     this.imports = new Map(); // name -> Set<filePath>
     this.excludeDirs = config.excludeDirs || [];
-    this.includeDirs = config.includeDirs || ['.'];
+    this.includeDirs = config.includeDirs || ["."];
     this.includeExtensions = config.includeExtensions || [];
     this.ig = ignore();
     this.skipExportsManager = ignore().add(config.skipExportsIn || []);
@@ -20,13 +20,13 @@ class UnusedCodeFinder {
   }
 
   loadGitignore() {
-    const gitignorePath = path.join(this.projectRoot, '.gitignore');
+    const gitignorePath = path.join(this.projectRoot, ".gitignore");
     if (fs.existsSync(gitignorePath)) {
       try {
-        const gitignoreContent = fs.readFileSync(gitignorePath, 'utf-8');
+        const gitignoreContent = fs.readFileSync(gitignorePath, "utf-8");
         this.ig.add(gitignoreContent);
       } catch (error) {
-        console.warn('Failed to load .gitignore:', error.message);
+        console.warn("Failed to load .gitignore:", error.message);
       }
     }
   }
@@ -94,17 +94,26 @@ class UnusedCodeFinder {
   }
 
   extractExports(filePath) {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
     const relativePath = path.relative(this.projectRoot, filePath);
 
     const patterns = [
-      { regex: /export\s+(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'function' },
-      { regex: /export\s+class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'class' },
-      { regex: /export\s+interface\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'interface' },
-      { regex: /export\s+type\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'type' },
-      { regex: /export\s+const\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'const' },
-      { regex: /export\s+(?:let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'variable' },
+      {
+        regex: /export\s+(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
+        type: "function",
+      },
+      { regex: /export\s+class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: "class" },
+      {
+        regex: /export\s+interface\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
+        type: "interface",
+      },
+      { regex: /export\s+type\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: "type" },
+      { regex: /export\s+const\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: "const" },
+      {
+        regex: /export\s+(?:let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
+        type: "variable",
+      },
     ];
 
     for (let lineNum = 0; lineNum < lines.length; lineNum++) {
@@ -123,47 +132,51 @@ class UnusedCodeFinder {
       const namedExportMatch = line.match(/export\s*{([^}]+)}/);
       if (namedExportMatch) {
         const names = namedExportMatch[1]
-          .split(',')
+          .split(",")
           .map((n) =>
             n
               .trim()
               .split(/\s+as\s+/)[0]
               .trim()
           )
-          .filter((n) => n && !n.includes('*'));
+          .filter((n) => n && !n.includes("*"));
 
         for (const name of names) {
-          this.addExport(name, 'const', relativePath, lineNum + 1, filePath);
+          this.addExport(name, "const", relativePath, lineNum + 1, filePath);
         }
       }
 
-      if (line.includes('export default')) {
+      if (line.includes("export default")) {
         const defaultFunctionMatch = line.match(
           /export\s+default\s+(?:function\s+)?([a-zA-Z_$][a-zA-Z0-9_$]*)/
         );
         if (defaultFunctionMatch) {
           const name = defaultFunctionMatch[1];
-          this.addExport(name, 'default', relativePath, lineNum + 1, filePath);
+          this.addExport(name, "default", relativePath, lineNum + 1, filePath);
         }
       }
     }
   }
 
   extractNonExportedDeclarations(filePath) {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
     const relativePath = path.relative(this.projectRoot, filePath);
 
     const patterns = [
       {
-        regex: /^(?!.*export)\s*(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
-        type: 'function',
+        regex:
+          /^(?!.*export)\s*(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
+        type: "function",
       },
-      { regex: /^(?!.*export)\s*class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: 'class' },
+      {
+        regex: /^(?!.*export)\s*class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
+        type: "class",
+      },
       {
         regex:
           /^(?!.*export)\s*(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:async\s+)?(?:function|\([^)]*\)\s*=>)/g,
-        type: 'function',
+        type: "function",
       },
     ];
 
@@ -171,7 +184,7 @@ class UnusedCodeFinder {
       const line = lines[lineNum];
 
       if (this.isComment(line)) continue;
-      if (line.includes('export')) continue;
+      if (line.includes("export")) continue;
 
       for (const { regex, type } of patterns) {
         regex.lastIndex = 0;
@@ -179,7 +192,13 @@ class UnusedCodeFinder {
         for (const match of matches) {
           const name = match[1];
           if (this.shouldSkipName(name)) continue;
-          this.addNonExportedDeclaration(name, type, relativePath, lineNum + 1, filePath);
+          this.addNonExportedDeclaration(
+            name,
+            type,
+            relativePath,
+            lineNum + 1,
+            filePath
+          );
         }
       }
     }
@@ -203,8 +222,8 @@ class UnusedCodeFinder {
   }
 
   extractImports(filePath) {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
 
     const addImport = (name) => {
       if (!this.imports.has(name)) {
@@ -219,7 +238,7 @@ class UnusedCodeFinder {
       const namedImportMatch = line.match(/import\s*{([^}]+)}\s*from/);
       if (namedImportMatch) {
         const names = namedImportMatch[1]
-          .split(',')
+          .split(",")
           .map((n) =>
             n
               .trim()
@@ -231,7 +250,9 @@ class UnusedCodeFinder {
         names.forEach((name) => name && addImport(name));
       }
 
-      const defaultImportMatch = line.match(/import\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s+from/);
+      const defaultImportMatch = line.match(
+        /import\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s+from/
+      );
       if (defaultImportMatch) {
         addImport(defaultImportMatch[1]);
       }
@@ -262,7 +283,7 @@ class UnusedCodeFinder {
       line,
       filePath,
       isUsed: false,
-      category: 'exported',
+      category: "exported",
     });
   }
 
@@ -275,7 +296,7 @@ class UnusedCodeFinder {
       line,
       filePath,
       isUsed: false,
-      category: 'non-exported',
+      category: "non-exported",
     });
   }
 
@@ -307,11 +328,11 @@ class UnusedCodeFinder {
           info.isUsed = true;
         } else {
           // Only used in the same file? Check if it's used besides the definition
-          const content = fs.readFileSync(info.filePath, 'utf-8');
-          const lines = content.split('\n');
+          const content = fs.readFileSync(info.filePath, "utf-8");
+          const lines = content.split("\n");
           // Remove the definition line
           const otherLines = lines.filter((_, idx) => idx + 1 !== info.line);
-          const otherContent = otherLines.join('\n');
+          const otherContent = otherLines.join("\n");
 
           const usagePattern = new RegExp(`\\b${this.escapeRegex(name)}\\b`);
           if (usagePattern.test(otherContent)) {
@@ -323,11 +344,13 @@ class UnusedCodeFinder {
   }
   markUsedNonExportedDeclarations() {
     for (const [key, declaration] of this.nonExportedDeclarations.entries()) {
-      const content = fs.readFileSync(declaration.filePath, 'utf-8');
-      const lines = content.split('\n');
+      const content = fs.readFileSync(declaration.filePath, "utf-8");
+      const lines = content.split("\n");
       const otherLines = lines.filter((_, idx) => idx + 1 !== declaration.line);
-      const otherContent = otherLines.join('\n');
-      const usagePattern = new RegExp(`\\b${this.escapeRegex(declaration.name)}\\b`);
+      const otherContent = otherLines.join("\n");
+      const usagePattern = new RegExp(
+        `\\b${this.escapeRegex(declaration.name)}\\b`
+      );
 
       if (usagePattern.test(otherContent)) {
         declaration.isUsed = true;
@@ -336,12 +359,14 @@ class UnusedCodeFinder {
   }
 
   escapeRegex(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   isComment(line) {
     return (
-      line.trim().startsWith('//') || line.trim().startsWith('*') || line.trim().startsWith('/*')
+      line.trim().startsWith("//") ||
+      line.trim().startsWith("*") ||
+      line.trim().startsWith("/*")
     );
   }
 
@@ -383,8 +408,8 @@ class UnusedCodeFinder {
    * @returns {number} - 1-indexed end line
    */
   findBlockEnd(filePath, startLine) {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
     let braceCount = 0;
     let foundStart = false;
 
@@ -393,10 +418,10 @@ class UnusedCodeFinder {
 
       // Count braces
       for (const char of line) {
-        if (char === '{') {
+        if (char === "{") {
           braceCount++;
           foundStart = true;
-        } else if (char === '}') {
+        } else if (char === "}") {
           braceCount--;
         }
       }
@@ -408,7 +433,7 @@ class UnusedCodeFinder {
 
       // If we haven't found a start brace, but the line ends with a semicolon,
       // it's likely a single line statement.
-      if (!foundStart && line.trim().endsWith(';')) {
+      if (!foundStart && line.trim().endsWith(";")) {
         return i + 1;
       }
 

@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-const ora = require('ora');
-const { loadConfig, validateConfig } = require('../utils/config');
-const UnusedCodeFinder = require('../utils/analyzer');
+const fs = require("fs");
+const path = require("path");
+const chalk = require("chalk");
+const ora = require("ora");
+const { loadConfig, validateConfig } = require("../utils/config");
+const UnusedCodeFinder = require("../utils/analyzer");
 
 async function fixCommand() {
   let spinner;
@@ -11,7 +11,7 @@ async function fixCommand() {
     const config = loadConfig();
     await validateConfig(config);
 
-    spinner = ora('Scanning for unused code to fix...').start();
+    spinner = ora("Scanning for unused code to fix...").start();
 
     const projectRoot = process.cwd();
     const finder = new UnusedCodeFinder(projectRoot, config);
@@ -21,7 +21,7 @@ async function fixCommand() {
     const allUnused = [...report.unusedExports, ...report.unusedNonExported];
 
     if (allUnused.length === 0) {
-      spinner.succeed('No unused code found to fix.');
+      spinner.succeed("No unused code found to fix.");
       return;
     }
 
@@ -45,8 +45,8 @@ async function fixCommand() {
       // Sort by line number descending to avoid shifting issues
       items.sort((a, b) => b.line - a.line);
 
-      let content = fs.readFileSync(filePath, 'utf-8');
-      const lines = content.split('\n');
+      let content = fs.readFileSync(filePath, "utf-8");
+      const lines = content.split("\n");
 
       // We need to track removed lines to adjust indices if we were going top-down,
       // but going bottom-up simplifies this.
@@ -62,7 +62,11 @@ async function fixCommand() {
         const endIndex = endLine - 1;
 
         // Check if it's a valid range
-        if (startIndex >= 0 && endIndex < lines.length && startIndex <= endIndex) {
+        if (
+          startIndex >= 0 &&
+          endIndex < lines.length &&
+          startIndex <= endIndex
+        ) {
           // Remove the lines
           lines.splice(startIndex, endIndex - startIndex + 1);
           fixedCount++;
@@ -71,30 +75,30 @@ async function fixCommand() {
             line: item.line,
             name: item.name,
             type: item.type,
-            action: 'Removed',
+            action: "Removed",
           });
         }
       }
 
-      fs.writeFileSync(filePath, lines.join('\n'));
+      fs.writeFileSync(filePath, lines.join("\n"));
     }
 
     spinner.succeed(`Fixed ${fixedCount} unused items!`);
 
     // Generate Fix Report
-    const reportDir = path.join(projectRoot, '.prunejs');
+    const reportDir = path.join(projectRoot, ".prunejs");
     if (!fs.existsSync(reportDir)) {
       fs.mkdirSync(reportDir);
     }
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const reportPath = path.join(reportDir, `fix_${timestamp}.md`);
 
-    let md = '# PruneJS Fix Report\n\n';
+    let md = "# PruneJS Fix Report\n\n";
     md += `Generated: ${new Date().toLocaleString()}\n\n`;
     md += `Total items removed: ${fixedCount}\n\n`;
-    md += '| File | Original Line | Type | Name |\n';
-    md += '|------|---------------|------|------|\n';
+    md += "| File | Original Line | Type | Name |\n";
+    md += "|------|---------------|------|------|\n";
     fixLog.forEach((item) => {
       md += `| ${item.file} | ${item.line} | ${item.type} | \`${item.name}\` |\n`;
     });
@@ -102,7 +106,7 @@ async function fixCommand() {
     fs.writeFileSync(reportPath, md);
     console.log(`\n📄 Fix report saved to: ${chalk.cyan(reportPath)}`);
   } catch (error) {
-    if (spinner) spinner.fail('Fix failed');
+    if (spinner) spinner.fail("Fix failed");
     console.error(error);
   }
 }
