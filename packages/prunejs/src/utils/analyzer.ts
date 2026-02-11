@@ -70,7 +70,6 @@ export class UnusedCodeFinder {
             )
           );
         } else if (fs.statSync(fullPath).isFile()) {
-          // If user explicitly includes a file, check extension
           const ext = path.extname(fullPath);
           if (this.includeExtensions.includes(ext)) {
             files.push(fullPath);
@@ -79,7 +78,6 @@ export class UnusedCodeFinder {
       }
     }
 
-    // Remove duplicates if any
     files = [...new Set(files)];
 
     for (const file of files) {
@@ -123,16 +121,13 @@ export class UnusedCodeFinder {
 
       if (!usageFiles) continue;
 
-      // Check each export occurrence
       exportInfos.forEach((info) => {
-        // Check if file should be skipped for export analysis
         const relativePath = path.relative(this.projectRoot, info.filePath);
         if (this.skipExportsManager.ignores(relativePath)) {
           info.isUsed = true;
           return;
         }
 
-        // If used in another file, it's used
         let usedInOtherFile = false;
         for (const file of usageFiles) {
           if (file !== info.filePath) {
@@ -144,10 +139,9 @@ export class UnusedCodeFinder {
         if (usedInOtherFile) {
           info.isUsed = true;
         } else {
-          // Only used in the same file? Check if it's used besides the definition
+          // Check for usage within the same file (excluding definition)
           const content = fs.readFileSync(info.filePath, "utf-8");
           const lines = content.split("\n");
-          // Remove the definition line
           const otherLines = lines.filter((_, idx) => idx + 1 !== info.line);
           const otherContent = otherLines.join("\n");
 

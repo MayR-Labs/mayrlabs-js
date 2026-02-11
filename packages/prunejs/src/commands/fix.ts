@@ -37,7 +37,8 @@ export default async function fixCommand() {
 
     spinner.text = `Found ${allUnused.length} unused items. Fixing...`;
 
-    // Group by file
+    spinner.text = `Found ${allUnused.length} unused items. Fixing...`;
+
     const itemsByFile: Record<string, UnusedItem[]> = {};
     for (const item of allUnused) {
       if (!itemsByFile[item.filePath]) {
@@ -64,26 +65,18 @@ export default async function fixCommand() {
       const content = fs.readFileSync(filePath, "utf-8");
       const lines = content.split("\n");
 
-      // We need to track removed lines to adjust indices if we were going top-down,
-      // but going bottom-up simplifies this.
-      // However, we need to be careful not to mess up if ranges overlap (which shouldn't happen for distinct items).
-
       for (const item of items) {
         const startLine = item.line;
         const endLine = finder.findBlockEnd(filePath, startLine);
 
-        // Remove lines (0-indexed)
-        // lines array is 0-indexed, so line 1 is index 0.
         const startIndex = startLine - 1;
         const endIndex = endLine - 1;
 
-        // Check if it's a valid range
         if (
           startIndex >= 0 &&
           endIndex < lines.length &&
           startIndex <= endIndex
         ) {
-          // Remove the lines
           lines.splice(startIndex, endIndex - startIndex + 1);
           fixedCount++;
           fixLog.push({
@@ -101,7 +94,6 @@ export default async function fixCommand() {
 
     spinner.succeed(`Fixed ${fixedCount} unused items!`);
 
-    // Generate Fix Report
     const reportDir = path.join(projectRoot, ".prunejs");
     if (!fs.existsSync(reportDir)) {
       fs.mkdirSync(reportDir);

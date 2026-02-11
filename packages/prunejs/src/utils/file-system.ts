@@ -16,7 +16,6 @@ export function getAllFiles(
     const fullPath = path.join(dir, entry.name);
     const relativePath = path.relative(projectRoot, fullPath);
 
-    // Check if ignored by .gitignore
     if (ig.ignores(relativePath)) {
       continue;
     }
@@ -59,7 +58,6 @@ export function findBlockEnd(filePath: string, startLine: number): number {
   for (let i = startLine - 1; i < lines.length; i++) {
     const line = lines[i];
 
-    // Count braces
     for (const char of line) {
       if (char === "{") {
         braceCount++;
@@ -69,13 +67,11 @@ export function findBlockEnd(filePath: string, startLine: number): number {
       }
     }
 
-    // If we found the start and brace count returns to 0, we found the end
     if (foundStart && braceCount === 0) {
       return i + 1;
     }
 
-    // If we haven't found a start brace, but the line ends with a semicolon,
-    // it's likely a single line statement.
+    // Handle single line statements (no braces)
     if (!foundStart && line.trim().endsWith(";")) {
       return i + 1;
     }
