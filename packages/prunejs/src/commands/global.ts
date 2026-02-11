@@ -11,10 +11,14 @@ export default async function globalCommand(subcommand?: string) {
       {
         type: "list",
         name: "action",
-        message: "What would you like to do with the global prunejs package?",
+        message:
+          "What would you like to do with the global @mayrlabs/prunejs package?",
         choices: [
-          { name: "Install (npm install -g prunejs)", value: "install" },
-          { name: "Update (npm update -g prunejs)", value: "update" },
+          {
+            name: "Install (npm install -g @mayrlabs/prunejs)",
+            value: "install",
+          },
+          { name: "Update (npm update -g @mayrlabs/prunejs)", value: "update" },
           { name: "Cancel", value: "cancel" },
         ],
       },
@@ -31,19 +35,23 @@ export default async function globalCommand(subcommand?: string) {
 
   try {
     if (action === "install") {
-      spinner.start("Installing prunejs globally...");
-      execSync("npm install -g prunejs", { stdio: "inherit" });
-      spinner.succeed(chalk.green("Successfully installed prunejs globally!"));
+      spinner.start("Installing @mayrlabs/prunejs globally...");
+      execSync("npm install -g @mayrlabs/prunejs", { stdio: "inherit" });
+      spinner.succeed(
+        chalk.green("Successfully installed @mayrlabs/prunejs globally!")
+      );
     } else if (action === "update") {
-      spinner.start("Updating global prunejs...");
-      execSync("npm update -g prunejs", { stdio: "inherit" });
-      spinner.succeed(chalk.green("Successfully updated global prunejs!"));
+      spinner.start("Updating global @mayrlabs/prunejs...");
+      execSync("npm update -g @mayrlabs/prunejs", { stdio: "inherit" });
+      spinner.succeed(
+        chalk.green("Successfully updated global @mayrlabs/prunejs!")
+      );
     } else {
       console.log(chalk.red(`Unknown subcommand: ${action}`));
       console.log("Available subcommands: install, update");
     }
   } catch (error) {
-    spinner.fail(chalk.red(`Failed to ${action} prunejs globally.`));
+    spinner.fail(chalk.red(`Failed to ${action} @mayrlabs/prunejs globally.`));
     console.error(error instanceof Error ? error.message : String(error));
   }
 }

@@ -21,10 +21,14 @@ export default async function localCommand(subcommand?: string) {
       {
         type: "list",
         name: "action",
-        message: "What would you like to do with the local prunejs dependency?",
+        message:
+          "What would you like to do with the local @mayrlabs/prunejs dependency?",
         choices: [
-          { name: "Install (npm install -D prunejs)", value: "install" },
-          { name: "Update (npm update prunejs)", value: "update" },
+          {
+            name: "Install (npm install -D @mayrlabs/prunejs)",
+            value: "install",
+          },
+          { name: "Update (npm update @mayrlabs/prunejs)", value: "update" },
           { name: "Cancel", value: "cancel" },
         ],
       },
@@ -41,19 +45,23 @@ export default async function localCommand(subcommand?: string) {
 
   try {
     if (action === "install") {
-      spinner.start("Installing prunejs as a dev dependency...");
-      execSync("npm install -D prunejs", { stdio: "inherit" });
-      spinner.succeed(chalk.green("Successfully installed prunejs locally!"));
+      spinner.start("Installing @mayrlabs/prunejs as a dev dependency...");
+      execSync("npm install -D @mayrlabs/prunejs", { stdio: "inherit" });
+      spinner.succeed(
+        chalk.green("Successfully installed @mayrlabs/prunejs locally!")
+      );
     } else if (action === "update") {
-      spinner.start("Updating local prunejs...");
-      execSync("npm update prunejs", { stdio: "inherit" });
-      spinner.succeed(chalk.green("Successfully updated local prunejs!"));
+      spinner.start("Updating local @mayrlabs/prunejs...");
+      execSync("npm update @mayrlabs/prunejs", { stdio: "inherit" });
+      spinner.succeed(
+        chalk.green("Successfully updated local @mayrlabs/prunejs!")
+      );
     } else {
       console.log(chalk.red(`Unknown subcommand: ${action}`));
       console.log("Available subcommands: install, update");
     }
   } catch (error) {
-    spinner.fail(chalk.red(`Failed to ${action} prunejs locally.`));
+    spinner.fail(chalk.red(`Failed to ${action} @mayrlabs/prunejs locally.`));
     console.error(error instanceof Error ? error.message : String(error));
   }
 }

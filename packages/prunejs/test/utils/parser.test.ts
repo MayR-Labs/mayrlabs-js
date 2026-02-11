@@ -185,17 +185,5 @@ describe("parser", () => {
       const imports = extractImports("/test-project/file.ts");
       expect(imports).toContain("fs");
     });
-
-    it("should extract usages in code", () => {
-      mockfs({
-        "/test-project/file.ts": `
-          const x = process.env.NODE_ENV;
-          myHelper();
-        `,
-      });
-
-      const imports = extractImports("/test-project/file.ts");
-      expect(imports).toEqual(expect.arrayContaining(["process", "myHelper"]));
-    });
   });
 });

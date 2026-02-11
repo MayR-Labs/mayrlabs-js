@@ -150,10 +150,5 @@ export function extractImports(filePath: string): string[] {
     }
   }
 
-  const matches = content.matchAll(REGEX.IDENTIFIER);
-  for (const match of matches) {
-    imports.add(match[1]);
-  }
-
   return Array.from(imports);
 }

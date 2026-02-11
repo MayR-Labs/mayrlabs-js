@@ -119,8 +119,6 @@ export class UnusedCodeFinder {
     for (const [name, exportInfos] of this.exports.entries()) {
       const usageFiles = this.imports.get(name);
 
-      if (!usageFiles) continue;
-
       exportInfos.forEach((info) => {
         const relativePath = path.relative(this.projectRoot, info.filePath);
         if (this.skipExportsManager.ignores(relativePath)) {
@@ -129,10 +127,12 @@ export class UnusedCodeFinder {
         }
 
         let usedInOtherFile = false;
-        for (const file of usageFiles) {
-          if (file !== info.filePath) {
-            usedInOtherFile = true;
-            break;
+        if (usageFiles) {
+          for (const file of usageFiles) {
+            if (file !== info.filePath) {
+              usedInOtherFile = true;
+              break;
+            }
           }
         }
 
