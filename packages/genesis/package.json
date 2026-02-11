@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/genesis",
-  "version": "0.1.9",
+  "version": "1.0.0",
   "private": false,
   "description": "Interactive CLI to setup project tools",
   "keywords": [
