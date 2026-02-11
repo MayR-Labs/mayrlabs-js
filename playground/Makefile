@@ -12,7 +12,7 @@ setup-genesis-pg:
 
 recreate-genesis-pg:
 	@echo "Recreating installation"
-	@rm -rf $(GENESIS_PG_NAME) && @mkdir $(GENESIS_PG_NAME)
+	@rm -rf $(GENESIS_PG_NAME) && mkdir $(GENESIS_PG_NAME)
 	@$(MAKE) setup-genesis-pg
 
 reset-genesis-pg:

@@ -1,13 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { configure } from "./commands/configure";
-import { plugin } from "./commands/plugin";
 import * as husky from "@/features/husky";
 import * as formatter from "@/features/formatter";
 import * as linter from "@/features/linter";
 import { prompts } from "@/utils/prompts";
-
-import * as pluginInstaller from "@/steps/install-plugin";
 import { config } from "@/core/config";
+import { configure } from "./commands/configure";
 
 vi.mock("@/features/husky");
 vi.mock("@/features/formatter");
@@ -64,19 +61,6 @@ describe("CLI", () => {
       await configure();
       expect(linter.promptLinter).toHaveBeenCalled();
       expect(linter.installLinter).toHaveBeenCalled();
-    });
-  });
-
-  describe("plugin", () => {
-    it("should install plugins for provided tool", async () => {
-      await plugin("eslint");
-      expect(pluginInstaller.installPlugins).toHaveBeenCalledWith("eslint");
-    });
-
-    it("should prompt if no tool provided", async () => {
-      vi.mocked(prompts.select).mockResolvedValue("prettier" as any);
-      await plugin();
-      expect(pluginInstaller.installPlugins).toHaveBeenCalledWith("prettier");
     });
   });
 });
