@@ -36,5 +36,11 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "npm@11.8.0"
+  "packageManager": "npm@11.8.0",
+  "license": "MIT",
+  "author": {
+    "name": "MayR Labs",
+    "email": "info@mayrlabs.com",
+    "url": "https://mayrlabs.com"
+  }
 }
