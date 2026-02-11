@@ -40,6 +40,8 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "check": "npm run format && npm run lint && npm run test && npm pkg fix",
+    "demo": "tsx src/cli.ts",
+    "demo:dist": "tsx dist/cli.js",
     "build": "tsup",
     "build:watch": "tsup --watch",
     "prepublishOnly": "npm run build"
