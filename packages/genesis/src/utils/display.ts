@@ -28,7 +28,7 @@ export function showAbout() {
   console.log("");
   console.log(pc.bold("How to use:"));
   console.log(
-    "  Run 'npx @mayrlabs/setup-project' and follow the interactive prompts."
+    "  Run 'npx @mayrlabs/genesis' and follow the interactive prompts."
   );
   console.log("");
 }
@@ -42,7 +42,7 @@ export function showVisit() {
 export function showManual() {
   introScreen();
   console.log(pc.bold("Usage:"));
-  console.log("  npx @mayrlabs/setup-project [command] [options]");
+  console.log("  npx @mayrlabs/genesis [command] [options]");
   console.log("");
   console.log(pc.bold("Commands:"));
   console.log("  about              Show project details");

@@ -7,7 +7,7 @@ export class Prompts implements PromptProvider {
   private static instance: Prompts;
 
   private constructor() {
-    this.provider = new TopCliProvider();
+    this.provider = new ClackProvider();
   }
 
   static getInstance(): Prompts {

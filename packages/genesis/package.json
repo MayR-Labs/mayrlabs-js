@@ -1,5 +1,5 @@
 {
-  "name": "@mayrlabs/setup-project",
+  "name": "@mayrlabs/genesis",
   "version": "0.1.9",
   "private": false,
   "description": "Interactive CLI to setup project tools",
@@ -11,7 +11,7 @@
     "scaffold",
     "setup"
   ],
-  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/setup-project#readme",
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/genesis#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
   },
@@ -24,10 +24,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
-    "directory": "packages/setup-project"
+    "directory": "packages/genesis"
   },
   "bin": {
-    "setup-project": "dist/index.js"
+    "genesis": "dist/index.js"
   },
   "files": [
     "dist",
@@ -42,6 +42,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "build:watch": "tsup --watch",
     "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
     "test": "vitest",
