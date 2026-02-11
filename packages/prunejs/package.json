@@ -41,6 +41,7 @@
     "lint": "eslint .",
     "check": "npm run format && npm run lint && npm run test && npm pkg fix",
     "build": "tsdown",
+    "build:watch": "tsdown --watch",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

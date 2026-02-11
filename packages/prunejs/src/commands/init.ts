@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import { getDefaultConfig, CONFIG_FILE } from "../utils/config";
+import packageJson from "../../package.json";
 
 interface InitOptions {
   force?: boolean;
@@ -24,8 +25,7 @@ export default async function initCommand(options: InitOptions) {
   }
 
   const defaultConfig = getDefaultConfig();
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const packageJson = require("../../package.json");
+
   const configContent = `/**
  * PruneJS v${packageJson.version} Config
  *

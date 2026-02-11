@@ -42,7 +42,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "build:watch": "tsup --watch",
+    "build:watch": "tsdown --watch",
     "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
     "test": "vitest",
