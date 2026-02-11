@@ -1,135 +1,172 @@
-# Turborepo starter
+# mayrlabs-js
 
-This Turborepo starter is maintained by the Turborepo core team.
+A Turborepo monorepo for MayR Labs JavaScript/TypeScript tooling.
 
-## Using this example
+This repository is the home for shared packages, internal tooling, and playgrounds used to build, test, and evolve MayR Labs projects. The goal is to keep reusable logic centralised, iteration fast, and standards consistent.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
+## ✨ What lives here
+
+This repo is intentionally simple and opinionated. It is organised into three top-level areas:
+
+- `apps/` – runnable applications or long‑lived tools
+- `packages/` – reusable libraries and CLI packages
+- `playground/` – disposable sandboxes for testing packages in real-world conditions
+
+The README avoids listing individual apps or packages on purpose. Those change. The structure does not.
+
+---
+
+## ✅ Requirements
+
+- Node.js (LTS recommended)
+- npm (or the package manager configured for this repo)
+
+---
+
+## 🚀 Getting started
+
+Install all dependencies from the repo root:
+
+```bash
+npm install
 ```
 
-## What's inside?
+Run Turborepo tasks:
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+npm run turbo
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Common workflows:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+npm run build
+npm run dev
+npm run lint
+npm run test
 ```
 
-### Develop
+Turborepo handles dependency ordering automatically when pipelines are configured correctly.
 
-To develop all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## 🧱 Repository layout
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```txt
+mayrlabs-js/
+  apps/
+  packages/
+  playground/
+  turbo.json
+  package.json
 ```
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## 🧪 Using the playground
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+The `playground/` directory exists purely for fast feedback.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+It allows you to:
 
-```
-cd my-turborepo
+- Install local packages as if they were published
+- Test CLIs interactively
+- Reproduce real consumer behaviour without polluting actual apps
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+Example local install using a file reference:
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+npm install "@mayrlabs/some-package@file:../../packages/some-package"
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+For smoother iteration, workspace linking is preferred.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+---
 
+## 🧰 Workspace linking
+
+Internal packages should usually be consumed via workspace resolution.
+
+Example dependency:
+
+```json
+{
+  "dependencies": {
+    "@mayrlabs/some-package": "*"
+  }
+}
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+Then install from the repo root:
+
+```bash
+npm install
 ```
 
-## Useful Links
+This keeps changes flowing instantly without reinstalls.
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+## 📦 Versioning & publishing
+
+This repo is designed to work cleanly with Changesets.
+
+Create a changeset:
+
+```bash
+npx changeset
+```
+
+Apply version bumps:
+
+```bash
+npx changeset version
+```
+
+Publish packages:
+
+```bash
+npx changeset publish
+```
+
+For public scoped packages, ensure the following exists in the package configuration:
+
+```json
+{
+  "publishConfig": { "access": "public" }
+}
+```
+
+---
+
+## 🧭 Conventions
+
+- Scoped packages use `@mayrlabs/*`
+- Prefer small, focused packages over “god modules”
+- Avoid circular dependencies
+- CLIs must provide a useful `--help`
+
+If a tool is added, it should be easy to remove.
+
+---
+
+## 🛠 Troubleshooting
+
+### Package not found when using npx
+
+- Confirm the package is published and public
+- Check `publishConfig.access`
+- Verify the package name exactly (npm is literal-minded)
+
+### Local changes not reflected
+
+- File-based installs may require reinstall
+- Prefer workspace linking for active development
+
+---
+
+## 📄 Licence
+
+MIT, unless stated otherwise in a specific package.
