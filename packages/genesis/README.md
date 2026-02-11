@@ -1,10 +1,10 @@
-# @mayrlabs/setup-project
+# @mayrlabs/genesis
 
 **Interactive CLI to fast-track your project setup.**
 
 🚀 **Spin up a production-ready environment in seconds.**
 
-Starting a new project often involves hours of repetitive configuration: setting up linting, formatting, git hooks, testing frameworks, and more. `@mayrlabs/setup-project` automates this entirely.
+Starting a new project often involves hours of repetitive configuration: setting up linting, formatting, git hooks, testing frameworks, and more. `@mayrlabs/genesis` automates this entirely.
 
 Instead of copy-pasting `.eslintrc` files or manually installing dependencies, just run one command and let our interactive CLI handle the rest.
 
@@ -20,7 +20,7 @@ Instead of copy-pasting `.eslintrc` files or manually installing dependencies, j
 Run the CLI in your project root:
 
 ```bash
-npx @mayrlabs/setup-project@latest
+npx @mayrlabs/genesis@latest
 ```
 
 Follow the prompts to select your tools. That's it!
@@ -47,7 +47,7 @@ We support configuration for the following tools:
 Want to add plugins to your existing tools?
 
 ```bash
-npx @mayrlabs/setup-project plugin
+npx @mayrlabs/genesis plugin
 ```
 
 This will guide you through adding plugins to ESLint or Prettier (e.g., `prettier-plugin-tailwindcss`).
@@ -57,7 +57,7 @@ This will guide you through adding plugins to ESLint or Prettier (e.g., `prettie
 Just need to set up one thing?
 
 ```bash
-npx @mayrlabs/setup-project configure husky
+npx @mayrlabs/genesis configure husky
 ```
 
 ## Contributing

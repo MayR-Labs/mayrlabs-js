@@ -1,5 +1,5 @@
 {
-  "name": "@mayrlabs/setup-project",
+  "name": "@mayrlabs/genesis",
   "version": "0.1.9",
   "private": false,
   "description": "Interactive CLI to setup project tools",
@@ -27,7 +27,7 @@
     "directory": "packages/setup-project"
   },
   "bin": {
-    "setup-project": "dist/index.js"
+    "genesis": "dist/index.js"
   },
   "files": [
     "dist",

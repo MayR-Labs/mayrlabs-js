@@ -1,6 +1,6 @@
 GENESIS_PG_NAME=genesis-pg
-GENESIS_PKG_NAME=@mayrlabs/setup-project
-GENESIS_PATH=./../../packages/setup-project
+GENESIS_PKG_NAME=@mayrlabs/genesis
+GENESIS_PATH=./../../packages/genesis
 
 .PHONY: init-genesis-pg
 

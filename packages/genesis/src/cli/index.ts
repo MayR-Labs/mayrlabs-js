@@ -80,8 +80,8 @@ async function main() {
 program.helpOption(false);
 
 program
-  .name("setup-project")
-  .description("Interactive setup for common project tools")
+  .name("genesis")
+  .description("Interactive CLI to setup project tools")
   .option("-a, --about", "Show project details")
   .option("-v, --version", "Show version info")
   .option("-V, --visit", "Visit project homepage")
