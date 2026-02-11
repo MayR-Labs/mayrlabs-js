@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/prunejs",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": false,
   "description": "Scan JS/TS projects and detects unused files, functions, classes and exports",
   "keywords": [],
