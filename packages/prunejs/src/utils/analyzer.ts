@@ -2,33 +2,15 @@ import fs from "fs-extra";
 import path from "path";
 import ignore from "ignore";
 import { PruneConfig } from "./config";
+import type { ExportInfo, NonExportedInfo, ReportData } from "./types";
+import { getAllFiles, findBlockEnd } from "./file-system";
+import {
+  extractExports,
+  extractNonExportedDeclarations,
+  extractImports,
+} from "./parser";
 
-export interface ExportInfo {
-  name: string;
-  type: string;
-  file: string;
-  line: number;
-  filePath: string;
-  isUsed: boolean;
-  category: "exported";
-}
-
-export interface NonExportedInfo {
-  name: string;
-  type: string;
-  file: string;
-  line: number;
-  filePath: string;
-  isUsed: boolean;
-  category: "non-exported";
-}
-
-export interface ReportData {
-  totalExports: number;
-  unusedExports: ExportInfo[];
-  totalNonExported: number;
-  unusedNonExported: NonExportedInfo[];
-}
+export { ExportInfo, NonExportedInfo, ReportData };
 
 export class UnusedCodeFinder {
   projectRoot: string;
@@ -78,9 +60,16 @@ export class UnusedCodeFinder {
       const fullPath = path.resolve(this.projectRoot, dir);
       if (fs.existsSync(fullPath)) {
         if (fs.statSync(fullPath).isDirectory()) {
-          files = files.concat(this.getAllFiles(fullPath));
+          files = files.concat(
+            getAllFiles(
+              fullPath,
+              this.projectRoot,
+              this.ig,
+              this.excludeDirs,
+              this.includeExtensions
+            )
+          );
         } else if (fs.statSync(fullPath).isFile()) {
-          // If user explicitly includes a file, check extension
           const ext = path.extname(fullPath);
           if (this.includeExtensions.includes(ext)) {
             files.push(fullPath);
@@ -89,16 +78,35 @@ export class UnusedCodeFinder {
       }
     }
 
-    // Remove duplicates if any
     files = [...new Set(files)];
 
     for (const file of files) {
-      this.extractExports(file);
-      this.extractNonExportedDeclarations(file);
+      const fileExports = extractExports(file, this.projectRoot);
+      for (const info of fileExports) {
+        if (!this.exports.has(info.name)) {
+          this.exports.set(info.name, []);
+        }
+        this.exports.get(info.name)!.push(info);
+      }
+
+      const fileDeclarations = extractNonExportedDeclarations(
+        file,
+        this.projectRoot
+      );
+      for (const info of fileDeclarations) {
+        const key = `${info.file}:${info.name}`;
+        this.nonExportedDeclarations.set(key, info);
+      }
     }
 
     for (const file of files) {
-      this.extractImports(file);
+      const fileImports = extractImports(file);
+      for (const name of fileImports) {
+        if (!this.imports.has(name)) {
+          this.imports.set(name, new Set());
+        }
+        this.imports.get(name)!.add(file);
+      }
     }
 
     this.markUsedExports();
@@ -107,268 +115,19 @@ export class UnusedCodeFinder {
     return this.generateReportData();
   }
 
-  getAllFiles(dir: string, files: string[] = []): string[] {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-      const relativePath = path.relative(this.projectRoot, fullPath);
-
-      // Check if ignored by .gitignore
-      if (this.ig.ignores(relativePath)) {
-        continue;
-      }
-
-      if (entry.isDirectory()) {
-        if (!this.excludeDirs.includes(entry.name)) {
-          this.getAllFiles(fullPath, files);
-        }
-      } else if (entry.isFile()) {
-        const ext = path.extname(entry.name);
-        if (this.includeExtensions.includes(ext)) {
-          files.push(fullPath);
-        }
-      }
-    }
-
-    return files;
-  }
-
-  extractExports(filePath: string) {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const lines = content.split("\n");
-    const relativePath = path.relative(this.projectRoot, filePath);
-
-    const patterns = [
-      {
-        regex: /export\s+(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
-        type: "function",
-      },
-      { regex: /export\s+class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: "class" },
-      {
-        regex: /export\s+interface\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
-        type: "interface",
-      },
-      { regex: /export\s+type\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: "type" },
-      { regex: /export\s+const\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g, type: "const" },
-      {
-        regex: /export\s+(?:let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
-        type: "variable",
-      },
-    ];
-
-    for (let lineNum = 0; lineNum < lines.length; lineNum++) {
-      const line = lines[lineNum];
-
-      if (this.isComment(line)) continue;
-
-      for (const { regex, type } of patterns) {
-        const matches = [...line.matchAll(regex)];
-        for (const match of matches) {
-          const name = match[1];
-          this.addExport(name, type, relativePath, lineNum + 1, filePath);
-        }
-      }
-
-      const namedExportMatch = line.match(/export\s*{([^}]+)}/);
-      if (namedExportMatch) {
-        const names = namedExportMatch[1]
-          .split(",")
-          .map((n) =>
-            n
-              .trim()
-              .split(/\s+as\s+/)[0]
-              .trim()
-          )
-          .filter((n) => n && !n.includes("*"));
-
-        for (const name of names) {
-          this.addExport(name, "const", relativePath, lineNum + 1, filePath);
-        }
-      }
-
-      if (line.includes("export default")) {
-        const defaultFunctionMatch = line.match(
-          /export\s+default\s+(?:function\s+)?([a-zA-Z_$][a-zA-Z0-9_$]*)/
-        );
-        if (defaultFunctionMatch) {
-          const name = defaultFunctionMatch[1];
-          this.addExport(name, "default", relativePath, lineNum + 1, filePath);
-        }
-      }
-    }
-  }
-
-  extractNonExportedDeclarations(filePath: string) {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const lines = content.split("\n");
-    const relativePath = path.relative(this.projectRoot, filePath);
-
-    const patterns = [
-      {
-        regex:
-          /^(?!.*export)\s*(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
-        type: "function",
-      },
-      {
-        regex: /^(?!.*export)\s*class\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g,
-        type: "class",
-      },
-      {
-        regex:
-          /^(?!.*export)\s*(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:async\s+)?(?:function|\([^)]*\)\s*=>)/g,
-        type: "function",
-      },
-    ];
-
-    for (let lineNum = 0; lineNum < lines.length; lineNum++) {
-      const line = lines[lineNum];
-
-      if (this.isComment(line)) continue;
-      if (line.includes("export")) continue;
-
-      for (const { regex, type } of patterns) {
-        regex.lastIndex = 0;
-        const matches = [...line.matchAll(regex)];
-        for (const match of matches) {
-          const name = match[1];
-          if (this.shouldSkipName(name)) continue;
-          this.addNonExportedDeclaration(
-            name,
-            type,
-            relativePath,
-            lineNum + 1,
-            filePath
-          );
-        }
-      }
-    }
-  }
-
-  shouldSkipName(name: string) {
-    const skipPatterns = [
-      /^_/,
-      /^use[A-Z]/,
-      /^handle[A-Z]/,
-      /^on[A-Z]/,
-      /^render[A-Z]/,
-      /^get[A-Z]/,
-      /^set[A-Z]/,
-      /^is[A-Z]/,
-      /^has[A-Z]/,
-      /Config$/,
-      /Options$/,
-    ];
-    return skipPatterns.some((pattern) => pattern.test(name));
-  }
-
-  extractImports(filePath: string) {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const lines = content.split("\n");
-
-    const addImport = (name: string) => {
-      if (!this.imports.has(name)) {
-        this.imports.set(name, new Set());
-      }
-      this.imports.get(name)!.add(filePath);
-    };
-
-    for (const line of lines) {
-      if (this.isComment(line)) continue;
-
-      const namedImportMatch = line.match(/import\s*{([^}]+)}\s*from/);
-      if (namedImportMatch) {
-        const names = namedImportMatch[1]
-          .split(",")
-          .map((n) =>
-            n
-              .trim()
-              .split(/\s+as\s+/)
-              .pop()
-              ?.trim()
-          )
-          .filter((n) => n) as string[];
-        names.forEach((name) => name && addImport(name));
-      }
-
-      const defaultImportMatch = line.match(
-        /import\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s+from/
-      );
-      if (defaultImportMatch) {
-        addImport(defaultImportMatch[1]);
-      }
-
-      const namespaceImportMatch = line.match(
-        /import\s+\*\s+as\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s+from/
-      );
-      if (namespaceImportMatch) {
-        addImport(namespaceImportMatch[1]);
-      }
-    }
-
-    const identifierPattern = /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g;
-    const matches = content.matchAll(identifierPattern);
-    for (const match of matches) {
-      addImport(match[1]);
-    }
-  }
-
-  addExport(
-    name: string,
-    type: string,
-    file: string,
-    line: number,
-    filePath: string
-  ) {
-    if (!this.exports.has(name)) {
-      this.exports.set(name, []);
-    }
-    this.exports.get(name)!.push({
-      name,
-      type,
-      file,
-      line,
-      filePath,
-      isUsed: false,
-      category: "exported",
-    });
-  }
-
-  addNonExportedDeclaration(
-    name: string,
-    type: string,
-    file: string,
-    line: number,
-    filePath: string
-  ) {
-    const key = `${file}:${name}`;
-    this.nonExportedDeclarations.set(key, {
-      name,
-      type,
-      file,
-      line,
-      filePath,
-      isUsed: false,
-      category: "non-exported",
-    });
-  }
-
   markUsedExports() {
     for (const [name, exportInfos] of this.exports.entries()) {
       const usageFiles = this.imports.get(name);
 
       if (!usageFiles) continue;
 
-      // Check each export occurrence
       exportInfos.forEach((info) => {
-        // Check if file should be skipped for export analysis
         const relativePath = path.relative(this.projectRoot, info.filePath);
         if (this.skipExportsManager.ignores(relativePath)) {
           info.isUsed = true;
           return;
         }
 
-        // If used in another file, it's used
         let usedInOtherFile = false;
         for (const file of usageFiles) {
           if (file !== info.filePath) {
@@ -380,10 +139,9 @@ export class UnusedCodeFinder {
         if (usedInOtherFile) {
           info.isUsed = true;
         } else {
-          // Only used in the same file? Check if it's used besides the definition
+          // Check for usage within the same file (excluding definition)
           const content = fs.readFileSync(info.filePath, "utf-8");
           const lines = content.split("\n");
-          // Remove the definition line
           const otherLines = lines.filter((_, idx) => idx + 1 !== info.line);
           const otherContent = otherLines.join("\n");
 
@@ -413,14 +171,6 @@ export class UnusedCodeFinder {
 
   escapeRegex(str: string) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  isComment(line: string) {
-    return (
-      line.trim().startsWith("//") ||
-      line.trim().startsWith("*") ||
-      line.trim().startsWith("/*")
-    );
   }
 
   generateReportData(): ReportData {
@@ -453,47 +203,7 @@ export class UnusedCodeFinder {
     return total;
   }
 
-  /**
-   * Finds the end line of a code block starting at startLine.
-   * Uses brace counting to handle nested blocks.
-   * @param {string} filePath - Path to the file
-   * @param {number} startLine - 1-indexed start line
-   * @returns {number} - 1-indexed end line
-   */
   findBlockEnd(filePath: string, startLine: number): number {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const lines = content.split("\n");
-    let braceCount = 0;
-    let foundStart = false;
-
-    for (let i = startLine - 1; i < lines.length; i++) {
-      const line = lines[i];
-
-      // Count braces
-      for (const char of line) {
-        if (char === "{") {
-          braceCount++;
-          foundStart = true;
-        } else if (char === "}") {
-          braceCount--;
-        }
-      }
-
-      // If we found the start and brace count returns to 0, we found the end
-      if (foundStart && braceCount === 0) {
-        return i + 1;
-      }
-
-      // If we haven't found a start brace, but the line ends with a semicolon,
-      // it's likely a single line statement.
-      if (!foundStart && line.trim().endsWith(";")) {
-        return i + 1;
-      }
-
-      // Safety break for extremely long files or unbalanced braces
-      if (foundStart && braceCount < 0) return i + 1;
-    }
-
-    return startLine; // Fallback if no block found
+    return findBlockEnd(filePath, startLine);
   }
 }

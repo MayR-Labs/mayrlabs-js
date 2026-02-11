@@ -82,8 +82,7 @@ prunejs fix # or npx prunejs fix
 - **Safety**: PruneJS processes files carefully to ensure that removing one item doesn't break line numbers for subsequent items.
 - **Report**: Generates a log of all actions taken in `.prunejs/fix_<timestamp>.md`.
 
-> [!IMPORTANT]
-> **Always commit your changes before running `fix`.** While PruneJS is designed to be safe, automated code removal should always be reviewed.
+> [!IMPORTANT] > **Always commit your changes before running `fix`.** While PruneJS is designed to be safe, automated code removal should always be reviewed.
 
 ## Configuration
 

@@ -36,7 +36,6 @@ module.exports = ${JSON.stringify(defaultConfig, null, 2)};\n`;
   fs.writeFileSync(configPath, configContent);
   console.log(chalk.green(`Created ${CONFIG_FILE}`));
 
-  // Update .gitignore
   const gitignorePath = path.resolve(process.cwd(), ".gitignore");
   if (fs.existsSync(gitignorePath)) {
     let gitignoreContent = fs.readFileSync(gitignorePath, "utf-8");
