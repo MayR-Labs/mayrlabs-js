@@ -3,7 +3,19 @@
   "version": "0.0.1",
   "private": false,
   "description": "Scan JS/TS projects and detects unused files, functions, classes and exports",
-  "keywords": [],
+  "keywords": [
+    "unused code",
+    "dead code",
+    "tree shaking",
+    "analysis",
+    "typescript",
+    "javascript",
+    "cleanup",
+    "refactoring",
+    "maintainability",
+    "exports",
+    "imports"
+  ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/prunejs#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
@@ -30,6 +42,13 @@
   ],
   "type": "commonjs",
   "main": "dist/cli.cjs",
+  "module": "dist/cli.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/cli.mjs",
+      "require": "./dist/cli.cjs"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
