@@ -2,7 +2,7 @@ import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: ["src/cli.ts"],
-  format: ["cjs"],
+  format: ["cjs", "esm"],
   clean: true,
   shims: true,
   target: "node18",
