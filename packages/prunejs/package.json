@@ -1,0 +1,40 @@
+{
+  "name": "prunejs",
+  "version": "1.0.1",
+  "description": "Scan JS/TS projects and detects unused files, functions, classes and exports",
+  "main": "index.js",
+  "bin": {
+    "prunejs": "bin/prune.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "check": "npm run format && npm run lint && npm run test && npm pkg fix"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "url": "https://founder.mayrlabs.com",
+    "email": "youngmayor.dev@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YoungMayor/prunejs.git"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "ignore": "^7.0.5",
+    "inquirer": "^8.2.7",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "prettier": "^3.6.2"
+  }
+}
