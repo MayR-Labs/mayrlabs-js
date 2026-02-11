@@ -41,7 +41,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "build:watch": "tsup --watch",
     "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
@@ -66,7 +66,7 @@
     "@types/node": "^20.11.16",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^9.39.2",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3",
     "vitest": "^4.0.18"
