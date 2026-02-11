@@ -11,7 +11,6 @@ import { Config } from "@/core/config";
 import * as pm from "@/utils/pm";
 import { prompts } from "@/utils/prompts";
 import fs from "fs-extra";
-import { configureEslintPlugins } from "@/features/linter/eslint";
 
 vi.mock("@/utils/pm");
 vi.mock("fs-extra");
@@ -107,42 +106,6 @@ describe("Features", () => {
       expect(pm.installPackages).toHaveBeenCalledWith(
         expect.arrayContaining(["eslint"]),
         true
-      );
-    });
-
-    it("should configure eslint plugins in eslint.config.mjs", async () => {
-      const initialConfig = `import globals from "globals";
-export default [
-  {files: ["**/*.js"]},
-];`;
-
-      const { resolveConfigFile } = await import("@/utils/config-file");
-      vi.mocked(resolveConfigFile).mockResolvedValue("eslint.config.mjs");
-
-      // @ts-ignore
-      vi.spyOn(fs, "pathExists").mockResolvedValue(true);
-      // @ts-ignore
-      vi.spyOn(fs, "readFile").mockResolvedValue(initialConfig);
-      vi.spyOn(fs, "writeFile").mockResolvedValue();
-
-      await configureEslintPlugins(["react", "react-hooks"]);
-
-      // Verify fs.writeFile was called with updated config
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        "eslint.config.mjs",
-        expect.stringContaining(
-          'import reactPlugin from "eslint-plugin-react";'
-        )
-      );
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        "eslint.config.mjs",
-        expect.stringContaining(
-          'import reacthooksPlugin from "eslint-plugin-react-hooks";'
-        )
-      );
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        "eslint.config.mjs",
-        expect.stringContaining('"react": reactPlugin')
       );
     });
   });

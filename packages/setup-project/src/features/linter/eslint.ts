@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { installPackages } from "@/utils/pm";
-import { PLUGINS } from "@/constants/plugins";
+
 import { resolveConfigFile } from "@/utils/config-file";
 
 export async function installEslint() {
@@ -39,67 +39,4 @@ export default [
 ];`
     );
   }
-}
-
-export async function configureEslintPlugins(plugins: string[]) {
-  const configFile = await resolveConfigFile("ESLint", [
-    "eslint.config.mjs",
-    "eslint.config.js",
-    "eslint.config.cjs",
-  ]);
-
-  if (!(await fs.pathExists(configFile))) {
-    return;
-  }
-
-  let configContent = await fs.readFile(configFile, "utf-8");
-
-  const newImports: string[] = [];
-  const newPluginConfigs: string[] = [];
-
-  for (const pluginName of plugins) {
-    const pluginDef = PLUGINS.eslint.find((p) => p.value === pluginName);
-    const packageName = pluginDef?.package || `eslint-plugin-${pluginName}`;
-
-    const safeVarName = pluginName.replace(/[^a-zA-Z0-9]/g, "") + "Plugin";
-
-    if (!configContent.includes(`import ${safeVarName}`)) {
-      newImports.push(`import ${safeVarName} from "${packageName}";`);
-    }
-
-    const shorPluginName = pluginName.replace(/^eslint-plugin-/, "");
-    newPluginConfigs.push(`"${shorPluginName}": ${safeVarName}`);
-  }
-
-  if (newImports.length > 0) {
-    const lastImportIndex = configContent.lastIndexOf("import ");
-    const endOfLastImport = configContent.indexOf("\n", lastImportIndex) + 1;
-
-    configContent =
-      configContent.slice(0, endOfLastImport) +
-      newImports.join("\n") +
-      "\n" +
-      configContent.slice(endOfLastImport);
-  }
-
-  if (newPluginConfigs.length > 0) {
-    const exportDefaultStart = configContent.indexOf("export default [");
-
-    if (exportDefaultStart !== -1) {
-      const pluginsBlock = `
-  {
-    plugins: {
-      ${newPluginConfigs.join(",\n      ")}
-    }
-  },`;
-
-      const insertPos = exportDefaultStart + "export default [".length;
-      configContent =
-        configContent.slice(0, insertPos) +
-        pluginsBlock +
-        configContent.slice(insertPos);
-    }
-  }
-
-  await fs.writeFile(configFile, configContent);
 }

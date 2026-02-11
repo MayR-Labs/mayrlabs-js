@@ -20,7 +20,6 @@ import { logError } from "@/utils/logger";
 import gitCheck from "@/steps/git-check";
 import { introScreen, showAbout, showVisit, showManual } from "@/utils/display";
 import { configure } from "@/cli/commands/configure";
-import { plugin } from "@/cli/commands/plugin";
 
 async function main() {
   try {
@@ -114,15 +113,6 @@ program
   .description("Configure a specific tool")
   .action(async (tool) => {
     await configure(tool);
-
-    process.exit(0);
-  });
-
-program
-  .command("plugin [tool]")
-  .description("Manage plugins for tools")
-  .action(async (tool) => {
-    await plugin(tool);
 
     process.exit(0);
   });
