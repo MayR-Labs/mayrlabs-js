@@ -1,9 +1,47 @@
-const fs = require("fs");
-const path = require("path");
-const ignore = require("ignore");
+import fs from "fs-extra";
+import path from "path";
+import ignore from "ignore";
+import { PruneConfig } from "./config";
 
-class UnusedCodeFinder {
-  constructor(projectRoot, config) {
+export interface ExportInfo {
+  name: string;
+  type: string;
+  file: string;
+  line: number;
+  filePath: string;
+  isUsed: boolean;
+  category: "exported";
+}
+
+export interface NonExportedInfo {
+  name: string;
+  type: string;
+  file: string;
+  line: number;
+  filePath: string;
+  isUsed: boolean;
+  category: "non-exported";
+}
+
+export interface ReportData {
+  totalExports: number;
+  unusedExports: ExportInfo[];
+  totalNonExported: number;
+  unusedNonExported: NonExportedInfo[];
+}
+
+export class UnusedCodeFinder {
+  projectRoot: string;
+  private exports: Map<string, ExportInfo[]>;
+  private nonExportedDeclarations: Map<string, NonExportedInfo>;
+  private imports: Map<string, Set<string>>; // name -> Set<filePath>
+  private excludeDirs: string[];
+  private includeDirs: string[];
+  private includeExtensions: string[];
+  private ig: ReturnType<typeof ignore>;
+  private skipExportsManager: ReturnType<typeof ignore>;
+
+  constructor(projectRoot: string, config: PruneConfig) {
     this.projectRoot = projectRoot;
     this.exports = new Map();
     this.nonExportedDeclarations = new Map();
@@ -25,14 +63,14 @@ class UnusedCodeFinder {
       try {
         const gitignoreContent = fs.readFileSync(gitignorePath, "utf-8");
         this.ig.add(gitignoreContent);
-      } catch (error) {
+      } catch (error: any) {
         console.warn("Failed to load .gitignore:", error.message);
       }
     }
   }
 
-  async analyze() {
-    let files = [];
+  async analyze(): Promise<ReportData> {
+    let files: string[] = [];
     for (const dir of this.includeDirs) {
       const fullPath = path.resolve(this.projectRoot, dir);
       if (fs.existsSync(fullPath)) {
@@ -66,7 +104,7 @@ class UnusedCodeFinder {
     return this.generateReportData();
   }
 
-  getAllFiles(dir, files = []) {
+  getAllFiles(dir: string, files: string[] = []): string[] {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
 
     for (const entry of entries) {
@@ -93,7 +131,7 @@ class UnusedCodeFinder {
     return files;
   }
 
-  extractExports(filePath) {
+  extractExports(filePath: string) {
     const content = fs.readFileSync(filePath, "utf-8");
     const lines = content.split("\n");
     const relativePath = path.relative(this.projectRoot, filePath);
@@ -158,7 +196,7 @@ class UnusedCodeFinder {
     }
   }
 
-  extractNonExportedDeclarations(filePath) {
+  extractNonExportedDeclarations(filePath: string) {
     const content = fs.readFileSync(filePath, "utf-8");
     const lines = content.split("\n");
     const relativePath = path.relative(this.projectRoot, filePath);
@@ -191,6 +229,8 @@ class UnusedCodeFinder {
         const matches = [...line.matchAll(regex)];
         for (const match of matches) {
           const name = match[1];
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           if (this.shouldSkipName(name)) continue;
           this.addNonExportedDeclaration(
             name,
@@ -204,7 +244,7 @@ class UnusedCodeFinder {
     }
   }
 
-  shouldSkipName(name) {
+  shouldSkipName(name: string) {
     const skipPatterns = [
       /^_/,
       /^use[A-Z]/,
@@ -221,15 +261,15 @@ class UnusedCodeFinder {
     return skipPatterns.some((pattern) => pattern.test(name));
   }
 
-  extractImports(filePath) {
+  extractImports(filePath: string) {
     const content = fs.readFileSync(filePath, "utf-8");
     const lines = content.split("\n");
 
-    const addImport = (name) => {
+    const addImport = (name: string) => {
       if (!this.imports.has(name)) {
         this.imports.set(name, new Set());
       }
-      this.imports.get(name).add(filePath);
+      this.imports.get(name)!.add(filePath);
     };
 
     for (const line of lines) {
@@ -246,7 +286,7 @@ class UnusedCodeFinder {
               .pop()
               ?.trim()
           )
-          .filter((n) => n);
+          .filter((n) => n) as string[];
         names.forEach((name) => name && addImport(name));
       }
 
@@ -272,11 +312,17 @@ class UnusedCodeFinder {
     }
   }
 
-  addExport(name, type, file, line, filePath) {
+  addExport(
+    name: string,
+    type: string,
+    file: string,
+    line: number,
+    filePath: string
+  ) {
     if (!this.exports.has(name)) {
       this.exports.set(name, []);
     }
-    this.exports.get(name).push({
+    this.exports.get(name)!.push({
       name,
       type,
       file,
@@ -287,7 +333,13 @@ class UnusedCodeFinder {
     });
   }
 
-  addNonExportedDeclaration(name, type, file, line, filePath) {
+  addNonExportedDeclaration(
+    name: string,
+    type: string,
+    file: string,
+    line: number,
+    filePath: string
+  ) {
     const key = `${file}:${name}`;
     this.nonExportedDeclarations.set(key, {
       name,
@@ -343,7 +395,7 @@ class UnusedCodeFinder {
     }
   }
   markUsedNonExportedDeclarations() {
-    for (const [key, declaration] of this.nonExportedDeclarations.entries()) {
+    for (const [, declaration] of this.nonExportedDeclarations.entries()) {
       const content = fs.readFileSync(declaration.filePath, "utf-8");
       const lines = content.split("\n");
       const otherLines = lines.filter((_, idx) => idx + 1 !== declaration.line);
@@ -358,11 +410,11 @@ class UnusedCodeFinder {
     }
   }
 
-  escapeRegex(str) {
+  escapeRegex(str: string) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
-  isComment(line) {
+  isComment(line: string) {
     return (
       line.trim().startsWith("//") ||
       line.trim().startsWith("*") ||
@@ -370,9 +422,9 @@ class UnusedCodeFinder {
     );
   }
 
-  generateReportData() {
-    const unusedExports = [];
-    const unusedNonExported = [];
+  generateReportData(): ReportData {
+    const unusedExports: ExportInfo[] = [];
+    const unusedNonExported: NonExportedInfo[] = [];
 
     for (const exportInfos of this.exports.values()) {
       for (const info of exportInfos) {
@@ -392,7 +444,7 @@ class UnusedCodeFinder {
     };
   }
 
-  getTotalExports() {
+  getTotalExports(): number {
     let total = 0;
     for (const exportInfos of this.exports.values()) {
       total += exportInfos.length;
@@ -407,7 +459,7 @@ class UnusedCodeFinder {
    * @param {number} startLine - 1-indexed start line
    * @returns {number} - 1-indexed end line
    */
-  findBlockEnd(filePath, startLine) {
+  findBlockEnd(filePath: string, startLine: number): number {
     const content = fs.readFileSync(filePath, "utf-8");
     const lines = content.split("\n");
     let braceCount = 0;
@@ -444,5 +496,3 @@ class UnusedCodeFinder {
     return startLine; // Fallback if no block found
   }
 }
-
-module.exports = UnusedCodeFinder;

@@ -1,9 +1,13 @@
-const fs = require("fs");
-const path = require("path");
-const chalk = require("chalk");
-const { getDefaultConfig, CONFIG_FILE } = require("../utils/config");
+import fs from "fs-extra";
+import path from "path";
+import chalk from "chalk";
+import { getDefaultConfig, CONFIG_FILE } from "../utils/config";
 
-async function initCommand(options) {
+interface InitOptions {
+  force?: boolean;
+}
+
+export default async function initCommand(options: InitOptions) {
   console.log(chalk.blue("Initializing prunejs..."));
 
   const configPath = path.resolve(process.cwd(), CONFIG_FILE);
@@ -20,6 +24,7 @@ async function initCommand(options) {
   }
 
   const defaultConfig = getDefaultConfig();
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const packageJson = require("../../package.json");
   const configContent = `/**
  * PruneJS v${packageJson.version} Config
@@ -48,5 +53,3 @@ module.exports = ${JSON.stringify(defaultConfig, null, 2)};\n`;
 
   console.log(chalk.blue("Initialization complete!"));
 }
-
-module.exports = initCommand;

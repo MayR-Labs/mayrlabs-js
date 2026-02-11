@@ -1,10 +1,10 @@
-const inquirer = require("inquirer");
-const chalk = require("chalk");
-const fs = require("fs");
-const path = require("path");
-const ora = require("ora");
+import inquirer from "inquirer";
+import chalk from "chalk";
+import fs from "fs-extra";
+import path from "path";
+import ora from "ora";
 
-async function cleanCommand(subcommand) {
+export default async function cleanCommand(subcommand?: string) {
   const pruneDir = path.resolve(process.cwd(), ".prunejs");
 
   if (!fs.existsSync(pruneDir)) {
@@ -68,10 +68,8 @@ async function cleanCommand(subcommand) {
       console.log(chalk.red(`Unknown subcommand: ${action}`));
       console.log("Available subcommands: fix, report, all");
     }
-  } catch (error) {
+  } catch (error: any) {
     spinner.fail(chalk.red(`Failed to clean ${action}.`));
     console.error(error.message);
   }
 }
-
-module.exports = cleanCommand;

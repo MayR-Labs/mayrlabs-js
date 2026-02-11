@@ -1,13 +1,14 @@
-const { Command } = require("commander");
-const packageJson = require("../package.json");
-const initCommand = require("./commands/init");
-const scanCommand = require("./commands/scan");
-const fixCommand = require("./commands/fix");
+#!/usr/bin/env node
 
-const inquirer = require("inquirer");
-const globalCommand = require("./commands/global");
-const localCommand = require("./commands/local");
-const cleanCommand = require("./commands/clean");
+import { Command } from "commander";
+import inquirer from "inquirer";
+import initCommand from "./commands/init";
+import scanCommand from "./commands/scan";
+import fixCommand from "./commands/fix";
+import globalCommand from "./commands/global";
+import localCommand from "./commands/local";
+import cleanCommand from "./commands/clean";
+import packageJson from "../package.json";
 
 const program = new Command();
 

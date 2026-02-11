@@ -1,11 +1,18 @@
-const fs = require("fs");
-const path = require("path");
-const chalk = require("chalk");
-const ora = require("ora");
-const { loadConfig, validateConfig } = require("../utils/config");
-const UnusedCodeFinder = require("../utils/analyzer");
+import fs from "fs-extra";
+import path from "path";
+import chalk from "chalk";
+import ora from "ora";
+import { loadConfig, validateConfig } from "../utils/config";
+import {
+  UnusedCodeFinder,
+  ReportData,
+  ExportInfo,
+  NonExportedInfo,
+} from "../utils/analyzer";
 
-async function fixCommand() {
+type UnusedItem = (ExportInfo | NonExportedInfo) & { action?: string };
+
+export default async function fixCommand() {
   let spinner;
   try {
     const config = loadConfig();
@@ -16,9 +23,12 @@ async function fixCommand() {
     const projectRoot = process.cwd();
     const finder = new UnusedCodeFinder(projectRoot, config);
 
-    const report = await finder.analyze();
+    const report: ReportData = await finder.analyze();
 
-    const allUnused = [...report.unusedExports, ...report.unusedNonExported];
+    const allUnused: UnusedItem[] = [
+      ...report.unusedExports,
+      ...report.unusedNonExported,
+    ];
 
     if (allUnused.length === 0) {
       spinner.succeed("No unused code found to fix.");
@@ -28,7 +38,7 @@ async function fixCommand() {
     spinner.text = `Found ${allUnused.length} unused items. Fixing...`;
 
     // Group by file
-    const itemsByFile = {};
+    const itemsByFile: Record<string, UnusedItem[]> = {};
     for (const item of allUnused) {
       if (!itemsByFile[item.filePath]) {
         itemsByFile[item.filePath] = [];
@@ -37,7 +47,13 @@ async function fixCommand() {
     }
 
     let fixedCount = 0;
-    const fixLog = [];
+    const fixLog: {
+      file: string;
+      line: number;
+      name: string;
+      type: string;
+      action: string;
+    }[] = [];
 
     for (const filePath of Object.keys(itemsByFile)) {
       const items = itemsByFile[filePath];
@@ -45,7 +61,7 @@ async function fixCommand() {
       // Sort by line number descending to avoid shifting issues
       items.sort((a, b) => b.line - a.line);
 
-      let content = fs.readFileSync(filePath, "utf-8");
+      const content = fs.readFileSync(filePath, "utf-8");
       const lines = content.split("\n");
 
       // We need to track removed lines to adjust indices if we were going top-down,
@@ -110,5 +126,3 @@ async function fixCommand() {
     console.error(error);
   }
 }
-
-module.exports = fixCommand;
