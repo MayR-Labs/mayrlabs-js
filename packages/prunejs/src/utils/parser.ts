@@ -56,7 +56,8 @@ export function extractExports(
         .map((n) =>
           n
             .trim()
-            .split(/\s+as\s+/)[0]
+            .split(/\s+as\s+/)
+            .pop()!
             .trim()
         )
         .filter((n) => n && !n.includes("*"));
