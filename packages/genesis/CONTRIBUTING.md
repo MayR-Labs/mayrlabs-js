@@ -1,4 +1,4 @@
-# Contributing to @mayrlabs/setup-project
+# Contributing to @mayrlabs/genesis
 
 First off, thanks for taking the time to contribute! 🎉
 
@@ -19,7 +19,7 @@ This project follows a **Feature-based Architecture**. It is designed to be modu
   - `types.ts`: Shared TypeScript interfaces.
 - **`src/cli/`**: CLI specific code.
   - `index.ts`: The entry point.
-  - `commands/`: Handlers for specific commands like `configure` or `plugin`.
+  - `commands/`: Handlers for specific commands like `configure`.
 - **`src/utils/`**: Shared helper functions (Package Manager detection, Git checks, etc.).
 
 ### Prerequisites

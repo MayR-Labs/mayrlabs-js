@@ -1,5 +1,5 @@
 ---
-"@mayrlabs/genesis": minor
+"@mayrlabs/genesis": major
 ---
 
-Development Completed
+Initial release of `@mayrlabs/genesis`.
