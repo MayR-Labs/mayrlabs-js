@@ -1,11 +1,11 @@
-const inquirer = require("inquirer");
-const { execSync } = require("child_process");
-const chalk = require("chalk");
-const fs = require("fs");
-const path = require("path");
-const ora = require("ora");
+import inquirer from "inquirer";
+import { execSync } from "child_process";
+import chalk from "chalk";
+import fs from "fs-extra";
+import path from "path";
+import ora from "ora";
 
-async function localCommand(subcommand) {
+export default async function localCommand(subcommand?: string) {
   const packageJsonPath = path.resolve(process.cwd(), "package.json");
   if (!fs.existsSync(packageJsonPath)) {
     console.log(
@@ -54,8 +54,6 @@ async function localCommand(subcommand) {
     }
   } catch (error) {
     spinner.fail(chalk.red(`Failed to ${action} prunejs locally.`));
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 }
-
-module.exports = localCommand;

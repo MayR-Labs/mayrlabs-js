@@ -1,14 +1,14 @@
-const fs = require("fs");
-const path = require("path");
-const chalk = require("chalk");
-const ora = require("ora");
-const { loadConfig, validateConfig } = require("../utils/config");
-const UnusedCodeFinder = require("../utils/analyzer");
+import fs from "fs-extra";
+import path from "path";
+import chalk from "chalk";
+import ora from "ora";
+import { loadConfig, validateConfig } from "@/utils/config";
+import { UnusedCodeFinder, ReportData } from "@/utils/analyzer";
 
-async function scanCommand() {
+export default async function scanCommand() {
   let spinner;
   try {
-    const config = loadConfig();
+    const config = await loadConfig();
     await validateConfig(config);
 
     spinner = ora("Scanning codebase...").start();
@@ -22,9 +22,9 @@ async function scanCommand() {
     console.log("\n" + chalk.bold.underline("Scan Summary"));
     console.log(`Total Exports: ${report.totalExports} `);
     console.log(`Unused Exports: ${chalk.red(report.unusedExports.length)} `);
-    console.log(`Total Non - Exported: ${report.totalNonExported} `);
+    console.log(`Total Non-Exported: ${report.totalNonExported} `);
     console.log(
-      `Unused Non - Exported: ${chalk.red(report.unusedNonExported.length)} `
+      `Unused Non-Exported: ${chalk.red(report.unusedNonExported.length)} `
     );
 
     // Generate Markdown Report
@@ -51,19 +51,19 @@ async function scanCommand() {
     }
   } catch (error) {
     if (spinner) spinner.fail("Scan failed");
-    console.error(error);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 }
 
-function generateMarkdown(report) {
+function generateMarkdown(report: ReportData) {
   let md = "# Unused Code Report\n\n";
   md += `Generated: ${new Date().toLocaleString()} \n\n`;
 
   md += "## Summary\n\n";
-  md += `- ** Total Exports **: ${report.totalExports} \n`;
-  md += `- ** Unused Exports **: ${report.unusedExports.length} \n`;
-  md += `- ** Total Non - Exported **: ${report.totalNonExported} \n`;
-  md += `- ** Unused Non - Exported **: ${report.unusedNonExported.length} \n\n`;
+  md += `- **Total Exports**: ${report.totalExports} \n`;
+  md += `- **Unused Exports**: ${report.unusedExports.length} \n`;
+  md += `- **Total Non-Exported**: ${report.totalNonExported} \n`;
+  md += `- **Unused Non-Exported**: ${report.unusedNonExported.length} \n\n`;
 
   if (report.unusedExports.length > 0) {
     md += "## Unused Exports\n\n";
@@ -87,5 +87,3 @@ function generateMarkdown(report) {
 
   return md;
 }
-
-module.exports = scanCommand;

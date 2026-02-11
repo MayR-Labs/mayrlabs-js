@@ -1,11 +1,11 @@
-const fs = require("fs");
-const path = require("path");
-const inquirer = require("inquirer");
-const chalk = require("chalk");
+import fs from "fs-extra";
+import path from "path";
+import inquirer from "inquirer";
+import chalk from "chalk";
 
-const CONFIG_FILE = ".prunejs.config.js";
+export const CONFIG_FILE = ".prunejs.config.js";
 
-const DEFAULT_EXCLUDE_DIRS = [
+export const DEFAULT_EXCLUDE_DIRS = [
   "node_modules",
   ".next",
   ".git",
@@ -17,17 +17,29 @@ const DEFAULT_EXCLUDE_DIRS = [
   ".prunejs",
 ];
 
-const DEFAULT_INCLUDE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];
+export const DEFAULT_INCLUDE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];
 
-function loadConfig() {
+export interface PruneConfig {
+  excludeDirs?: string[];
+  includeDirs?: string[];
+  includeExtensions?: string[];
+  excludeIgnoredFiles?: boolean;
+  skipExportsIn?: string[];
+}
+
+export async function loadConfig(): Promise<PruneConfig> {
   const configPath = path.resolve(process.cwd(), CONFIG_FILE);
-  let userConfig = {};
+  let userConfig: PruneConfig = {};
 
   if (fs.existsSync(configPath)) {
     try {
-      userConfig = require(configPath);
+      const importedConfig = await import(configPath);
+      userConfig = importedConfig.default || importedConfig;
     } catch (error) {
-      console.error("Error loading configuration file:", error);
+      console.error(
+        "Error loading configuration file:",
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 
@@ -44,7 +56,7 @@ function loadConfig() {
   };
 }
 
-function getDefaultConfig() {
+export function getDefaultConfig(): PruneConfig {
   return {
     excludeDirs: DEFAULT_EXCLUDE_DIRS,
     includeDirs: ["."],
@@ -70,15 +82,17 @@ function getDefaultConfig() {
   };
 }
 
-async function validateConfig(config) {
-  const riskyInclusions = config.includeDirs.filter((dir) =>
+export async function validateConfig(config: PruneConfig) {
+  const riskyInclusions = (config.includeDirs || []).filter((dir) =>
     DEFAULT_EXCLUDE_DIRS.some((excluded) => dir.includes(excluded))
   );
 
   if (riskyInclusions.length > 0) {
     console.log(
       chalk.yellow(
-        `\n⚠️  Warning: You have included directories that are typically excluded: ${riskyInclusions.join(", ")}`
+        `\n⚠️  Warning: You have included directories that are typically excluded: ${riskyInclusions.join(
+          ", "
+        )}`
       )
     );
 
@@ -98,10 +112,3 @@ async function validateConfig(config) {
     }
   }
 }
-
-module.exports = {
-  loadConfig,
-  getDefaultConfig,
-  validateConfig,
-  CONFIG_FILE,
-};

@@ -1,9 +1,9 @@
-const inquirer = require("inquirer");
-const { execSync } = require("child_process");
-const chalk = require("chalk");
-const ora = require("ora");
+import inquirer from "inquirer";
+import { execSync } from "child_process";
+import chalk from "chalk";
+import ora from "ora";
 
-async function globalCommand(subcommand) {
+export default async function globalCommand(subcommand?: string) {
   let action = subcommand;
 
   if (!action) {
@@ -44,8 +44,6 @@ async function globalCommand(subcommand) {
     }
   } catch (error) {
     spinner.fail(chalk.red(`Failed to ${action} prunejs globally.`));
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 }
-
-module.exports = globalCommand;

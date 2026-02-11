@@ -20,10 +20,18 @@
     "directory": "packages/prunejs"
   },
   "bin": {
-    "prunejs": "bin/prune.js"
+    "prunejs": "dist/cli.cjs"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "type": "commonjs",
-  "main": "src/cli.js",
+  "main": "dist/cli.cjs",
+  "module": "dist/cli.mjs",
+  "types": "dist/cli.d.cts",
   "publishConfig": {
     "access": "public"
   },
@@ -32,6 +40,8 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "check": "npm run format && npm run lint && npm run test && npm pkg fix",
+    "build": "tsup",
+    "build:watch": "tsup --watch",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -46,8 +56,15 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "^0.0.0",
+    "@types/figlet": "^1.7.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^25.2.3",
     "eslint": "^9.39.1",
     "eslint-plugin-node": "^11.1.0",
-    "jest": "^30.2.0"
+    "jest": "^30.2.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.2"
   }
 }

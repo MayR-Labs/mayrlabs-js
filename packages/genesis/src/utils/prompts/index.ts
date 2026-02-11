@@ -1,6 +1,6 @@
 import { ClackProvider } from "./clack";
 import { TopCliProvider } from "./top";
-import { PromptProvider, PromptOption, PromptLogger } from "./types";
+import type { PromptProvider, PromptOption, PromptLogger } from "./types";
 
 export class Prompts implements PromptProvider {
   private provider: PromptProvider;
@@ -83,4 +83,4 @@ export class Prompts implements PromptProvider {
 
 export const prompts = Prompts.getInstance();
 
-export { PromptProvider, PromptOption, PromptLogger };
+export type { PromptProvider, PromptOption, PromptLogger };
