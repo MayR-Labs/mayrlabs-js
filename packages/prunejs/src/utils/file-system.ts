@@ -52,6 +52,13 @@ export function getAllFiles(
 export function findBlockEnd(filePath: string, startLine: number): number {
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
+  return findBlockEndFromLines(lines, startLine);
+}
+
+export function findBlockEndFromLines(
+  lines: string[],
+  startLine: number
+): number {
   let braceCount = 0;
   let foundStart = false;
 

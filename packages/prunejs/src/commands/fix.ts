@@ -3,6 +3,7 @@ import path from "path";
 import chalk from "chalk";
 import ora from "ora";
 import { loadConfig, validateConfig } from "@/utils/config";
+import { findBlockEndFromLines } from "@/utils/file-system";
 import {
   UnusedCodeFinder,
   ReportData,
@@ -67,7 +68,7 @@ export default async function fixCommand() {
 
       for (const item of items) {
         const startLine = item.line;
-        const endLine = finder.findBlockEnd(filePath, startLine);
+        const endLine = findBlockEndFromLines(lines, startLine);
 
         const startIndex = startLine - 1;
         const endIndex = endLine - 1;

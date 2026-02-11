@@ -1,5 +1,9 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { findBlockEnd, getAllFiles } from "@/utils/file-system";
+import {
+  findBlockEnd,
+  findBlockEndFromLines,
+  getAllFiles,
+} from "@/utils/file-system";
 import mockfs from "mock-fs";
 import path from "path";
 import ignore from "ignore";
@@ -7,6 +11,13 @@ import ignore from "ignore";
 describe("file-system", () => {
   afterEach(() => {
     mockfs.restore();
+  });
+
+  describe("findBlockEndFromLines", () => {
+    it("should find end of block in lines array", () => {
+      const lines = ["function foo() {", "  console.log('bar');", "}"];
+      expect(findBlockEndFromLines(lines, 1)).toBe(3);
+    });
   });
 
   describe("findBlockEnd", () => {
