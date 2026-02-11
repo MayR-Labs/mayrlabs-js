@@ -13,3 +13,11 @@ init-genesis-pg:
 	@cd $(GENESIS_PG_NAME) && npm init -y
 	@echo "Installing dependencies"
 	@cd $(GENESIS_PG_NAME) && npm install "$(GENESIS_PKG_NAME)@file:$(GENESIS_PATH)"
+
+reset-genesis-pg:
+	@echo "Cleaning $(GENESIS_PG_NAME)..."
+	@cd $(GENESIS_PG_NAME) && rm -rf ./*
+	@echo "Initialising npm"
+	@cd $(GENESIS_PG_NAME) && npm init -y
+	@echo "Installing dependencies"
+	@cd $(GENESIS_PG_NAME) && npm install "$(GENESIS_PKG_NAME)@file:$(GENESIS_PATH)"
