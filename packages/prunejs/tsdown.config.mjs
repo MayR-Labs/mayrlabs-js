@@ -1,8 +1,8 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: ["src/cli.ts"],
-  format: ["esm", "cjs"],
+  format: ["cjs"],
   clean: true,
   shims: true,
   target: "node18",
@@ -26,4 +26,5 @@ export default defineConfig({
  */
 `,
   },
+  dts: false,
 });

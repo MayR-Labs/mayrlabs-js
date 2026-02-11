@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import ignore from "ignore";
 import { PruneConfig } from "./config";
-import { ExportInfo, NonExportedInfo, ReportData } from "./types";
+import type { ExportInfo, NonExportedInfo, ReportData } from "./types";
 import { getAllFiles, findBlockEnd } from "./file-system";
 import {
   extractExports,
