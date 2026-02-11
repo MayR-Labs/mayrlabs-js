@@ -4,20 +4,18 @@ GENESIS_PATH=./../../packages/setup-project
 
 .PHONY: init-genesis-pg
 
-init-genesis-pg:
-	@echo "Removing old installation"
-	@rm -rf $(GENESIS_PG_NAME)
-	@echo "Creating new folder"
-	@mkdir $(GENESIS_PG_NAME)
+setup-genesis-pg:
 	@echo "Initialising npm"
 	@cd $(GENESIS_PG_NAME) && npm init -y
 	@echo "Installing dependencies"
 	@cd $(GENESIS_PG_NAME) && npm install "$(GENESIS_PKG_NAME)@file:$(GENESIS_PATH)"
 
+recreate-genesis-pg:
+	@echo "Recreating installation"
+	@rm -rf $(GENESIS_PG_NAME) && @mkdir $(GENESIS_PG_NAME)
+	@$(MAKE) setup-genesis-pg
+
 reset-genesis-pg:
 	@echo "Cleaning $(GENESIS_PG_NAME)..."
 	@cd $(GENESIS_PG_NAME) && rm -rf ./*
-	@echo "Initialising npm"
-	@cd $(GENESIS_PG_NAME) && npm init -y
-	@echo "Installing dependencies"
-	@cd $(GENESIS_PG_NAME) && npm install "$(GENESIS_PKG_NAME)@file:$(GENESIS_PATH)"
+	@$(MAKE) setup-genesis-pg
