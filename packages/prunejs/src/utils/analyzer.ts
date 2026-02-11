@@ -63,8 +63,11 @@ export class UnusedCodeFinder {
       try {
         const gitignoreContent = fs.readFileSync(gitignorePath, "utf-8");
         this.ig.add(gitignoreContent);
-      } catch (error: any) {
-        console.warn("Failed to load .gitignore:", error.message);
+      } catch (error) {
+        console.warn(
+          "Failed to load .gitignore:",
+          error instanceof Error ? error.message : String(error)
+        );
       }
     }
   }
@@ -229,8 +232,6 @@ export class UnusedCodeFinder {
         const matches = [...line.matchAll(regex)];
         for (const match of matches) {
           const name = match[1];
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           if (this.shouldSkipName(name)) continue;
           this.addNonExportedDeclaration(
             name,

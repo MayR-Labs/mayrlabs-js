@@ -2,20 +2,20 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import ora from "ora";
-import { loadConfig, validateConfig } from "../utils/config";
+import { loadConfig, validateConfig } from "@/utils/config";
 import {
   UnusedCodeFinder,
   ReportData,
   ExportInfo,
   NonExportedInfo,
-} from "../utils/analyzer";
+} from "@/utils/analyzer";
 
 type UnusedItem = (ExportInfo | NonExportedInfo) & { action?: string };
 
 export default async function fixCommand() {
   let spinner;
   try {
-    const config = loadConfig();
+    const config = await loadConfig();
     await validateConfig(config);
 
     spinner = ora("Scanning for unused code to fix...").start();

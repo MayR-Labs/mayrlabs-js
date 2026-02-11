@@ -68,8 +68,8 @@ export default async function cleanCommand(subcommand?: string) {
       console.log(chalk.red(`Unknown subcommand: ${action}`));
       console.log("Available subcommands: fix, report, all");
     }
-  } catch (error: any) {
+  } catch (error) {
     spinner.fail(chalk.red(`Failed to clean ${action}.`));
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 }

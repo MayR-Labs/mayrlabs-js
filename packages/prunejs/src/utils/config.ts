@@ -27,16 +27,19 @@ export interface PruneConfig {
   skipExportsIn?: string[];
 }
 
-export function loadConfig(): PruneConfig {
+export async function loadConfig(): Promise<PruneConfig> {
   const configPath = path.resolve(process.cwd(), CONFIG_FILE);
   let userConfig: PruneConfig = {};
 
   if (fs.existsSync(configPath)) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      userConfig = require(configPath);
+      const importedConfig = await import(configPath);
+      userConfig = importedConfig.default || importedConfig;
     } catch (error) {
-      console.error("Error loading configuration file:", error);
+      console.error(
+        "Error loading configuration file:",
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 

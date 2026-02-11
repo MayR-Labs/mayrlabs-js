@@ -42,8 +42,8 @@ export default async function globalCommand(subcommand?: string) {
       console.log(chalk.red(`Unknown subcommand: ${action}`));
       console.log("Available subcommands: install, update");
     }
-  } catch (error: any) {
+  } catch (error) {
     spinner.fail(chalk.red(`Failed to ${action} prunejs globally.`));
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 }

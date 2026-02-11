@@ -2,12 +2,12 @@
 
 import { Command } from "commander";
 import inquirer from "inquirer";
-import initCommand from "./commands/init";
-import scanCommand from "./commands/scan";
-import fixCommand from "./commands/fix";
-import globalCommand from "./commands/global";
-import localCommand from "./commands/local";
-import cleanCommand from "./commands/clean";
+import initCommand from "@/commands/init";
+import scanCommand from "@/commands/scan";
+import fixCommand from "@/commands/fix";
+import globalCommand from "@/commands/global";
+import localCommand from "@/commands/local";
+import cleanCommand from "@/commands/clean";
 import packageJson from "../package.json";
 
 const program = new Command();

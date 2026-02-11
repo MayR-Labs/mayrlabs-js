@@ -2,13 +2,13 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import ora from "ora";
-import { loadConfig, validateConfig } from "../utils/config";
-import { UnusedCodeFinder, ReportData } from "../utils/analyzer";
+import { loadConfig, validateConfig } from "@/utils/config";
+import { UnusedCodeFinder, ReportData } from "@/utils/analyzer";
 
 export default async function scanCommand() {
   let spinner;
   try {
-    const config = loadConfig();
+    const config = await loadConfig();
     await validateConfig(config);
 
     spinner = ora("Scanning codebase...").start();
@@ -51,7 +51,7 @@ export default async function scanCommand() {
     }
   } catch (error) {
     if (spinner) spinner.fail("Scan failed");
-    console.error(error);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 }
 
