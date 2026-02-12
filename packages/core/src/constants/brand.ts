@@ -30,6 +30,5 @@ export const FOOTER = {
 };
 
 export const ABOUT = `
-MayR Labs is a software collective building tools for the future.
-We value discipline, intentionality, and craftsmanship.
+MayR Labs is a modern software development brand focused on delivering clean, innovative, and impact-driven solutions for startups, businesses, and communities. We stand at the intersection of reliability and creativity, offering clients not just code — but clarity, collaboration, and value.
 `;

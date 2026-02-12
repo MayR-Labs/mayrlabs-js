@@ -32,10 +32,18 @@
   },
   "exports": {
     ".": {
+      "types": {
+        "import": "./dist/index.d.mts",
+        "require": "./dist/index.d.cts"
+      },
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
     "./cli": {
+      "types": {
+        "import": "./dist/cli/index.d.mts",
+        "require": "./dist/cli/index.d.cts"
+      },
       "import": "./dist/cli/index.mjs",
       "require": "./dist/cli/index.cjs"
     }
