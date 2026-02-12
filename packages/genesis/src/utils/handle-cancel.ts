@@ -29,7 +29,7 @@ export async function withCancelHandling<T>(
 
     if (prompts.isCancel(response)) {
       const shouldCancel = await prompts.confirm({
-        message: "Do you really want to cancel options selection?",
+        message: "Do you really want to cancel?",
       });
 
       if (prompts.isCancel(shouldCancel) || shouldCancel) {
