@@ -1,5 +1,0 @@
----
-"@mayrlabs/prunejs": patch
----
-
-Betterment
