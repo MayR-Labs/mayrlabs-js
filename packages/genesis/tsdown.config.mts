@@ -1,12 +1,13 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ["src/cli/index.ts"],
-  format: ["esm", "cjs"],
+  entry: ["src/cli/genesis.ts"],
+  format: ["cjs"],
+  copy: ["assets"],
   clean: true,
-  publicDir: "assets",
   shims: true,
   target: "node18",
+  minify: true,
   banner: {
     js: `
 /**
@@ -27,4 +28,5 @@ export default defineConfig({
  */
 `,
   },
+  dts: false,
 });

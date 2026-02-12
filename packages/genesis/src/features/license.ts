@@ -50,14 +50,20 @@ export async function installLicense(config: Config) {
 
   if (type !== "UNLICENSED") {
     const year = new Date().getFullYear().toString();
-    const templatePath = path.join(__dirname, "licenses", `${type}.txt`);
+    const templatePath = path.join(__dirname, "assets/licenses", `${type}.txt`);
 
     if (await fs.pathExists(templatePath)) {
       let licenseContent = await fs.readFile(templatePath, "utf-8");
       licenseContent = licenseContent.replace(/{YEAR}/g, year);
       licenseContent = licenseContent.replace(/{HOLDER}/g, name || "");
-      licenseContent = licenseContent.replace(/{EMAIL}/g, email || "");
-      licenseContent = licenseContent.replace(/{WEBSITE}/g, website || "");
+      licenseContent = licenseContent.replace(
+        /<{EMAIL}>/g,
+        email ? `<${email}>` : ""
+      );
+      licenseContent = licenseContent.replace(
+        /\({WEBSITE}\)/g,
+        website ? `(${website})` : ""
+      );
 
       await fs.outputFile("LICENSE", licenseContent);
     } else {
