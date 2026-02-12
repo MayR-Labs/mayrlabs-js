@@ -14,7 +14,7 @@ export const DEFAULT_EXCLUDE_DIRS = [
   "out",
   "coverage",
   ".vercel",
-  ".prunejs",
+  ".mayrlabs",
 ];
 
 export const DEFAULT_INCLUDE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];

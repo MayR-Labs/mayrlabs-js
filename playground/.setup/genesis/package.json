@@ -1,0 +1,24 @@
+{
+  "name": "@playground/genesis-pg",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@mayrlabs/genesis": "file:../../packages/genesis"
+  },
+  "keywords": [
+    "playground",
+    "MayR Labs"
+  ],
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "license": "MIT",
+  "type": "commonjs"
+}
