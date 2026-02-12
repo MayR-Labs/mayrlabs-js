@@ -1,5 +1,3 @@
-import { prune } from "@mayrlabs/prunejs";
-
 console.log("Hello from prunejs-pg");
 
 function unusedFunction() {
