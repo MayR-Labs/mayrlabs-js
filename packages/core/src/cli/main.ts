@@ -5,20 +5,6 @@ import { introScreen } from "../utils/intro.js";
 import { PACKAGES } from "../constants/packages.js";
 import { BANNER, ABOUT } from "../constants/brand.js";
 import packageJson from "../../package.json" with { type: "json" };
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
-
-// Read package.json
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// In dev (src), package.json is in ../../package.json relative to src/cli/index.ts
-// In dist (dist/cli/index.mjs), package.json is in ../../package.json relative to dist/cli/index.mjs
-// Wait, structure is:
-// src/cli/index.ts -> package.json is at root
-// dist/cli/index.mjs -> package.json is at root
-// root is usually 2 levels up if structure is dist/cli/index.mjs
-// Let's resolve it safely.
 
 async function showPackages() {
   const selectedPackage = await select({
@@ -63,11 +49,11 @@ async function showPackages() {
 
 export async function main() {
   console.clear();
+
   introScreen(packageJson.name, packageJson.version);
 
   intro(picocolors.inverse(" MayR Labs CLI "));
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const action = await select({
       message: "What would you like to do?",
