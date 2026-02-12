@@ -10,6 +10,7 @@ import {
   ExportInfo,
   NonExportedInfo,
 } from "@/utils/analyzer";
+import { PRUNE_DIR, REPORT_DIR, GITIGNORE_CONTENT } from "@/utils/constants";
 
 type UnusedItem = (ExportInfo | NonExportedInfo) & { action?: string };
 
@@ -95,9 +96,14 @@ export default async function fixCommand() {
 
     spinner.succeed(`Fixed ${fixedCount} unused items!`);
 
-    const reportDir = path.join(projectRoot, ".prunejs");
+    const reportDir = path.join(projectRoot, PRUNE_DIR, REPORT_DIR);
     if (!fs.existsSync(reportDir)) {
-      fs.mkdirSync(reportDir);
+      fs.mkdirSync(reportDir, { recursive: true });
+    }
+
+    const gitignorePath = path.join(reportDir, ".gitignore");
+    if (!fs.existsSync(gitignorePath)) {
+      fs.writeFileSync(gitignorePath, GITIGNORE_CONTENT);
     }
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");

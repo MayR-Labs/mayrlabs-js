@@ -4,6 +4,7 @@ import chalk from "chalk";
 import ora from "ora";
 import { loadConfig, validateConfig } from "@/utils/config";
 import { UnusedCodeFinder, ReportData } from "@/utils/analyzer";
+import { PRUNE_DIR, REPORT_DIR, GITIGNORE_CONTENT } from "@/utils/constants";
 
 export default async function scanCommand() {
   let spinner;
@@ -28,9 +29,14 @@ export default async function scanCommand() {
     );
 
     // Generate Markdown Report
-    const reportDir = path.join(projectRoot, ".prunejs");
+    const reportDir = path.join(projectRoot, PRUNE_DIR, REPORT_DIR);
     if (!fs.existsSync(reportDir)) {
-      fs.mkdirSync(reportDir);
+      fs.mkdirSync(reportDir, { recursive: true });
+    }
+
+    const gitignorePath = path.join(reportDir, ".gitignore");
+    if (!fs.existsSync(gitignorePath)) {
+      fs.writeFileSync(gitignorePath, GITIGNORE_CONTENT);
     }
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");

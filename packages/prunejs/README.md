@@ -1,4 +1,4 @@
-# PruneJS
+# @mayrlabs/prunejs
 
 **PruneJS** is a powerful, configurable CLI tool designed to keep your JavaScript and TypeScript projects clean and maintainable. It scans your codebase to detect unused files, functions, classes, and exports, and can automatically remove them for you.
 
@@ -8,7 +8,7 @@
 - **Safe Fixes**: Automatically removes unused code while preserving structure using brace counting and syntax awareness.
 - **Configurable**: Support for `includeDirs` (whitelist) and `excludeDirs` (blacklist) for precise control.
 - **Safety Checks**: Warns you if you attempt to scan typically excluded directories (like `node_modules`).
-- **Detailed Reports**: Generates comprehensive Markdown reports of your codebase's health.
+- **Detailed Reports**: Generates comprehensive Markdown reports in `.mayrlabs/prunejs/reports/` for detailed analysis.
 
 ## Installation
 
@@ -17,7 +17,7 @@ You can install PruneJS globally or as a development dependency in your project.
 ### Global Installation
 
 ```bash
-npm install -g prunejs
+npm install -g @mayrlabs/prunejs
 ```
 
 Then run it using
@@ -31,13 +31,13 @@ prunejs <command>
 Install as a dev dependency to ensure everyone on your team uses the same version.
 
 ```bash
-npm install -D prunejs
+npm install -D @mayrlabs/prunejs
 ```
 
 Then run it using `npx`:
 
 ```bash
-npx prunejs <command>
+npx @mayrlabs/prunejs <command>
 ```
 
 ## Usage
@@ -69,7 +69,7 @@ Scan your codebase for unused code. This command analyzes your project based on 
 prunejs scan # or npx prunejs scan
 ```
 
-- **Output**: A summary in the console and a detailed report in `.prunejs/report_<timestamp>.md`.
+- **Output**: A summary in the console and a detailed report in `.mayrlabs/prunejs/reports/report_<timestamp>.md`.
 
 ### 3. Fix
 
@@ -80,7 +80,7 @@ prunejs fix # or npx prunejs fix
 ```
 
 - **Safety**: PruneJS processes files carefully to ensure that removing one item doesn't break line numbers for subsequent items.
-- **Report**: Generates a log of all actions taken in `.prunejs/fix_<timestamp>.md`.
+- **Report**: Generates a log of all actions taken in `.mayrlabs/prunejs/reports/fix_<timestamp>.md`.
 
 > [!IMPORTANT] > **Always commit your changes before running `fix`.** While PruneJS is designed to be safe, automated code removal should always be reviewed.
 

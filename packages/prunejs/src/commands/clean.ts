@@ -1,15 +1,16 @@
-import inquirer from "inquirer";
-import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
 import ora from "ora";
+import inquirer from "inquirer";
+import chalk from "chalk";
+import { PRUNE_DIR, REPORT_DIR } from "@/utils/constants";
 
 export default async function cleanCommand(subcommand?: string) {
-  const pruneDir = path.resolve(process.cwd(), ".prunejs");
+  const pruneDir = path.resolve(process.cwd(), PRUNE_DIR, REPORT_DIR);
 
   if (!fs.existsSync(pruneDir)) {
     console.log(
-      chalk.yellow(".prunejs directory does not exist. Nothing to clean.")
+      chalk.yellow("Reports directory does not exist. Nothing to clean.")
     );
     return;
   }
@@ -59,7 +60,7 @@ async function promptForAction(): Promise<string> {
       choices: [
         { name: "Fix Reports (delete fix_*.md)", value: "fix" },
         { name: "Scan Reports (delete report_*.md)", value: "report" },
-        { name: "All (delete .prunejs directory)", value: "all" },
+        { name: "All (delete reports directory)", value: "all" },
         { name: "Cancel", value: "cancel" },
       ],
     },
@@ -71,9 +72,9 @@ async function promptForAction(): Promise<string> {
 function cleanAll(pruneDir: string) {
   const spinner = ora();
 
-  spinner.start("Deleting .prunejs directory...");
+  spinner.start("Deleting reports directory...");
   fs.rmSync(pruneDir, { recursive: true, force: true });
-  spinner.succeed(chalk.green("Successfully deleted .prunejs directory."));
+  spinner.succeed(chalk.green("Successfully deleted reports directory."));
 }
 
 function cleanReport(action: string, pruneDir: string) {

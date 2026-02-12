@@ -2,6 +2,9 @@
 
 import { Command } from "commander";
 import inquirer from "inquirer";
+import fs from "fs-extra";
+import path from "path";
+import chalk from "chalk";
 import initCommand from "@/commands/init";
 import scanCommand from "@/commands/scan";
 import fixCommand from "@/commands/fix";
@@ -11,6 +14,30 @@ import cleanCommand from "@/commands/clean";
 import packageJson from "../package.json";
 
 const program = new Command();
+
+async function checkPackageJson() {
+  const packageJsonPath = path.resolve(process.cwd(), "package.json");
+  if (!fs.existsSync(packageJsonPath)) {
+    console.log(
+      chalk.yellow(
+        "Warning: You do not seem to be running prunejs from the project's root directory."
+      )
+    );
+    const { proceed } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "proceed",
+        message: "Are you sure you want to proceed?",
+        default: false,
+      },
+    ]);
+
+    if (!proceed) {
+      console.log(chalk.red("Operation cancelled."));
+      process.exit(0);
+    }
+  }
+}
 
 program
   .name("prunejs")
@@ -81,6 +108,8 @@ if (process.argv.length <= 2) {
       process.exit(0);
     }
 
+    await checkPackageJson();
+
     if (command === "scan") await scanCommand();
     else if (command === "fix") await fixCommand();
     else if (command === "init") await initCommand({});
@@ -89,5 +118,12 @@ if (process.argv.length <= 2) {
     else if (command === "clean") await cleanCommand();
   })();
 } else {
+  program.hook("preAction", async (thisCommand, actionCommand) => {
+    if (thisCommand.name() === "version" || actionCommand.name() === "help") {
+      return;
+    }
+    await checkPackageJson();
+  });
+
   program.parse(process.argv);
 }

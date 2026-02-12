@@ -61,3 +61,7 @@ export const REGEX = {
 
   IDENTIFIER: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\b/g,
 };
+
+export const PRUNE_DIR = ".mayrlabs/prunejs";
+export const REPORT_DIR = "reports";
+export const GITIGNORE_CONTENT = "*";
