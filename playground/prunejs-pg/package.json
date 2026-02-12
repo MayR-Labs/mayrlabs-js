@@ -1,17 +1,26 @@
 {
-  "name": "prunejs-pg",
+  "name": "@playground/prunejs-pg",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "@mayrlabs/prunejs": "file:../../packages/prunejs"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@mayrlabs/prunejs": "file:../../packages/prunejs",
     "typescript": "^5.3.3"
   },
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "playground",
+    "MayR Labs"
+  ],
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "license": "MIT",
+  "type": "commonjs"
 }

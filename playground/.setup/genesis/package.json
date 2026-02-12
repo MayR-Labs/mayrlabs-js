@@ -7,11 +7,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
+  "devDependencies": {
     "@mayrlabs/genesis": "file:../../packages/genesis"
-  }
+  },
+  "keywords": [
+    "playground",
+    "MayR Labs"
+  ],
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "license": "MIT",
+  "type": "commonjs"
 }
