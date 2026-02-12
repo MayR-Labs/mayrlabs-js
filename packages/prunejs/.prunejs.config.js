@@ -4,7 +4,7 @@
  * For more information, visit https://github.com/YoungMayor/prunejs#configuration
  */
 module.exports = {
-  "excludeDirs": [
+  excludeDirs: [
     "node_modules",
     ".next",
     ".git",
@@ -13,19 +13,12 @@ module.exports = {
     "out",
     "coverage",
     ".vercel",
-    ".prunejs"
+    ".prunejs",
   ],
-  "includeDirs": [
-    "."
-  ],
-  "includeExtensions": [
-    ".ts",
-    ".tsx",
-    ".js",
-    ".jsx"
-  ],
-  "excludeIgnoredFiles": true,
-  "skipExportsIn": [
+  includeDirs: ["."],
+  includeExtensions: [".ts", ".tsx", ".js", ".jsx"],
+  excludeIgnoredFiles: true,
+  skipExportsIn: [
     "pages/**/*",
     "src/pages/**/*",
     "app/**/*",
@@ -40,6 +33,6 @@ module.exports = {
     "**/default.{js,jsx,ts,tsx}",
     "**/sitemap.{js,ts}",
     "**/siteMetadata.{js,ts}",
-    "**/*.config.{js,ts}"
-  ]
+    "**/*.config.{js,ts}",
+  ],
 };
