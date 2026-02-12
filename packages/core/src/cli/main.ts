@@ -76,7 +76,6 @@ export async function main() {
       await showPackages();
     } else if (action === "about") {
       console.log(picocolors.cyan(ABOUT));
-      console.log(picocolors.dim(BANNER.js));
     } else if (action === "exit") {
       outro("Goodbye!");
       process.exit(0);
