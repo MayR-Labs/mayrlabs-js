@@ -18,6 +18,10 @@
       "cache": false,
       "persistent": true
     },
+    "pkg:dev": {
+      "cache": false,
+      "persistent": true
+    },
     "//#fmt": {},
     "//#fmt:fix": {
       "cache": false

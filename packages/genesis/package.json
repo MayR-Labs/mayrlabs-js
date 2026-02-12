@@ -50,6 +50,7 @@
   "scripts": {
     "build": "tsdown",
     "build:watch": "tsdown --watch",
+    "pkg:dev": "npm run build:watch",
     "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
     "test": "vitest",
