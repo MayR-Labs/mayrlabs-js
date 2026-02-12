@@ -1,5 +1,5 @@
 import { defineConfig } from "tsdown";
-import { constants } from "@repo/mayrlabs-core";
+import { constants } from "@mayrlabs/core";
 
 export default defineConfig({
   entry: ["src/cli.ts"],

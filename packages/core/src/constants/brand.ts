@@ -28,3 +28,8 @@ export const FOOTER = {
  */
 `,
 };
+
+export const ABOUT = `
+MayR Labs is a software collective building tools for the future.
+We value discipline, intentionality, and craftsmanship.
+`;
