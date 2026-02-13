@@ -19,24 +19,28 @@
     "directory": "packages/hello"
   },
   "bin": {
-    "hello": "dist/index.js"
+    "hello": "dist/hello.cjs"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
   ],
   "type": "commonjs",
-  "main": "index.ts",
+  "main": "dist/hello.cjs",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "prepublishOnly": "npm run build",
-    "build": "tsc -p tsconfig.json",
-    "pkg:dev": "tsc -p tsconfig.json --watch",
-    "postbuild": "node scripts/add-shebang.js"
+    "build": "tsdown",
+    "build:watch": "tsdown --watch",
+    "pkg:dev": "npm run build:watch",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.19.10",
+    "tsdown": "^0.20.3",
     "typescript": "^5.9.2"
   },
   "dependencies": {
