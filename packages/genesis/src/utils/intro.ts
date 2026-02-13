@@ -1,7 +1,10 @@
 import picocolors from "picocolors";
 import figlet from "figlet";
 
-export function introScreen(name: string, version: string) {
+export function introScreen(
+  name: string = "MayR Labs",
+  version: string = "1.0.0"
+) {
   console.log();
   console.log(
     picocolors.cyan(

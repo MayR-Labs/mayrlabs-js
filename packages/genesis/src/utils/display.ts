@@ -1,6 +1,6 @@
 import pc from "picocolors";
 import packageJson from "../../package.json";
-import { introScreen as introScreenCore } from "@mayrlabs/core/cli";
+import { introScreen as introScreenCore } from "./intro.js";
 
 export function introScreen() {
   introScreenCore(packageJson.name, packageJson.version);

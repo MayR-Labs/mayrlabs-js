@@ -73,11 +73,11 @@
     "ignore": "^7.0.5",
     "inquirer": "^8.2.7",
     "ora": "^5.4.1",
-    "picocolors": "^1.0.0"
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
-    "@repo/eslint-config": "^0.0.0",
     "@mayrlabs/core": "*",
+    "@repo/eslint-config": "^0.0.0",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.9",

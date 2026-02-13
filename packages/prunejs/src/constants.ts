@@ -1,5 +1,3 @@
-import { defineConfig } from "tsdown";
-
 const YEAR_FOUNDED = 2025;
 
 const copyrightYear = (): string => {
@@ -10,7 +8,7 @@ const copyrightYear = (): string => {
     : `${YEAR_FOUNDED} - ${currentYear}`;
 };
 
-const BANNER = {
+export const BANNER = {
   js: `
 /**
  * MayR Labs
@@ -22,7 +20,7 @@ const BANNER = {
 `,
 };
 
-const FOOTER = {
+export const FOOTER = {
   js: `
 /**
  * Built with discipline by MayR Labs.
@@ -30,15 +28,3 @@ const FOOTER = {
  */
 `,
 };
-
-export default defineConfig({
-  entry: ["src/cli.ts"],
-  format: ["cjs"],
-  clean: true,
-  shims: true,
-  target: "node18",
-  minify: true,
-  dts: false,
-  banner: BANNER,
-  footer: FOOTER,
-});

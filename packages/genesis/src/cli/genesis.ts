@@ -18,8 +18,9 @@ import { Tool } from "@/core/types";
 import { execution } from "@/steps/execution";
 import { logError } from "@/utils/logger";
 import gitCheck from "@/steps/git-check";
-import { introScreen, showAbout, showVisit, showManual } from "@/utils/display";
+import { introScreen } from "../utils/intro.js";
 import { configure } from "@/cli/commands/configure";
+import { showAbout, showManual, showVisit } from "@/utils/display.js";
 
 async function main() {
   try {

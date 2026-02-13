@@ -12,7 +12,7 @@ import globalCommand from "@/commands/global";
 import localCommand from "@/commands/local";
 import cleanCommand from "@/commands/clean";
 import packageJson from "../package.json";
-import { introScreen } from "@mayrlabs/core/cli";
+import { introScreen } from "./utils/intro.js";
 
 const program = new Command();
 
