@@ -56,8 +56,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "build:watch": "tsdown --watch",
-    "pkg:dev": "npm run build:watch",
+    "pkg:dev": "tsdown --watch",
     "start": "node dist/cli/index.mjs",
     "prepublishOnly": "npm run build"
   },

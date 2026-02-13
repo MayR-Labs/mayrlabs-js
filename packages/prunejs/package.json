@@ -62,8 +62,7 @@
     "demo": "tsx src/cli.ts",
     "demo:dist": "node dist/cli.cjs",
     "build": "tsdown",
-    "build:watch": "tsdown --watch",
-    "pkg:dev": "npm run build:watch",
+    "pkg:dev": "tsdown --watch",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
