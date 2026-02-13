@@ -30,6 +30,12 @@
     "mayrlabs": "./dist/bin.mjs",
     "core": "./dist/bin.mjs"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "exports": {
     ".": {
       "types": {
