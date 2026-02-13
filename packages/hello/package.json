@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/hello",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "A simple hello world for MayR Labs",
   "keywords": [
