@@ -1,0 +1,12 @@
+{
+  "name": "@playground/core-setup",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node bin.mjs"
+  },
+  "dependencies": {
+    "@mayrlabs/core": "file:../../packages/core"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "name": "@mayrlabs/core",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Core shared library and CLI for MayR Labs.",
+  "keywords": [
+    "mayrlabs",
+    "cli",
+    "core",
+    "shared",
+    "tools"
+  ],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/core#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/core"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "MayR Labs",
+    "email": "info@mayrlabs.com",
+    "url": "https://mayrlabs.com"
+  },
+  "type": "module",
+  "bin": {
+    "mayrlabs": "./dist/bin.mjs",
+    "core": "./dist/bin.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": {
+        "import": "./dist/index.d.mts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./cli": {
+      "types": {
+        "import": "./dist/cli/index.d.mts",
+        "require": "./dist/cli/index.d.cts"
+      },
+      "import": "./dist/cli/index.mjs",
+      "require": "./dist/cli/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "build:watch": "tsdown --watch",
+    "pkg:dev": "npm run build:watch",
+    "start": "node dist/cli/index.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "tsdown": "^0.20.3",
+    "typescript": "^5.9.2",
+    "@types/node": "^22.10.2",
+    "@types/figlet": "^1.7.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "picocolors": "^1.1.1",
+    "figlet": "^1.8.0",
+    "open": "^10.0.3"
+  }
+}

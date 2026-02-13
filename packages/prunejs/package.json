@@ -63,6 +63,7 @@
     "demo:dist": "node dist/cli.cjs",
     "build": "tsdown",
     "build:watch": "tsdown --watch",
+    "pkg:dev": "npm run build:watch",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -77,6 +78,7 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "^0.0.0",
+    "@mayrlabs/core": "*",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.9",

@@ -12,6 +12,7 @@ import globalCommand from "@/commands/global";
 import localCommand from "@/commands/local";
 import cleanCommand from "@/commands/clean";
 import packageJson from "../package.json";
+import { introScreen } from "@mayrlabs/core/cli";
 
 const program = new Command();
 
@@ -86,6 +87,8 @@ program
 
 // Interactive mode if no args
 if (process.argv.length <= 2) {
+  introScreen(packageJson.name, packageJson.version);
+
   (async () => {
     const { command } = await inquirer.prompt([
       {
@@ -124,6 +127,8 @@ if (process.argv.length <= 2) {
     }
     await checkPackageJson();
   });
+
+  introScreen(packageJson.name, packageJson.version);
 
   program.parse(process.argv);
 }

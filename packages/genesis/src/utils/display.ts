@@ -1,22 +1,9 @@
 import pc from "picocolors";
-import figlet from "figlet";
 import packageJson from "../../package.json";
+import { introScreen as introScreenCore } from "@mayrlabs/core/cli";
 
 export function introScreen() {
-  console.log();
-  console.log(
-    pc.cyan(
-      figlet.textSync("MayR\nLabs", {
-        font: "Graceful",
-        horizontalLayout: "default",
-        verticalLayout: "default",
-        width: 80,
-        whitespaceBreak: true,
-      })
-    )
-  );
-  console.log(pc.cyan(`${packageJson.name} - v${packageJson.version}`));
-  console.log();
+  introScreenCore(packageJson.name, packageJson.version);
 }
 
 export function showAbout() {

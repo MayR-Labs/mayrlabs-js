@@ -50,6 +50,7 @@
   "scripts": {
     "build": "tsdown",
     "build:watch": "tsdown --watch",
+    "pkg:dev": "npm run build:watch",
     "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
     "test": "vitest",
@@ -68,6 +69,7 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "^0.0.0",
+    "@mayrlabs/core": "*",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.16",
