@@ -72,10 +72,10 @@ export async function scaffoldTsPackage() {
       "eslint@latest",
     ];
 
-    execSync(`npm install -D ${devDeps.join(" ")} -w ${packageName}`, {
-      cwd: ROOT_DIR,
-      stdio: "inherit",
-    });
+    await execSync(
+      `npm install ${devDeps.join(" ")} -w ${packageName} --save-dev`,
+      { cwd: ROOT_DIR, stdio: "inherit" }
+    );
 
     s.stop("Package created successfully!");
 
