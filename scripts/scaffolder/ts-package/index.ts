@@ -10,6 +10,8 @@ import {
   createReadme,
   createLicense,
   createSrcFiles,
+  createTsdownConfig,
+  createVitestConfig,
 } from "./generators.js";
 import { setupPlayground } from "./playground.js";
 import { PackageOptions } from "./types.js";
@@ -49,9 +51,29 @@ export async function scaffoldTsPackage() {
     createReadme(packageDir, name, description);
     createLicense(packageDir, license, author);
     createSrcFiles(packageDir, type, packageName);
+    createTsdownConfig(packageDir);
+    createVitestConfig(packageDir);
 
     // Setup playground
     setupPlayground(ROOT_DIR, name, packageName);
+
+    s.message("Installing dependencies...");
+
+    // Install dependencies
+    const devDeps = [
+      "vitest@latest",
+      "typescript@latest",
+      "tsx@latest",
+      "tsdown@latest",
+      "@vitest/coverage-v8@latest",
+      "@types/node@latest",
+      "eslint@latest",
+    ];
+
+    execSync(`npm install -D ${devDeps.join(" ")}`, {
+      cwd: packageDir,
+      stdio: "ignore",
+    });
 
     s.stop("Package created successfully!");
 

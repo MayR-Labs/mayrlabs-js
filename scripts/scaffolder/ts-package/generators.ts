@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { PackageOptions, PackageJson } from "./types.js";
+import {
+  MIT_LICENSE,
+  ISC_LICENSE,
+  TSDOWN_CONFIG,
+  VITEST_CONFIG,
+} from "./templates.js";
 
 export function createPackageJson(packageDir: string, options: PackageOptions) {
   const { access, name, description, license, author, type } = options;
@@ -32,14 +38,7 @@ export function createPackageJson(packageDir: string, options: PackageOptions) {
       prepublishOnly: "npm run build",
     },
     devDependencies: {
-      "@repo/eslint-config": "^0.0.0",
-      "@types/node": "^25.2.3",
-      "@vitest/coverage-v8": "^4.0.18",
-      eslint: "^9.39.1",
-      tsdown: "^0.20.3",
-      tsx: "^4.21.0",
-      typescript: "^5.9.2",
-      vitest: "^4.0.18",
+      "@repo/eslint-config": "*",
     },
   };
 
@@ -124,14 +123,23 @@ export function createReadme(
 export function createLicense(
   packageDir: string,
   license: string,
-  author: { name: string }
+  author: { name: string; email: string; url: string }
 ) {
-  // @ai: We should have LICENSE templates that would be used. And the author should be name, email and url
+  let template = license === "MIT" ? MIT_LICENSE : ISC_LICENSE;
+  const year = new Date().getFullYear().toString();
+  const authorString = `${author.name} <${author.email}> (${author.url})`;
 
-  fs.writeFileSync(
-    path.join(packageDir, "LICENSE"),
-    `${license} License\n\nCopyright (c) ${new Date().getFullYear()} ${author.name}`
-  );
+  template = template.replace("{year}", year).replace("{author}", authorString);
+
+  fs.writeFileSync(path.join(packageDir, "LICENSE"), template);
+}
+
+export function createTsdownConfig(packageDir: string) {
+  fs.writeFileSync(path.join(packageDir, "tsdown.config.mts"), TSDOWN_CONFIG);
+}
+
+export function createVitestConfig(packageDir: string) {
+  fs.writeFileSync(path.join(packageDir, "vitest.config.ts"), VITEST_CONFIG);
 }
 
 export function createSrcFiles(
