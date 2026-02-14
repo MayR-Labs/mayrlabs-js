@@ -12,24 +12,37 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
     "pkg:dev": "turbo run pkg:dev",
     "fmt": "oxfmt --check",
     "fmt:fix": "oxfmt .",
     "check-types": "turbo run check-types",
     "release": "npx changeset publish --provenance",
+    "scaffold": "tsx scripts/scaffolder/index.ts",
+    "pkg:clean": "tsx scripts/cleaner/index.ts",
     "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
+    "@clack/prompts": "^1.0.1",
+    "@types/node": "^25.2.3",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "oxfmt": "^0.31.0",
+    "oxlint": "^1.47.0",
+    "picocolors": "^1.1.1",
+    "tsx": "^4.21.0",
     "turbo": "^2.8.3",
     "typescript": "5.9.2"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,md}": [
+    "**/*.{js,jsx,ts,tsx}": [
+      "oxlint",
+      "oxfmt ."
+    ],
+    "**/*.{json,md,yml,yaml,css,scss}": [
       "oxfmt ."
     ]
   },

@@ -1,0 +1,12 @@
+{
+  "name": "@playground/hello-pg",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node hello.mjs"
+  },
+  "dependencies": {
+    "@mayrlabs/hello": "file:../../packages/hello"
+  }
+}

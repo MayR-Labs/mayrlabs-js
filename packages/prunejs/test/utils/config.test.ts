@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { loadConfig, validateConfig, PruneConfig } from "@/utils/config";
-import path from "path";
+import { loadConfig, validateConfig } from "@/utils/config";
 import fs from "fs-extra";
 
 vi.mock("fs-extra");
@@ -11,8 +10,6 @@ vi.mock("inquirer", () => ({
 }));
 
 describe("config", () => {
-  const cwd = process.cwd();
-
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -28,10 +25,6 @@ describe("config", () => {
 
     it("should load user config if it exists", async () => {
       vi.spyOn(fs, "existsSync").mockReturnValue(true);
-      // Mock dynamic import
-      const mockConfig: PruneConfig = {
-        includeDirs: ["src"],
-      };
 
       // We can't easily mock dynamic import of a file that doesn't exist in vitest without some tricks
       // So we might need to rely on the fact that it returns defaults if import fails or mocking fs.existsSync is enough
@@ -69,7 +62,6 @@ describe("config", () => {
     });
 
     it("should exit if user cancels", async () => {
-      const consoleSpy = vi.spyOn(console, "log");
       const exitSpy = vi
         .spyOn(process, "exit")
         .mockImplementation((() => {}) as any);

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { getPackageManager, runCommand, installPackages } from "./pm";
+import { getPackageManager, installPackages } from "./pm";
 import { execa } from "execa";
 
 vi.mock("execa");
