@@ -50,9 +50,11 @@
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
-    "lint": "eslint . --max-warnings 0",
     "demo": "tsx src/cli/index.ts",
-    "test": "vitest",
+    "demo:dist": "node dist/genesis.cjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -67,7 +69,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@repo/eslint-config": "^0.0.0",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.16",

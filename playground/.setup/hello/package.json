@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node bin.mjs"
+    "dev": "node hello.mjs"
   },
   "dependencies": {
     "@mayrlabs/hello": "file:../../packages/hello"

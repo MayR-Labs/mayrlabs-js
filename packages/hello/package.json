@@ -12,7 +12,11 @@
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
   },
   "license": "MIT",
-  "author": "Aghogho Meyoron <youngmayor.dev@gmail.com>",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
@@ -29,12 +33,24 @@
   ],
   "type": "commonjs",
   "main": "dist/hello.cjs",
+  "module": "dist/hello.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/hello.mjs",
+      "require": "./dist/hello.cjs"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "demo": "tsx src/hello.ts",
+    "demo:dist": "node dist/hello.cjs",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {

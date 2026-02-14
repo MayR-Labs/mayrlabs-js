@@ -12,12 +12,8 @@ export function deletePackages(
 
   for (const pkg of packages) {
     const pkgPath = path.join(packagesDir, pkg);
-    const playgroundPath = path.join(
-      rootDir,
-      "playground",
-      ".setup",
-      `${pkg}-pg`
-    );
+
+    const playgroundPath = path.join(rootDir, "playground", ".setup", pkg);
 
     try {
       if (fs.existsSync(pkgPath)) {
