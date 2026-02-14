@@ -33,7 +33,9 @@ export async function scaffoldTsPackage() {
   const pkgOptions = options as PackageOptions;
   const { name, access, description, license, author, type } = pkgOptions;
   const packageDir = path.join(PACKAGES_DIR, name);
-  const packageName = `@mayrlabs/${name}`;
+  const namePrefix = access === "published" ? "@mayrlabs" : "@repo";
+
+  const packageName = `${namePrefix}/${name}`;
 
   const s = p.spinner();
   s.start("Creating package structure...");
@@ -70,9 +72,9 @@ export async function scaffoldTsPackage() {
       "eslint@latest",
     ];
 
-    execSync(`npm install -D ${devDeps.join(" ")}`, {
-      cwd: packageDir,
-      stdio: "ignore",
+    execSync(`npm install -D ${devDeps.join(" ")} -w ${packageName}`, {
+      cwd: ROOT_DIR,
+      stdio: "inherit",
     });
 
     s.stop("Package created successfully!");
