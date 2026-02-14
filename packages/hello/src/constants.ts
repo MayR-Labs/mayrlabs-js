@@ -47,7 +47,7 @@ export const PACKAGES = [
     path: "packages/prunejs",
   },
   {
-    name: "@mayrlabs/core", // Keeping core in list for now, but will remove from codebase
+    name: "@mayrlabs/core", // @ai: Remove this and add hello instead
     description: "Core shared library and CLI for MayR Labs.",
     path: "packages/core",
   },

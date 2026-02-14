@@ -67,7 +67,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@mayrlabs/core": "*",
     "@repo/eslint-config": "^0.0.0",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",

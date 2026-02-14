@@ -1,5 +1,5 @@
 {
-  "name": "@playground/core-setup",
+  "name": "@playground/hello-pg",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,6 +7,6 @@
     "dev": "node bin.mjs"
   },
   "dependencies": {
-    "@mayrlabs/core": "file:../../packages/core"
+    "@mayrlabs/hello": "file:../../packages/hello"
   }
 }
