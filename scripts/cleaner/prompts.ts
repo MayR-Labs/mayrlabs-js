@@ -8,7 +8,7 @@ export function getPackages(packagesDir: string): string[] {
     return fs.readdirSync(packagesDir).filter((file) => {
       return fs.statSync(path.join(packagesDir, file)).isDirectory();
     });
-  } catch (e) {
+  } catch {
     return [];
   }
 }

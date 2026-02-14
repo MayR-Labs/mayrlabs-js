@@ -47,7 +47,7 @@ export async function checkGitStatus(rootDir: string) {
         p.log.warn("Proceeding with uncommitted changes. This is risky.");
       }
     }
-  } catch (e) {
+  } catch {
     p.log.error("Failed to check git status. Is this a git repository?");
     process.exit(1);
   }
