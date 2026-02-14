@@ -61,6 +61,12 @@ export async function scaffoldTsPackage() {
 
     s.message("Installing dependencies...");
 
+    s.message("Registering workspace...");
+
+    execSync("npm install", { cwd: ROOT_DIR, stdio: "ignore" });
+
+    s.message("Installing dependencies...");
+
     // Install dependencies
     const devDeps = [
       "vitest@latest",
@@ -72,10 +78,10 @@ export async function scaffoldTsPackage() {
       "eslint@latest",
     ];
 
-    await execSync(
-      `npm install ${devDeps.join(" ")} -w ${packageName} --save-dev`,
-      { cwd: ROOT_DIR, stdio: "inherit" }
-    );
+    execSync(`npm install ${devDeps.join(" ")} -w ${packageName} --save-dev`, {
+      cwd: ROOT_DIR,
+      stdio: "inherit",
+    });
 
     s.stop("Package created successfully!");
 
