@@ -12,6 +12,7 @@ export function setupPlayground(
     ".setup",
     `${name}-pg`
   );
+
   fs.mkdirSync(playgroundSetupDir, { recursive: true });
 
   const playgroundPackageJson = {
@@ -20,9 +21,10 @@ export function setupPlayground(
     private: true,
     description: `Playground for ${packageName}`,
     devDependencies: {
-      [packageName]: `file:../../../packages/${name}`,
+      [packageName]: `file:../../packages/${name}`,
     },
   };
+
   fs.writeFileSync(
     path.join(playgroundSetupDir, "package.json"),
     JSON.stringify(playgroundPackageJson, null, 2)
