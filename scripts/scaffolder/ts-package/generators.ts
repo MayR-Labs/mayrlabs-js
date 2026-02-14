@@ -134,8 +134,23 @@ export function createLicense(
   fs.writeFileSync(path.join(packageDir, "LICENSE"), template);
 }
 
-export function createTsdownConfig(packageDir: string) {
-  fs.writeFileSync(path.join(packageDir, "tsdown.config.mts"), TSDOWN_CONFIG);
+export function createTsdownConfig(
+  packageDir: string,
+  type: "bin" | "lib" | "both"
+) {
+  let entries: string[] = [];
+  if (type === "bin") {
+    entries = ["src/cli.ts"];
+  } else if (type === "lib") {
+    entries = ["src/index.ts"];
+  } else {
+    entries = ["src/index.ts", "src/cli.ts"];
+  }
+
+  fs.writeFileSync(
+    path.join(packageDir, "tsdown.config.mts"),
+    getTsdownConfig(entries)
+  );
 }
 
 export function createVitestConfig(packageDir: string) {

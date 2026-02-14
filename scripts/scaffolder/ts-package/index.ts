@@ -53,7 +53,7 @@ export async function scaffoldTsPackage() {
     createReadme(packageDir, name, description);
     createLicense(packageDir, license, author);
     createSrcFiles(packageDir, type, packageName);
-    createTsdownConfig(packageDir);
+    createTsdownConfig(packageDir, type);
     createVitestConfig(packageDir);
 
     // Setup playground

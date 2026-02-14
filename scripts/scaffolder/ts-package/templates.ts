@@ -38,7 +38,9 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 `;
 
-export const TSDOWN_CONFIG = `import { defineConfig } from "tsdown";
+export const getTsdownConfig = (
+  entries: string[]
+) => `import { defineConfig } from "tsdown";
 
 const YEAR_FOUNDED = 2025;
 
@@ -72,7 +74,7 @@ const FOOTER = {
 };
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/cli.ts"],
+  entry: ${JSON.stringify(entries)},
   format: ["cjs", "esm"],
   clean: true,
   shims: true,
