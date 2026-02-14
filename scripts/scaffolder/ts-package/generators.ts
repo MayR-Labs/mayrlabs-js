@@ -4,8 +4,8 @@ import { PackageOptions, PackageJson } from "./types.js";
 import {
   MIT_LICENSE,
   ISC_LICENSE,
-  TSDOWN_CONFIG,
   VITEST_CONFIG,
+  getTsdownConfig,
 } from "./templates.js";
 
 export function createPackageJson(packageDir: string, options: PackageOptions) {

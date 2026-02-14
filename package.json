@@ -30,13 +30,18 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "oxfmt": "^0.31.0",
+    "oxlint": "^1.47.0",
     "picocolors": "^1.1.1",
     "tsx": "^4.21.0",
     "turbo": "^2.8.3",
     "typescript": "5.9.2"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,md}": [
+    "**/*.{js,jsx,ts,tsx}": [
+      "oxlint",
+      "oxfmt ."
+    ],
+    "**/*.{json,md,yml,yaml,css,scss}": [
       "oxfmt ."
     ]
   },
