@@ -15,7 +15,7 @@ export async function promptPackageDetails(
             {
               value: "internal",
               label: "Internal",
-              hint: "Private package (@mayrlabs/name)",
+              hint: "Private package (@repo/name)",
             },
             {
               value: "published",

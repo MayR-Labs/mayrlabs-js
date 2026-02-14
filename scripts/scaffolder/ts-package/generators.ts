@@ -10,10 +10,10 @@ import {
 
 export function createPackageJson(packageDir: string, options: PackageOptions) {
   const { access, name, description, license, author, type } = options;
-  const packageName = `@mayrlabs/${name}`;
+  const namePrefix = access === "published" ? "@mayrlabs" : "@repo";
 
   const packageJson: PackageJson = {
-    name: packageName,
+    name: `${namePrefix}/${name}`,
     version: "0.0.0",
     description: description,
     keywords: [],
