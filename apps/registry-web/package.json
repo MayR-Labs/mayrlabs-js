@@ -10,6 +10,7 @@
     "registry:build": "shadcn build"
   },
   "dependencies": {
+    "@t3-oss/env-nextjs": "^0.13.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.564.0",
@@ -18,7 +19,8 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "shiki": "^3.22.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

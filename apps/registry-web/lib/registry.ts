@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import { clientEnv } from "./env/client";
 
 export interface RegistryItem {
   name: string;
@@ -34,43 +33,45 @@ export interface Registry {
   items: RegistryItem[];
 }
 
-// @ts-expect-error process.cwd() is not typed in this environment
-const REGISTRY_PATH = path.join(process.cwd(), "public/r/registry.json");
-// @ts-expect-error process.cwd() is not typed in this environment
-const BLOCKS_PATH = path.join(process.cwd(), "public/r");
-
 export async function getRegistry(): Promise<Registry | null> {
-  try {
-    if (!fs.existsSync(REGISTRY_PATH)) {
-      return null;
-    }
-    const content = await fs.promises.readFile(REGISTRY_PATH, "utf8");
-    return JSON.parse(content);
-  } catch (error) {
-    console.error("Error reading registry:", error);
-    return null;
+  const res = await fetch(`${clientEnv.NEXT_PUBLIC_APP_URL}/r/registry.json`, {
+    cache: "force-cache",
+  });
+
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`Failed to fetch registry`);
   }
+
+  const body = await res.json();
+
+  return body as Registry;
 }
 
 export async function getAllBlocks(): Promise<RegistryItem[]> {
   const registry = await getRegistry();
+
   if (!registry) return [];
+
   return registry.items.filter((item) => item.type === "registry:block");
 }
 
 export async function getBlock(name: string): Promise<RegistryItem | null> {
   try {
-    const blockPath = path.join(BLOCKS_PATH, `${name}.json`);
-    console.log(blockPath);
-    if (!fs.existsSync(blockPath)) {
-      // Fallback to searching in registry if individual file doesn't exist
-      const registry = await getRegistry();
-      return registry?.items.find((item) => item.name === name) || null;
+    const res = await fetch(`${clientEnv.NEXT_PUBLIC_APP_URL}/r/${name}.json`, {
+      cache: "force-cache",
+      next: { tags: [`block:${name}`] },
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) return null;
+      throw new Error(`Failed to fetch block: ${res.statusText}`);
     }
-    const content = await fs.promises.readFile(blockPath, "utf8");
-    return JSON.parse(content);
+
+    return await res.json();
   } catch (error) {
-    console.error(`Error reading block ${name}:`, error);
+    console.error(`Error fetching block ${name}:`, error);
+
     return null;
   }
 }
