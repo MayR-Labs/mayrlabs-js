@@ -34,7 +34,9 @@ export interface Registry {
   items: RegistryItem[];
 }
 
+// @ts-expect-error process.cwd() is not typed in this environment
 const REGISTRY_PATH = path.join(process.cwd(), "public/r/registry.json");
+// @ts-expect-error process.cwd() is not typed in this environment
 const BLOCKS_PATH = path.join(process.cwd(), "public/r");
 
 export async function getRegistry(): Promise<Registry | null> {
