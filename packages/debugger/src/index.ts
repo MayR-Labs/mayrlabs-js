@@ -1,5 +1,10 @@
-export class Debugger {
+class Debugger {
+  private namespace?: string;
   private isDevOnly: boolean = false;
+
+  constructor(namespace?: string) {
+    this.namespace = namespace;
+  }
 
   public devOnly() {
     this.isDevOnly = true;
@@ -7,7 +12,23 @@ export class Debugger {
   }
 
   private shouldLog(): boolean {
-    if (this.isDevOnly) return process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
+    if (this.isDevOnly) {
+      if (typeof process !== "undefined" && process.env.NODE_ENV) {
+        return process.env.NODE_ENV !== "production";
+      }
+      // @ts-ignore
+      // Check for import.meta.env.DEV if available (Vite/ESM)
+      try {
+        // @ts-ignore
+        if (import.meta && import.meta.env && import.meta.env.DEV) {
+          return true;
+        }
+      } catch {
+        // Ignore errors if import.meta is not defined
+      }
+
+      return false;
+    }
 
     return true;
   }
@@ -23,17 +44,24 @@ export class Debugger {
   }
 
   private formatMessage(level: string, message: unknown[], color: string) {
+    const prefix = this.namespace ? ` [${this.namespace}]` : "";
+
     // @ts-ignore
     if (typeof window === "undefined") {
-      return [`[${this.getTimestamp()}] [${level}]`, ...message];
+      return [`[${this.getTimestamp()}]${prefix} [${level}]`, ...message];
     }
 
     return [
-      `%c ${level} %c [${this.getTimestamp()}]`,
+      `%c ${level} %c [${this.getTimestamp()}]${prefix}`,
       `background: ${color}; color: white; padding: 2px 4px; border-radius: 2px; font-weight: bold;`,
       "color: gray; font-size: 0.8em;",
       ...message,
     ];
+  }
+
+  public custom(color: string, ...args: unknown[]) {
+    if (!this.shouldLog()) return;
+    console.log(...this.formatMessage("CUSTOM", args, color));
   }
 
   public log(...args: unknown[]) {
@@ -41,7 +69,6 @@ export class Debugger {
     console.log(...this.formatMessage("LOG", args, "#3b82f6"));
   }
 
-  // Alias for debug -> logs with a different color/level
   public debug(...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.debug(...this.formatMessage("DEBUG", args, "#8b5cf6"));
@@ -83,7 +110,7 @@ export class Debugger {
 
 /**
  * Creates a new Debugger instance.
- * usage: debug().log('message') or debug().devOnly().log('message')
+ * usage: debug().log('message') or debug('MyModule').devOnly().log('message')
  * Note: Named 'debug' because 'debugger' is a reserved keyword.
  */
-export const debug = () => new Debugger();
+export const debug = (namespace?: string) => new Debugger(namespace);

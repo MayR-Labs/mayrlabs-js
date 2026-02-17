@@ -4,8 +4,10 @@ A lightweight, environment-aware debugging utility for TypeScript applications. 
 
 ## Features
 
-- **Environment Awareness**: Helper methods to log only in development environments.
+- **Environment Awareness**: Helper methods to log only in development environments. Checks `NODE_ENV` and `import.meta.env.DEV`.
 - **Log Levels**: Support for `log`, `info`, `warn`, `error`, and `debug`.
+- **Custom Colors**: Support for custom hex colors using `.custom()`.
+- **Namespaces**: Support for organizing logs with namespaces.
 - **Timestamps**: Automatically adds timestamps to all log messages.
 - **Color Coding**: Visual distinction between log levels in browser consoles.
 - **Execution Timing**: `timeBox` utility to measure and log the duration of async operations.
@@ -45,12 +47,15 @@ debug().error("Connection failed", { code: 500 });
 
 ### Development Only Mode
 
-Use the `.devOnly()` modifier to suppress logs in production environments. This checks `process.env.NEXT_PUBLIC_DEBUG_MODE === "true"`.
+Use the `.devOnly()` modifier to suppress logs in production environments. This checks:
+
+1. `process.env.NODE_ENV !== 'production'`
+2. `import.meta.env.DEV` (for Vite/ESM environments)
 
 ```typescript
 import { debug } from "@mayrlabs/debugger";
 
-// This will only log if process.env.NEXT_PUBLIC_DEBUG_MODE is "true"
+// This will be silenced in production
 debug().devOnly().log("This is a debug message");
 ```
 
@@ -74,9 +79,9 @@ async function fetchData() {
 
 ## API Reference
 
-### `debug()`
+### `debug(namespace?: string)`
 
-Factory function that returns a new `Debugger` instance.
+Factory function that returns a new `Debugger` instance. Optional `namespace` argument prefixes all logs.
 
 ### `Debugger` Methods
 
@@ -85,7 +90,8 @@ Factory function that returns a new `Debugger` instance.
 - **`warn(...args: unknown[])`**: Warning message (Yellow/Orange).
 - **`error(...args: unknown[])`**: Error message (Red).
 - **`debug(...args: unknown[])`**: Debug message (Purple).
-- **`devOnly()`**: Returns the debugger instance but sets it to only log if `NEXT_PUBLIC_DEBUG_MODE` is "true".
+- **`custom(color: string, ...args: unknown[])`**: Log with a custom hex color.
+- **`devOnly()`**: Returns the debugger instance but sets it to only log if environment is not production.
 - **`timeBox<T>(label: string, fn: () => Promise<T> | T): Promise<T>`**: Executes the provided function, logs specific duration, and returns the result.
 
 ## License
