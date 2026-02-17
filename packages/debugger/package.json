@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/debugger",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A lightweight, environment-aware debugging utility for TypeScript applications with support for log levels, timestamps, and execution timing.",
   "keywords": [
     "debugger",
