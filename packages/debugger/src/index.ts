@@ -1,11 +1,24 @@
+/**
+ * A lightweight, environment-aware debugging utility.
+ * Provides structured logging with timestamps, log levels, and execution timing.
+ */
 export class Debugger {
   private namespace?: string;
   private isDevOnly: boolean = false;
 
+  /**
+   * Creates a new Debugger instance.
+   * @param namespace Optional namespace to prefix all logs with.
+   */
   constructor(namespace?: string) {
     this.namespace = namespace;
   }
 
+  /**
+   * Restricts logging to development environments only.
+   * Checks `NODE_ENV !== 'production'` and `import.meta.env.DEV`.
+   * @returns The Debugger instance for chaining.
+   */
   public devOnly() {
     this.isDevOnly = true;
     return this;
@@ -55,36 +68,68 @@ export class Debugger {
     ];
   }
 
+  /**
+   * Logs a message with a custom hex color.
+   * @param color Hex color code (e.g., '#ff0000').
+   * @param args Arguments to log.
+   */
   public custom(color: string, ...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.log(...this.formatMessage("CUSTOM", args, color));
   }
 
+  /**
+   * Logs a standard message with a blue label.
+   * @param args Arguments to log.
+   */
   public log(...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.log(...this.formatMessage("LOG", args, "#3b82f6"));
   }
 
+  /**
+   * Logs a debug message with a purple label.
+   * @param args Arguments to log.
+   */
   public debug(...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.debug(...this.formatMessage("DEBUG", args, "#8b5cf6"));
   }
 
+  /**
+   * Logs a warning message with an orange label.
+   * @param args Arguments to log.
+   */
   public warn(...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.warn(...this.formatMessage("WARN", args, "#f59e0b"));
   }
 
+  /**
+   * Logs an error message with a red label.
+   * @param args Arguments to log.
+   */
   public error(...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.error(...this.formatMessage("ERROR", args, "#ef4444"));
   }
 
+  /**
+   * Logs an informational message with a green label.
+   * @param args Arguments to log.
+   */
   public info(...args: unknown[]) {
     if (!this.shouldLog()) return;
     console.info(...this.formatMessage("INFO", args, "#10b981"));
   }
 
+  /**
+   * Measures the execution time of a synchronous or asynchronous function.
+   * Logs the duration with the provided label.
+   * @param label The label for the timing log.
+   * @param fn The function to execute.
+   * @returns The result of the function execution.
+   */
   public async timeBox<T>(label: string, fn: () => Promise<T> | T): Promise<T> {
     if (!this.shouldLog()) return fn();
 
@@ -107,6 +152,5 @@ export class Debugger {
 /**
  * Creates a new Debugger instance.
  * usage: debug().log('message') or debug('MyModule').devOnly().log('message')
- * Note: Named 'debug' because 'debugger' is a reserved keyword.
  */
 export const debug = (namespace?: string) => new Debugger(namespace);
