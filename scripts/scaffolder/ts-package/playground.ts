@@ -6,12 +6,7 @@ export function setupPlayground(
   name: string,
   packageName: string
 ) {
-  const playgroundSetupDir = path.join(
-    rootDir,
-    "playground",
-    ".setup",
-    `${name}-pg`
-  );
+  const playgroundSetupDir = path.join(rootDir, "playground", ".setup", name);
 
   fs.mkdirSync(playgroundSetupDir, { recursive: true });
 

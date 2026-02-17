@@ -1,0 +1,10 @@
+{
+  "name": "debugger-pg",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Playground for @mayrlabs/debugger",
+  "devDependencies": {
+    "@mayrlabs/debugger": "file:../../packages/debugger"
+  }
+}
