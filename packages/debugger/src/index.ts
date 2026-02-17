@@ -23,6 +23,7 @@ export class Debugger {
   }
 
   private formatMessage(level: string, message: unknown[], color: string) {
+    // @ts-ignore
     if (typeof window === "undefined") {
       return [`[${this.getTimestamp()}] [${level}]`, ...message];
     }
