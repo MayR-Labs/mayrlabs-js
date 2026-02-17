@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, Terminal, FileCode, Package } from "lucide-react";
 import { getAllBlocks, getBlock } from "@/lib/registry";
 import { CodeBlock } from "@/components/code-block";
+import { clientEnv } from "@/lib/env/client";
 
 export async function generateStaticParams() {
   const items = await getAllBlocks();
@@ -27,7 +28,7 @@ export default async function BlockPage({ params }: BlockPageProps) {
     notFound();
   }
 
-  const registryUrl = `https://registry.mayrlabs.com/r/${block.name}.json`;
+  const registryUrl = `${clientEnv.NEXT_PUBLIC_APP_URL}/r/${block.name}.json`;
 
   return (
     <main className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
