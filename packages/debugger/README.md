@@ -25,24 +25,64 @@ pnpm add @mayrlabs/debugger
 
 ## Usage
 
-### Basic Logging
+### Recommended Pattern
 
-Import the `debug` function and use it to create a logger instance on the fly.
+It is recommended to create and export specific debugger instances for your application modules.
+
+```typescript
+// lib/debugger.ts
+import { Debugger } from "@mayrlabs/debugger";
+
+// Create named instances for different parts of your app
+export const authDebugger = new Debugger("Auth").devOnly();
+export const dbDebugger = new Debugger("Database");
+export const appDebugger = new Debugger("App");
+```
+
+```typescript
+// Usage in other files
+import { authDebugger } from "./lib/debugger";
+
+authDebugger.log("User logged in");
+```
+
+### Basic Usage
+
+You can also instantiate the `Debugger` class directly where needed.
+
+```typescript
+import { Debugger } from "@mayrlabs/debugger";
+
+const logger = new Debugger();
+
+// Simple logging
+logger.log("Hello, world!");
+
+// Information
+logger.info("System initialized");
+
+// Warnings
+logger.warn("Resource usage is high");
+
+// Errors
+logger.error("Connection failed", { code: 500 });
+```
+
+### Alternative Usage (Factory Function)
+
+You can use the `debug` factory function for a more functional approach.
 
 ```typescript
 import { debug } from "@mayrlabs/debugger";
 
-// Simple logging
+// Quick one-off logging
 debug().log("Hello, world!");
 
-// Information
-debug().info("System initialized");
+// With namespace
+debug("Auth").log("User logged in");
 
-// Warnings
-debug().warn("Resource usage is high");
-
-// Errors
-debug().error("Connection failed", { code: 500 });
+// With devOnly
+debug().devOnly().log("This will only log in development");
 ```
 
 ### Development Only Mode
@@ -53,10 +93,10 @@ Use the `.devOnly()` modifier to suppress logs in production environments. This 
 2. `import.meta.env.DEV` (for Vite/ESM environments)
 
 ```typescript
-import { debug } from "@mayrlabs/debugger";
+import { Debugger } from "@mayrlabs/debugger";
 
 // This will be silenced in production
-debug().devOnly().log("This is a debug message");
+new Debugger().devOnly().log("This is a debug message");
 ```
 
 ### Measuring Execution Time
@@ -64,10 +104,11 @@ debug().devOnly().log("This is a debug message");
 Use `timeBox` to measure how long an asynchronous operation takes.
 
 ```typescript
-import { debug } from "@mayrlabs/debugger";
+import { Debugger } from "@mayrlabs/debugger";
 
 async function fetchData() {
-  const data = await debug().timeBox("Fetching user data", async () => {
+  const logger = new Debugger();
+  const data = await logger.timeBox("Fetching user data", async () => {
     const response = await fetch("/api/user");
     return response.json();
   });
@@ -77,11 +118,38 @@ async function fetchData() {
 // Console output: "Fetching user data took 123.456ms"
 ```
 
+### Namespaces
+
+You can categorize your logs by providing a namespace string to the `Debugger` constructor.
+
+```typescript
+import { Debugger } from "@mayrlabs/debugger";
+
+const authLogger = new Debugger("Auth");
+const dbLogger = new Debugger("Database");
+
+authLogger.log("User logged in");
+// Output: [Timestamp] [Auth] [LOG] User logged in
+
+dbLogger.error("Connection failed");
+// Output: [Timestamp] [Database] [ERROR] Connection failed
+```
+
+### Custom Colors
+
+Use the `.custom()` method to log with a specific hex color.
+
+```typescript
+import { Debugger } from "@mayrlabs/debugger";
+
+new Debugger().custom("#FF00FF", "This is a magenta message");
+```
+
 ## API Reference
 
-### `debug(namespace?: string)`
+### `new Debugger(namespace?: string)`
 
-Factory function that returns a new `Debugger` instance. Optional `namespace` argument prefixes all logs.
+Creates a new `Debugger` instance. Optional `namespace` argument prefixes all logs.
 
 ### `Debugger` Methods
 

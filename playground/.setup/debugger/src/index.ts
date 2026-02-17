@@ -1,3 +1,3 @@
-import { debug } from "@mayrlabs/debugger";
+import { Debugger } from "@mayrlabs/debugger";
 
-debug().log("hello");
+new Debugger().log("hello");

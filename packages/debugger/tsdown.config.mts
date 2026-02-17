@@ -11,24 +11,11 @@ const copyrightYear = (): string => {
 };
 
 const BANNER = {
-  js: `
-/**
- * MayR Labs
- * Build. Ship. Repeat intelligently.
- *
- * (c) ${copyrightYear()} MayR Labs
- * https://mayrlabs.com
- */
-`,
+  js: `/// (c) ${copyrightYear()} MayR Labs https://mayrlabs.com`,
 };
 
 const FOOTER = {
-  js: `
-/**
- * Built with discipline by MayR Labs.
- * Software should feel intentional.
- */
-`,
+  js: ``,
 };
 
 export default defineConfig({
@@ -36,14 +23,12 @@ export default defineConfig({
   format: ["cjs", "esm"],
   clean: true,
   shims: true,
-  // target: "node18",
-  // minify: true,
-  unbundle: true,
+  minify: true,
   dts: true,
   banner: BANNER,
   footer: FOOTER,
 
-  sourcemap: true,
+  sourcemap: false,
   outDir: "dist",
   target: "es2022",
 });

@@ -1,4 +1,4 @@
-class Debugger {
+export class Debugger {
   private namespace?: string;
   private isDevOnly: boolean = false;
 
@@ -16,16 +16,12 @@ class Debugger {
       if (typeof process !== "undefined" && process.env.NODE_ENV) {
         return process.env.NODE_ENV !== "production";
       }
-      // @ts-ignore
+
       // Check for import.meta.env.DEV if available (Vite/ESM)
       try {
         // @ts-ignore
-        if (import.meta && import.meta.env && import.meta.env.DEV) {
-          return true;
-        }
-      } catch {
-        // Ignore errors if import.meta is not defined
-      }
+        if (import.meta && import.meta.env && import.meta.env.DEV) return true;
+      } catch {}
 
       return false;
     }

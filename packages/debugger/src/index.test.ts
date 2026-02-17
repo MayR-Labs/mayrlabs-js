@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { debug } from "@/index.js";
+import { debug, Debugger } from "./index.js";
 
 describe("Debugger", () => {
   let consoleSpy: any;
@@ -20,12 +20,12 @@ describe("Debugger", () => {
   });
 
   it("should log messages", () => {
-    debug().log("test message");
+    new Debugger().log("test message");
     expect(consoleSpy.log).toHaveBeenCalled();
   });
 
   it("should support namespaces", () => {
-    debug("MyNamespace").log("test message");
+    new Debugger("MyNamespace").log("test message");
     expect(consoleSpy.log).toHaveBeenCalledWith(
       expect.stringContaining("[MyNamespace]"),
       "test message"
