@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { FloatingHeader } from "@/registry/new-york/floating-header/floating-header";
+import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
@@ -38,8 +38,10 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <div className="relative flex min-h-screen flex-col">
-          <FloatingHeader />
+          <SiteHeader />
+
           <div className="flex-1">{children}</div>
+
           <SiteFooter />
         </div>
       </body>

@@ -19,7 +19,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "shiki": "^3.22.0",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "^3.4.1",
     "zod": "^3.25.76"
   },
   "devDependencies": {
