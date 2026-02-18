@@ -1,7 +1,7 @@
 import React from "react";
 import Image, { ImageProps } from "next/image";
-import { cn } from "./utils";
-import { Generator } from "./generator";
+import { cn } from "../utils";
+import { Generator } from "../generator";
 
 export interface IconProps extends Omit<ImageProps, "src" | "alt"> {
   icon: string;
@@ -141,7 +141,7 @@ export function FallbackIcon({
   return (
     <div
       className={cn(
-        "bg-muted text-muted-foreground flex items-center justify-center rounded-full bg-gray-200 text-gray-500",
+        "bg-muted text-muted-foreground flex items-center justify-center rounded-full",
         className
       )}
       style={{ width: size, height: size, ...style }}

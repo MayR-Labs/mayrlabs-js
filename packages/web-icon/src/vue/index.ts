@@ -1,6 +1,6 @@
 import { defineComponent, h, type PropType } from "vue";
-import { cn } from "./utils";
-import { Generator } from "./generator";
+import { cn } from "../utils";
+import { Generator } from "../generator";
 
 const props = {
   icon: { type: String, required: false }, // For CustomIcon
@@ -101,7 +101,7 @@ export const FallbackIcon = defineComponent({
         "div",
         {
           class: cn(
-            "bg-muted text-muted-foreground flex items-center justify-center rounded-full bg-gray-200 text-gray-500",
+            "bg-muted text-muted-foreground flex items-center justify-center rounded-full",
             props.className
           ),
           style: {

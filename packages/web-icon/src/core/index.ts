@@ -1,5 +1,5 @@
-import { Generator } from "./generator";
-import { cn } from "./utils";
+import { Generator } from "../generator";
+import { cn } from "../utils";
 
 interface IconProps {
   icon: string;
@@ -86,7 +86,7 @@ export function FallbackIcon({
 }): string {
   const { style, className: cls } = getStyleAndClass(size, className);
   const finalClass = cn(
-    "bg-muted text-muted-foreground flex items-center justify-center rounded-full bg-gray-200 text-gray-500",
+    "bg-muted text-muted-foreground flex items-center justify-center rounded-full",
     cls
   );
   return `<div class="${finalClass}" style="${style}"><span style="font-size: 12px">?</span></div>`;

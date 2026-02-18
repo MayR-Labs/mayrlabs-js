@@ -21,10 +21,10 @@ const FOOTER = {
 export default defineConfig({
   entry: [
     "src/index.ts",
-    "src/core.ts",
-    "src/react.tsx",
-    "src/vue.ts",
-    "src/next.tsx",
+    "src/core/index.ts",
+    "src/react/index.tsx",
+    "src/vue/index.ts",
+    "src/next/index.tsx",
   ],
   format: ["cjs", "esm"],
   clean: true,

@@ -44,24 +44,24 @@
       "require": "./dist/index.js"
     },
     "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.mjs",
-      "require": "./dist/core.js"
+      "types": "./dist/core/index.d.cts",
+      "import": "./dist/core/index.mjs",
+      "require": "./dist/core/index.cjs"
     },
     "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.mjs",
-      "require": "./dist/react.js"
+      "types": "./dist/react/index.d.cts",
+      "import": "./dist/react/index.mjs",
+      "require": "./dist/react/index.cjs"
     },
     "./vue": {
-      "types": "./dist/vue.d.ts",
-      "import": "./dist/vue.mjs",
-      "require": "./dist/vue.js"
+      "types": "./dist/vue/index.d.xts",
+      "import": "./dist/vue/index.mjs",
+      "require": "./dist/vue/index.cjs"
     },
     "./next": {
-      "types": "./dist/next.d.ts",
-      "import": "./dist/next.mjs",
-      "require": "./dist/next.js"
+      "types": "./dist/next/index.d.cts",
+      "import": "./dist/next/index.mjs",
+      "require": "./dist/next/index.cjs"
     },
     "./package.json": "./package.json"
   },
