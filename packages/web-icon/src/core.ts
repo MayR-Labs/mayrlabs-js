@@ -27,12 +27,8 @@ export class Generator {
     if (!fullSlug) return "";
 
     const firstColonIndex = fullSlug.indexOf(":");
+
     if (firstColonIndex === -1) {
-      // Default to simple icon if no prefix found, as per original logic?
-      // "The WebIcon is baically that detects the sub component to use based on the slug.
-      // While the provider specific icons do not need the provider prefix."
-      // But here we are resolving `iconUrl` for a generic slug.
-      // The original `WebIcon` component defaulted to `SimpleIcon` if no colon found.
       return Generator.simpleIcon.url(fullSlug);
     }
 
@@ -42,17 +38,12 @@ export class Generator {
     switch (type) {
       case "simple":
         return Generator.simpleIcon.url(value);
-      case "dev": {
+      case "dev":
         const [iconName, iconType] = value.split(":");
         return Generator.devIcon.url(iconName, iconType);
-      }
       case "local":
         return value.startsWith("/") ? value : `/${value}`;
       case "remote":
-        // remote:https://example.com/icon.png -> value is https://example.com/icon.png
-        // The split logic above splits by FIRST colon only?
-        // "remote:https://example.com" -> type="remote", value="https://example.com"
-        // Yes, `substring(firstColonIndex + 1)` takes the rest.
         return value;
       default:
         return "";

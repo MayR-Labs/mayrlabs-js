@@ -40,18 +40,18 @@
   "exports": {
     "./core": {
       "import": "./dist/core.mjs",
-      "require": "./dist/core.js",
-      "types": "./dist/core.d.ts"
+      "require": "./dist/core.cjs",
+      "types": "./dist/core.d.cts"
     },
     "./react": {
       "import": "./dist/react.mjs",
-      "require": "./dist/react.js",
-      "types": "./dist/react.d.ts"
+      "require": "./dist/react.cjs",
+      "types": "./dist/react.d.cts"
     },
     "./vue": {
       "import": "./dist/vue.mjs",
-      "require": "./dist/vue.js",
-      "types": "./dist/vue.d.ts"
+      "require": "./dist/vue.cjs",
+      "types": "./dist/vue.d.cts"
     },
     "./package.json": "./package.json"
   },

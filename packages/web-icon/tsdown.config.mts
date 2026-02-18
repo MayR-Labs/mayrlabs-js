@@ -26,7 +26,7 @@ export default defineConfig({
   target: "node18",
   minify: true,
   dts: true,
-  exports: true,
+  // exports: true,
   banner: BANNER,
   footer: FOOTER,
 });
