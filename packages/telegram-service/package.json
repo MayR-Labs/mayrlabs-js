@@ -27,8 +27,9 @@
   "type": "commonjs",
   "exports": {
     ".": {
-      "import": "./dist/cli.mjs",
-      "require": "./dist/cli.cjs"
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "scripts": {
@@ -65,6 +66,7 @@
   "bin": {
     "telegram-service": "dist/cli.cjs"
   },
-  "main": "dist/cli.cjs",
-  "module": "dist/cli.mjs"
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "./dist/index.d.mts"
 }

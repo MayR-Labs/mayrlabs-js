@@ -4,6 +4,7 @@
   "private": true,
   "description": "Playground for @mayrlabs/telegram-service",
   "devDependencies": {
-    "@mayrlabs/telegram-service": "file:../../packages/telegram-service"
+    "@mayrlabs/telegram-service": "file:../../packages/telegram-service",
+    "typescript": "^5.9.3"
   }
 }
