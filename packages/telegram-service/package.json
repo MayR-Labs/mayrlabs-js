@@ -1,8 +1,16 @@
 {
   "name": "@mayrlabs/telegram-service",
   "version": "0.0.0",
-  "description": "A telegram service ",
-  "keywords": [],
+  "description": "A powerful, abstract Telegram bot service wrapper for MayR Labs applications. Includes a CLI for easy service generation and testing.",
+  "keywords": [
+    "telegram",
+    "bot",
+    "service",
+    "typescript",
+    "mayrlabs",
+    "notification",
+    "cli"
+  ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/telegram-service#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"

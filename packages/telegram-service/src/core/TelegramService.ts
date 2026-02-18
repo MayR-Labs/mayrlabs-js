@@ -11,7 +11,19 @@ const success = (): TelegramOperationResult => ({ success: true });
 
 const _debug = new Debugger("TelegramService").devOnly();
 
+/**
+ * Abstract base class for creating Telegram notification services.
+ * Extend this class to implement custom message formatting and logic.
+ *
+ * @template T The type of data payload used to generate the message.
+ */
 export abstract class TelegramService<T> {
+  /**
+   * Formats the data into a string message to be sent to Telegram.
+   *
+   * @param data The data payload.
+   * @returns The formatted message string (Markdown by default).
+   */
   protected abstract formatMessage(data: T): string;
 
   protected isEnabled(): boolean {
@@ -46,6 +58,14 @@ export abstract class TelegramService<T> {
     }
   }
 
+  /**
+   * Sends a notification to the specified chat IDs or default chat IDs.
+   *
+   * @param data The data payload to format and send.
+   * @param chatIds Optional array of chat IDs to send to. If not provided or empty, uses `TELEGRAM_DEFAULT_CHAT_IDS`.
+   * @param options Optional `node-telegram-bot-api` SendMessageOptions. Defaults to Markdown parse mode and disabled web preview.
+   * @returns A promise resolving to the operation result.
+   */
   public async sendNotification(
     data: T,
     chatIds?: string[] | null,
