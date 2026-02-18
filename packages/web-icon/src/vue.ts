@@ -2,7 +2,6 @@ import { defineComponent, h, type PropType } from "vue";
 import { cn } from "./utils";
 import { Generator } from "./generator";
 
-// --- Types ---
 const props = {
   icon: { type: String, required: false }, // For CustomIcon
   slug: { type: String, required: false }, // For SimpleIcon
@@ -14,7 +13,6 @@ const props = {
   className: { type: String, default: "" },
 };
 
-// Helper for style/class
 const getContainerProps = (
   className: string | undefined,
   size: number | string
@@ -26,7 +24,6 @@ const getContainerProps = (
   },
 });
 
-// Simple Component
 export const SimpleIcon = defineComponent({
   name: "SimpleIcon",
   props: { ...props, slug: { type: String, required: true } },
@@ -44,7 +41,6 @@ export const SimpleIcon = defineComponent({
   },
 });
 
-// Dev Component
 export const DevIcon = defineComponent({
   name: "DevIcon",
   props: { ...props, config: { type: String, required: true } },
@@ -63,7 +59,6 @@ export const DevIcon = defineComponent({
   },
 });
 
-// Local Component
 export const LocalIcon = defineComponent({
   name: "LocalIcon",
   props: { ...props, path: { type: String, required: true } },
@@ -81,7 +76,6 @@ export const LocalIcon = defineComponent({
   },
 });
 
-// Remote Component
 export const RemoteIcon = defineComponent({
   name: "RemoteIcon",
   props: { ...props, url: { type: String, required: true } },
@@ -98,7 +92,6 @@ export const RemoteIcon = defineComponent({
   },
 });
 
-// Fallback Component
 export const FallbackIcon = defineComponent({
   name: "FallbackIcon",
   props: { ...props },
@@ -124,8 +117,7 @@ export const FallbackIcon = defineComponent({
   },
 });
 
-// CustomIcon Component
-export const CustomIcon = defineComponent({
+const CustomIconMain = defineComponent({
   name: "CustomIcon",
   props: { ...props, icon: { type: String, required: true } },
   setup(props) {
@@ -189,3 +181,13 @@ export const CustomIcon = defineComponent({
     };
   },
 });
+
+export const CustomIcon = Object.assign(CustomIconMain, {
+  simple: SimpleIcon,
+  dev: DevIcon,
+  local: LocalIcon,
+  remote: RemoteIcon,
+  fallback: FallbackIcon,
+});
+
+export default CustomIcon;

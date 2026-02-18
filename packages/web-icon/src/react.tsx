@@ -2,11 +2,9 @@ import React, { CSSProperties } from "react";
 import { cn } from "./utils";
 import { Generator } from "./generator";
 
-// --- Types ---
-
 export interface IconProps {
-  icon: string; // For CustomIcon (e.g., 'simple:asana')
-  name?: string; // Optional name for alt text
+  icon: string;
+  name?: string;
   size?: number | string;
   className?: string;
   style?: CSSProperties;
@@ -14,9 +12,6 @@ export interface IconProps {
 
 interface SpecificIconProps extends Omit<IconProps, "icon"> {}
 
-// --- Sub-Components ---
-
-// Simple Icons: simple:icon-slug
 export function SimpleIcon({
   slug,
   size = 24,
@@ -40,7 +35,6 @@ export function SimpleIcon({
   );
 }
 
-// Dev Icons: dev:icon-name:type (type defaults to original)
 export function DevIcon({
   config,
   size = 24,
@@ -65,7 +59,6 @@ export function DevIcon({
   );
 }
 
-// Local Icons: local:path/to/icon.{svg,png}
 export function LocalIcon({
   path,
   size = 24,
@@ -89,7 +82,6 @@ export function LocalIcon({
   );
 }
 
-// Remote Icons: remote:https://example.com/path/to/icon.{svg,png}
 export function RemoteIcon({
   url,
   size = 24,
@@ -111,7 +103,6 @@ export function RemoteIcon({
   );
 }
 
-// Fallback for unknown types
 export function FallbackIcon({
   size = 24,
   className,
@@ -129,7 +120,6 @@ export function FallbackIcon({
       )}
       style={{ width: size, height: size, ...style }}
     >
-      {/* Default placeholder if needed */}
       <span
         style={{ fontSize: typeof size === "number" ? size * 0.5 : "12px" }}
       >
@@ -139,9 +129,7 @@ export function FallbackIcon({
   );
 }
 
-// --- Main Component ---
-
-export function CustomIcon({
+function CustomIconMain({
   icon,
   name,
   size = 24,
@@ -213,3 +201,13 @@ export function CustomIcon({
       return <FallbackIcon size={size} className={className} style={style} />;
   }
 }
+
+export const CustomIcon = Object.assign(CustomIconMain, {
+  simple: SimpleIcon,
+  dev: DevIcon,
+  local: LocalIcon,
+  remote: RemoteIcon,
+  fallback: FallbackIcon,
+});
+
+export default CustomIcon;

@@ -1,7 +1,6 @@
 import { Generator } from "./generator";
 import { cn } from "./utils";
 
-// --- Types ---
 interface IconProps {
   icon: string;
   name?: string;
@@ -15,7 +14,6 @@ interface SpecificIconProps {
   className?: string;
 }
 
-// --- Helpers ---
 function getStyleAndClass(
   size: number | string = 24,
   className?: string
@@ -32,11 +30,8 @@ function renderDiv(
   imgSrc: string,
   alt: string
 ): string {
-  // We strictly escape attributes if this was a real template engine, but for simple strings:
   return `<div class="${className}" style="${style}"><img src="${imgSrc}" alt="${alt}" class="object-contain w-full h-full" /></div>`;
 }
-
-// --- Generators ---
 
 export function SimpleIcon({
   slug,
@@ -94,11 +89,10 @@ export function FallbackIcon({
     "bg-muted text-muted-foreground flex items-center justify-center rounded-full bg-gray-200 text-gray-500",
     cls
   );
-  // Simplified placeholder
   return `<div class="${finalClass}" style="${style}"><span style="font-size: 12px">?</span></div>`;
 }
 
-export function CustomIcon({ icon, name, size, className }: IconProps): string {
+function CustomIconMain({ icon, name, size, className }: IconProps): string {
   if (!icon) return FallbackIcon({ size, className });
 
   const firstColonIndex = icon.indexOf(":");
@@ -123,3 +117,13 @@ export function CustomIcon({ icon, name, size, className }: IconProps): string {
       return FallbackIcon({ size, className });
   }
 }
+
+export const CustomIcon = Object.assign(CustomIconMain, {
+  simple: SimpleIcon,
+  dev: DevIcon,
+  local: LocalIcon,
+  remote: RemoteIcon,
+  fallback: FallbackIcon,
+});
+
+export default CustomIcon;

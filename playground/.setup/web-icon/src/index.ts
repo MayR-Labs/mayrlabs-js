@@ -1,19 +1,20 @@
-import { Generator } from "@mayrlabs/web-icon/core";
-import {
-  DevIcon as DevIconReact,
-  FallbackIcon as FallbackIconReact,
-  type IconProps as IconPropsReact,
-  LocalIcon as LocalIconReact,
-  RemoteIcon as RemoteIconReact,
-  SimpleIcon as SimpleIconReact,
-  WebIcon as WebIconReact,
-} from "@mayrlabs/web-icon/react";
-import {
-  DevIcon as DevIconVue,
-  FallbackIcon as FallbackIconVue,
-  type IconProps as IconPropsVue,
-  LocalIcon as LocalIconVue,
-  RemoteIcon as RemoteIconVue,
-  SimpleIcon as SimpleIconVue,
-  WebIcon as WebIconVue,
-} from "@mayrlabs/web-icon/vue";
+import { Generator } from "@mayrlabs/web-icon";
+import CustomIconReact from "@mayrlabs/web-icon/react";
+import CustomIconNext from "@mayrlabs/web-icon/next";
+import CustomIconVue from "@mayrlabs/web-icon/vue";
+
+// Testing Core
+import CustomIconCore from "@mayrlabs/web-icon/core";
+
+// Example Usage (for verification, not runnable without framework context usually)
+console.log(Generator.simpleIcon.url("asana"));
+
+// React usage example (compile time check)
+const reactEl = CustomIconReact({ icon: "simple:asana" });
+const reactSimple = CustomIconReact.simple({ slug: "asana" });
+
+// Next usage example
+const nextEl = CustomIconNext({ icon: "simple:asana" });
+
+// Vue usage example
+// In Vue context...

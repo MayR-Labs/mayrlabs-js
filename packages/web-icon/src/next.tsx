@@ -3,34 +3,23 @@ import Image, { ImageProps } from "next/image";
 import { cn } from "./utils";
 import { Generator } from "./generator";
 
-// --- Types ---
-
 export interface IconProps extends Omit<ImageProps, "src" | "alt"> {
-  icon: string; // The full icon string (e.g., 'simple:asana')
-  name?: string; // Optional name for alt text
+  icon: string;
+  name?: string;
   size?: number | string;
   className?: string;
 }
 
 interface SpecificIconProps extends Omit<IconProps, "icon"> {}
 
-// Helper to get size props for next/image
 const getSizeProps = (size: number | string = 24) => {
   if (typeof size === "number") {
     return { width: size, height: size };
   }
-  // If string (e.g. "100%"), we can't easily pass width/height to next/image which expects numbers or fill.
-  // For simplicity in this wrapper, if size is a string, we might assume the user handles sizing via className or style,
-  // OR we default to a standard size if parsing fails.
-  // However, next/image requires width/height unless `fill` is used.
-  // Let's assume for this implementation we pass width/height if number, else we assume the user might want `fill` layout or valid number strings.
-  // Actually, let's keep it simple: if number, pass it. If string, try to parse.
   const parsed = parseInt(size as string, 10);
   if (!isNaN(parsed)) return { width: parsed, height: parsed };
-  return { width: 24, height: 24 }; // Fallback
+  return { width: 24, height: 24 };
 };
-
-// --- Sub-Components ---
 
 export function SimpleIcon({
   slug,
@@ -166,9 +155,7 @@ export function FallbackIcon({
   );
 }
 
-// --- Main Component ---
-
-export function CustomIcon({
+function CustomIconMain({
   icon,
   name,
   size = 24,
@@ -239,3 +226,13 @@ export function CustomIcon({
       return <FallbackIcon size={size} className={className} />;
   }
 }
+
+export const CustomIcon = Object.assign(CustomIconMain, {
+  simple: SimpleIcon,
+  dev: DevIcon,
+  local: LocalIcon,
+  remote: RemoteIcon,
+  fallback: FallbackIcon,
+});
+
+export default CustomIcon;

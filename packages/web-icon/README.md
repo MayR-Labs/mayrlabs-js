@@ -25,14 +25,19 @@ const url = Generator.simpleIcon.url("asana");
 ### React
 
 ```tsx
-import { CustomIcon, SimpleIcon, DevIcon } from "@mayrlabs/web-icon/react";
+import CustomIcon from "@mayrlabs/web-icon/react";
 
 export function App() {
   return (
     <div className="flex gap-4">
+      {/* Auto-dispatch */}
       <CustomIcon icon="simple:asana" size={32} />
-      <CustomIcon icon="dev:react:original" size={32} />
-      <SimpleIcon slug="github" />
+
+      {/* Sub-components via dot-notation */}
+      <CustomIcon.simple slug="github" size={32} />
+      <CustomIcon.dev config="react:original" size={32} />
+      <CustomIcon.local path="/assets/icon.svg" size={32} />
+      <CustomIcon.remote url="https://example.com/icon.png" size={32} />
     </div>
   );
 }
@@ -43,10 +48,15 @@ export function App() {
 Optimized for Next.js using `next/image`.
 
 ```tsx
-import { CustomIcon } from "@mayrlabs/web-icon/next";
+import CustomIcon from "@mayrlabs/web-icon/next";
 
 export function App() {
-  return <CustomIcon icon="simple:asana" size={32} />;
+  return (
+    <>
+      <CustomIcon icon="simple:asana" size={32} />
+      <CustomIcon.simple slug="github" size={32} />
+    </>
+  );
 }
 ```
 
@@ -54,11 +64,14 @@ export function App() {
 
 ```vue
 <script setup>
-import { CustomIcon } from "@mayrlabs/web-icon/vue";
+import CustomIcon from "@mayrlabs/web-icon/vue";
 </script>
 
 <template>
-  <CustomIcon icon="simple:asana" :size="32" />
+  <div class="flex gap-4">
+    <CustomIcon icon="simple:asana" :size="32" />
+    <CustomIcon.simple slug="github" :size="32" />
+  </div>
 </template>
 ```
 
@@ -67,8 +80,8 @@ import { CustomIcon } from "@mayrlabs/web-icon/vue";
 Returns HTML strings.
 
 ```typescript
-import { CustomIcon } from "@mayrlabs/web-icon/core";
+import CustomIcon from "@mayrlabs/web-icon/core";
 
-const html = CustomIcon({ icon: "simple:asana", size: 32 });
-// <div ...><img ... /></div>
+const html1 = CustomIcon({ icon: "simple:asana", size: 32 });
+const html2 = CustomIcon.simple({ slug: "github", size: 32 });
 ```
