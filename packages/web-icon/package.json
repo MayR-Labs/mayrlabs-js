@@ -76,13 +76,13 @@
     "@types/react": "^19.2.2",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^10.0.0",
+    "next": "^15.1.0",
     "react": "^19.2.4",
     "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18",
-    "vue": "^3.5.28",
-    "next": "^15.1.0"
+    "vue": "^3.5.28"
   },
   "peerDependencies": {
     "next": "^13.0.0 || ^14.0.0 || ^15.0.0",
@@ -99,5 +99,8 @@
     "next": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "typescript-eslint": "^8.14.0"
   }
 }
