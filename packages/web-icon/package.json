@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/web-icon",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A web icon package for React and Vue",
   "keywords": [
     "icon",
