@@ -27,6 +27,7 @@ export default defineConfig({
   dts: true,
   banner: BANNER,
   footer: FOOTER,
+  exports: true,
 
   sourcemap: false,
   outDir: "dist",

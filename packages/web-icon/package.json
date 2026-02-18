@@ -1,8 +1,17 @@
 {
   "name": "@mayrlabs/web-icon",
   "version": "0.0.0",
-  "description": "A web icon",
-  "keywords": [],
+  "description": "A web icon package for React and Vue",
+  "keywords": [
+    "icon",
+    "react",
+    "vue",
+    "web-icon"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/web-icon#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
@@ -25,11 +34,26 @@
     "package.json"
   ],
   "type": "commonjs",
+  "main": "./dist/core.js",
+  "module": "./dist/core.mjs",
+  "types": "./dist/core.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
+    "./core": {
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js",
+      "types": "./dist/react.d.ts"
+    },
+    "./vue": {
+      "import": "./dist/vue.mjs",
+      "require": "./dist/vue.js",
+      "types": "./dist/vue.d.ts"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "build": "tsdown",
@@ -44,17 +68,30 @@
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@types/node": "^25.2.3",
+    "@types/react": "^19.2.2",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^10.0.0",
+    "react": "^19.2.4",
     "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "vue": "^3.5.28"
   },
-  "private": false,
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.4.1"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs"
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  }
 }

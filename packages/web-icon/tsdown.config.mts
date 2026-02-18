@@ -11,34 +11,22 @@ const copyrightYear = (): string => {
 };
 
 const BANNER = {
-  js: `
-/**
- * MayR Labs
- * Build. Ship. Repeat intelligently.
- *
- * (c) ${copyrightYear()} MayR Labs
- * https://mayrlabs.com
- */
-`,
+  js: `/// (c) ${copyrightYear()} MayR Labs - https://mayrlabs.com`,
 };
 
 const FOOTER = {
-  js: `
-/**
- * Built with discipline by MayR Labs.
- * Software should feel intentional.
- */
-`,
+  js: `/// Built with discipline by MayR Labs`,
 };
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: ["src/core.ts", "src/react.tsx", "src/vue.ts"],
   format: ["cjs", "esm"],
   clean: true,
   shims: true,
   target: "node18",
   minify: true,
   dts: true,
+  exports: true,
   banner: BANNER,
   footer: FOOTER,
 });
