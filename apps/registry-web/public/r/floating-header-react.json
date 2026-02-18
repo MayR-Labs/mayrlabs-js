@@ -3,6 +3,7 @@
   "name": "floating-header-react",
   "title": "Floating Header React",
   "description": "A generic wrapper component for a floating header.",
+  "dependencies": ["react"],
   "registryDependencies": ["utils"],
   "files": [
     {
