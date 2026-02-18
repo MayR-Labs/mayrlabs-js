@@ -33,7 +33,7 @@ function renderDiv(
   return `<div class="${className}" style="${style}"><img src="${imgSrc}" alt="${alt}" class="object-contain w-full h-full" /></div>`;
 }
 
-export function SimpleIcon({
+function SimpleIcon({
   slug,
   size,
   className,
@@ -44,7 +44,7 @@ export function SimpleIcon({
   return renderDiv(cls, style, url, `${name || slug} icon`);
 }
 
-export function DevIcon({
+function DevIcon({
   config,
   size,
   className,
@@ -56,7 +56,7 @@ export function DevIcon({
   return renderDiv(cls, style, url, `${name || iconName} icon`);
 }
 
-export function LocalIcon({
+function LocalIcon({
   path,
   size,
   className,
@@ -67,7 +67,7 @@ export function LocalIcon({
   return renderDiv(cls, style, src, `${name || "Local"} icon`);
 }
 
-export function RemoteIcon({
+function RemoteIcon({
   url,
   size,
   className,
@@ -77,7 +77,7 @@ export function RemoteIcon({
   return renderDiv(cls, style, url, `${name || "Remote"} icon`);
 }
 
-export function FallbackIcon({
+function FallbackIcon({
   size,
   className,
 }: {
@@ -118,7 +118,7 @@ function CustomIconMain({ icon, name, size, className }: IconProps): string {
   }
 }
 
-export const CustomIcon = Object.assign(CustomIconMain, {
+const CustomIcon = Object.assign(CustomIconMain, {
   simple: SimpleIcon,
   dev: DevIcon,
   local: LocalIcon,

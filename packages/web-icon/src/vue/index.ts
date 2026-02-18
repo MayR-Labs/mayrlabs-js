@@ -1,6 +1,6 @@
 import { defineComponent, h, type PropType } from "vue";
-import { cn } from "../utils";
-import { Generator } from "../generator";
+import { cn } from "@/utils";
+import { Generator } from "@/generator";
 
 const props = {
   icon: { type: String, required: false }, // For CustomIcon
@@ -24,7 +24,7 @@ const getContainerProps = (
   },
 });
 
-export const SimpleIcon = defineComponent({
+const SimpleIcon = defineComponent({
   name: "SimpleIcon",
   props: { ...props, slug: { type: String, required: true } },
   setup(props) {
@@ -41,7 +41,7 @@ export const SimpleIcon = defineComponent({
   },
 });
 
-export const DevIcon = defineComponent({
+const DevIcon = defineComponent({
   name: "DevIcon",
   props: { ...props, config: { type: String, required: true } },
   setup(props) {
@@ -59,7 +59,7 @@ export const DevIcon = defineComponent({
   },
 });
 
-export const LocalIcon = defineComponent({
+const LocalIcon = defineComponent({
   name: "LocalIcon",
   props: { ...props, path: { type: String, required: true } },
   setup(props) {
@@ -76,7 +76,7 @@ export const LocalIcon = defineComponent({
   },
 });
 
-export const RemoteIcon = defineComponent({
+const RemoteIcon = defineComponent({
   name: "RemoteIcon",
   props: { ...props, url: { type: String, required: true } },
   setup(props) {
@@ -92,7 +92,7 @@ export const RemoteIcon = defineComponent({
   },
 });
 
-export const FallbackIcon = defineComponent({
+const FallbackIcon = defineComponent({
   name: "FallbackIcon",
   props: { ...props },
   setup(props) {

@@ -1,9 +1,9 @@
 import React from "react";
 import Image, { ImageProps } from "next/image";
-import { cn } from "../utils";
-import { Generator } from "../generator";
+import { cn } from "@/utils";
+import { Generator } from "@/generator";
 
-export interface IconProps extends Omit<ImageProps, "src" | "alt"> {
+interface IconProps extends Omit<ImageProps, "src" | "alt"> {
   icon: string;
   name?: string;
   size?: number | string;
@@ -21,7 +21,7 @@ const getSizeProps = (size: number | string = 24) => {
   return { width: 24, height: 24 };
 };
 
-export function SimpleIcon({
+function SimpleIcon({
   slug,
   size = 24,
   className,
@@ -48,7 +48,7 @@ export function SimpleIcon({
   );
 }
 
-export function DevIcon({
+function DevIcon({
   config,
   size = 24,
   className,
@@ -76,7 +76,7 @@ export function DevIcon({
   );
 }
 
-export function LocalIcon({
+function LocalIcon({
   path,
   size = 24,
   className,
@@ -103,7 +103,7 @@ export function LocalIcon({
   );
 }
 
-export function RemoteIcon({
+function RemoteIcon({
   url,
   size = 24,
   className,
@@ -129,7 +129,7 @@ export function RemoteIcon({
   );
 }
 
-export function FallbackIcon({
+function FallbackIcon({
   size = 24,
   className,
   style,
@@ -155,7 +155,7 @@ export function FallbackIcon({
   );
 }
 
-function CustomIconMain({
+export default function CustomIcon({
   icon,
   name,
   size = 24,
@@ -227,12 +227,8 @@ function CustomIconMain({
   }
 }
 
-export const CustomIcon = Object.assign(CustomIconMain, {
-  simple: SimpleIcon,
-  dev: DevIcon,
-  local: LocalIcon,
-  remote: RemoteIcon,
-  fallback: FallbackIcon,
-});
-
-export default CustomIcon;
+CustomIcon.simple = SimpleIcon;
+CustomIcon.dev = DevIcon;
+CustomIcon.local = LocalIcon;
+CustomIcon.remote = RemoteIcon;
+CustomIcon.fallback = FallbackIcon;
