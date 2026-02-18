@@ -1,10 +1,10 @@
 import { defineComponent, h, type PropType } from "vue";
 import { cn } from "./utils";
-import { Generator } from "./core";
+import { Generator } from "./generator";
 
 // --- Types ---
 const props = {
-  icon: { type: String, required: false }, // For WebIcon
+  icon: { type: String, required: false }, // For CustomIcon
   slug: { type: String, required: false }, // For SimpleIcon
   config: { type: String, required: false }, // For DevIcon
   path: { type: String, required: false }, // For LocalIcon
@@ -124,9 +124,9 @@ export const FallbackIcon = defineComponent({
   },
 });
 
-// WebIcon Component
-export const WebIcon = defineComponent({
-  name: "WebIcon",
+// CustomIcon Component
+export const CustomIcon = defineComponent({
+  name: "CustomIcon",
   props: { ...props, icon: { type: String, required: true } },
   setup(props) {
     return () => {

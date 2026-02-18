@@ -34,24 +34,34 @@
     "package.json"
   ],
   "type": "commonjs",
-  "main": "./dist/core.js",
-  "module": "./dist/core.mjs",
-  "types": "./dist/core.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
     "./core": {
+      "types": "./dist/core.d.ts",
       "import": "./dist/core.mjs",
-      "require": "./dist/core.cjs",
-      "types": "./dist/core.d.cts"
+      "require": "./dist/core.js"
     },
     "./react": {
+      "types": "./dist/react.d.ts",
       "import": "./dist/react.mjs",
-      "require": "./dist/react.cjs",
-      "types": "./dist/react.d.cts"
+      "require": "./dist/react.js"
     },
     "./vue": {
+      "types": "./dist/vue.d.ts",
       "import": "./dist/vue.mjs",
-      "require": "./dist/vue.cjs",
-      "types": "./dist/vue.d.cts"
+      "require": "./dist/vue.js"
+    },
+    "./next": {
+      "types": "./dist/next.d.ts",
+      "import": "./dist/next.mjs",
+      "require": "./dist/next.js"
     },
     "./package.json": "./package.json"
   },
@@ -84,13 +94,17 @@
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "next": "^13.0.0 || ^14.0.0 || ^15.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "next": {
       "optional": true
     }
   }

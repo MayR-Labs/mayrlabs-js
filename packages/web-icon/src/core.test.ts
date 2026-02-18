@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Generator } from "./core";
+import { Generator } from "./generator";
 
 describe("Generator", () => {
   it("generates simple icon url", () => {

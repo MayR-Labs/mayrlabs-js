@@ -1,1 +1,1 @@
-export const hello = () => "Hello from @mayrlabs/web-icon";
+export * from "./generator";

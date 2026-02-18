@@ -1,117 +1,145 @@
-import React, { CSSProperties } from "react";
+import React from "react";
+import Image, { ImageProps } from "next/image";
 import { cn } from "./utils";
 import { Generator } from "./generator";
 
 // --- Types ---
 
-export interface IconProps {
-  icon: string; // For CustomIcon (e.g., 'simple:asana')
+export interface IconProps extends Omit<ImageProps, "src" | "alt"> {
+  icon: string; // The full icon string (e.g., 'simple:asana')
   name?: string; // Optional name for alt text
   size?: number | string;
   className?: string;
-  style?: CSSProperties;
 }
 
 interface SpecificIconProps extends Omit<IconProps, "icon"> {}
 
+// Helper to get size props for next/image
+const getSizeProps = (size: number | string = 24) => {
+  if (typeof size === "number") {
+    return { width: size, height: size };
+  }
+  // If string (e.g. "100%"), we can't easily pass width/height to next/image which expects numbers or fill.
+  // For simplicity in this wrapper, if size is a string, we might assume the user handles sizing via className or style,
+  // OR we default to a standard size if parsing fails.
+  // However, next/image requires width/height unless `fill` is used.
+  // Let's assume for this implementation we pass width/height if number, else we assume the user might want `fill` layout or valid number strings.
+  // Actually, let's keep it simple: if number, pass it. If string, try to parse.
+  const parsed = parseInt(size as string, 10);
+  if (!isNaN(parsed)) return { width: parsed, height: parsed };
+  return { width: 24, height: 24 }; // Fallback
+};
+
 // --- Sub-Components ---
 
-// Simple Icons: simple:icon-slug
 export function SimpleIcon({
   slug,
   size = 24,
   className,
   name,
-  style,
+  ...props
 }: { slug: string } & SpecificIconProps) {
   const iconUrl = Generator.simpleIcon.url(slug);
+  const sizeProps = getSizeProps(size);
 
   return (
     <div
       className={cn("relative inline-block", className)}
-      style={{ width: size, height: size, ...style }}
+      style={{ width: size, height: size }}
     >
-      <img
+      <Image
         src={iconUrl}
         alt={`${name || slug} icon`}
-        className="object-contain w-full h-full"
+        className="object-contain"
+        unoptimized
+        {...sizeProps}
+        {...props}
       />
     </div>
   );
 }
 
-// Dev Icons: dev:icon-name:type (type defaults to original)
 export function DevIcon({
   config,
   size = 24,
   className,
   name,
-  style,
+  ...props
 }: { config: string } & SpecificIconProps) {
   const [iconName, iconType = "original"] = config.split(":");
   const iconUrl = Generator.devIcon.url(iconName, iconType);
+  const sizeProps = getSizeProps(size);
 
   return (
     <div
       className={cn("relative inline-block", className)}
-      style={{ width: size, height: size, ...style }}
+      style={{ width: size, height: size }}
     >
-      <img
+      <Image
         src={iconUrl}
         alt={`${name || iconName} icon`}
-        className="object-contain w-full h-full"
+        className="object-contain"
+        unoptimized
+        {...sizeProps}
+        {...props}
       />
     </div>
   );
 }
 
-// Local Icons: local:path/to/icon.{svg,png}
 export function LocalIcon({
   path,
   size = 24,
   className,
   name,
-  style,
+  ...props
 }: { path: string } & SpecificIconProps) {
   const src = path.startsWith("/") ? path : `/${path}`;
+  const sizeProps = getSizeProps(size);
 
   return (
     <div
       className={cn("relative inline-block", className)}
-      style={{ width: size, height: size, ...style }}
+      style={{ width: size, height: size }}
     >
-      <img
+      <Image
         src={src}
         alt={`${name || "Local"} icon`}
-        className="object-contain w-full h-full"
+        className="object-contain"
+        unoptimized
+        {...sizeProps}
+        {...props}
       />
     </div>
   );
 }
 
-// Remote Icons: remote:https://example.com/path/to/icon.{svg,png}
 export function RemoteIcon({
   url,
   size = 24,
   className,
   name,
-  style,
+  ...props
 }: { url: string } & SpecificIconProps) {
+  const sizeProps = getSizeProps(size);
+
   return (
     <div
       className={cn("relative inline-block", className)}
-      style={{ width: size, height: size, ...style }}
+      style={{ width: size, height: size }}
     >
-      <img
+      <Image
         src={url}
         alt={`${name || "Remote"} icon`}
-        className="object-contain w-full h-full"
+        className="object-contain"
+        unoptimized
+        {...sizeProps}
+        {...props}
       />
     </div>
   );
 }
 
-// Fallback for unknown types
 export function FallbackIcon({
   size = 24,
   className,
@@ -119,7 +147,7 @@ export function FallbackIcon({
 }: {
   size?: number | string;
   className?: string;
-  style?: CSSProperties;
+  style?: React.CSSProperties;
 }) {
   return (
     <div
@@ -129,7 +157,6 @@ export function FallbackIcon({
       )}
       style={{ width: size, height: size, ...style }}
     >
-      {/* Default placeholder if needed */}
       <span
         style={{ fontSize: typeof size === "number" ? size * 0.5 : "12px" }}
       >
@@ -146,10 +173,9 @@ export function CustomIcon({
   name,
   size = 24,
   className,
-  style,
+  ...props
 }: IconProps) {
-  if (!icon)
-    return <FallbackIcon size={size} className={className} style={style} />;
+  if (!icon) return <FallbackIcon size={size} className={className} />;
 
   const firstColonIndex = icon.indexOf(":");
 
@@ -160,7 +186,7 @@ export function CustomIcon({
         name={name}
         size={size}
         className={className}
-        style={style}
+        {...props}
       />
     );
   }
@@ -176,7 +202,7 @@ export function CustomIcon({
           name={name}
           size={size}
           className={className}
-          style={style}
+          {...props}
         />
       );
     case "dev":
@@ -186,7 +212,7 @@ export function CustomIcon({
           name={name}
           size={size}
           className={className}
-          style={style}
+          {...props}
         />
       );
     case "local":
@@ -196,7 +222,7 @@ export function CustomIcon({
           name={name}
           size={size}
           className={className}
-          style={style}
+          {...props}
         />
       );
     case "remote":
@@ -206,10 +232,10 @@ export function CustomIcon({
           name={name}
           size={size}
           className={className}
-          style={style}
+          {...props}
         />
       );
     default:
-      return <FallbackIcon size={size} className={className} style={style} />;
+      return <FallbackIcon size={size} className={className} />;
   }
 }
