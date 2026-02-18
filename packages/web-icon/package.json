@@ -1,0 +1,60 @@
+{
+  "name": "@mayrlabs/web-icon",
+  "version": "0.0.0",
+  "description": "A web icon",
+  "keywords": [],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/web-icon#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/web-icon"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "pkg:dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build",
+    "demo": "tsx src/index.ts",
+    "demo:dist": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@types/node": "^25.2.3",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.0",
+    "tsdown": "^0.20.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs"
+}

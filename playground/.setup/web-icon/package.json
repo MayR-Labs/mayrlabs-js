@@ -1,0 +1,9 @@
+{
+  "name": "web-icon-pg",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Playground for @mayrlabs/web-icon",
+  "devDependencies": {
+    "@mayrlabs/web-icon": "file:../../packages/web-icon"
+  }
+}
