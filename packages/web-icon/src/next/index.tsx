@@ -1,47 +1,52 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import Image, { ImageProps } from "next/image";
-import { cn } from "@/utils";
 import { Generator } from "@/generator";
 
 interface IconProps extends Omit<ImageProps, "src" | "alt"> {
   icon: string;
   name?: string;
   size?: number | string;
-  className?: string;
+  unoptimized?: boolean;
 }
 
 interface SpecificIconProps extends Omit<IconProps, "icon"> {}
 
-const getSizeProps = (size: number | string = 24) => {
-  if (typeof size === "number") {
-    return { width: size, height: size };
-  }
-  const parsed = parseInt(size as string, 10);
-  if (!isNaN(parsed)) return { width: parsed, height: parsed };
-  return { width: 24, height: 24 };
+// Wrapper style to enforce size and positioning for Next.js Image fill
+const getWrapperStyle = (
+  size: number | string,
+  style?: CSSProperties
+): CSSProperties => ({
+  position: "relative",
+  display: "inline-block",
+  width: size,
+  height: size,
+  ...style,
+});
+
+const imageStyle: CSSProperties = {
+  objectFit: "contain",
 };
 
 function SimpleIcon({
   slug,
   size = 24,
   className,
+  style,
   name,
+  unoptimized = false,
   ...props
 }: { slug: string } & SpecificIconProps) {
   const iconUrl = Generator.simpleIcon.url(slug);
-  const sizeProps = getSizeProps(size);
 
   return (
-    <div
-      className={cn("relative inline-block", className)}
-      style={{ width: size, height: size }}
-    >
+    <div className={className} style={getWrapperStyle(size, style)}>
       <Image
         src={iconUrl}
         alt={`${name || slug} icon`}
-        className="object-contain"
-        unoptimized
-        {...sizeProps}
+        fill
+        sizes={`${size}px`}
+        style={imageStyle}
+        unoptimized={unoptimized}
         {...props}
       />
     </div>
@@ -52,24 +57,23 @@ function DevIcon({
   config,
   size = 24,
   className,
+  style,
   name,
+  unoptimized = false,
   ...props
 }: { config: string } & SpecificIconProps) {
   const [iconName, iconType = "original"] = config.split(":");
   const iconUrl = Generator.devIcon.url(iconName, iconType);
-  const sizeProps = getSizeProps(size);
 
   return (
-    <div
-      className={cn("relative inline-block", className)}
-      style={{ width: size, height: size }}
-    >
+    <div className={className} style={getWrapperStyle(size, style)}>
       <Image
         src={iconUrl}
         alt={`${name || iconName} icon`}
-        className="object-contain"
-        unoptimized
-        {...sizeProps}
+        fill
+        sizes={`${size}px`}
+        style={imageStyle}
+        unoptimized={unoptimized}
         {...props}
       />
     </div>
@@ -80,23 +84,22 @@ function LocalIcon({
   path,
   size = 24,
   className,
+  style,
   name,
+  unoptimized = false,
   ...props
 }: { path: string } & SpecificIconProps) {
   const src = path.startsWith("/") ? path : `/${path}`;
-  const sizeProps = getSizeProps(size);
 
   return (
-    <div
-      className={cn("relative inline-block", className)}
-      style={{ width: size, height: size }}
-    >
+    <div className={className} style={getWrapperStyle(size, style)}>
       <Image
         src={src}
         alt={`${name || "Local"} icon`}
-        className="object-contain"
-        unoptimized
-        {...sizeProps}
+        fill
+        sizes={`${size}px`}
+        style={imageStyle}
+        unoptimized={unoptimized}
         {...props}
       />
     </div>
@@ -107,22 +110,20 @@ function RemoteIcon({
   url,
   size = 24,
   className,
+  style,
   name,
+  unoptimized = false,
   ...props
 }: { url: string } & SpecificIconProps) {
-  const sizeProps = getSizeProps(size);
-
   return (
-    <div
-      className={cn("relative inline-block", className)}
-      style={{ width: size, height: size }}
-    >
+    <div className={className} style={getWrapperStyle(size, style)}>
       <Image
         src={url}
         alt={`${name || "Remote"} icon`}
-        className="object-contain"
-        unoptimized
-        {...sizeProps}
+        fill
+        sizes={`${size}px`}
+        style={imageStyle}
+        unoptimized={unoptimized}
         {...props}
       />
     </div>
@@ -140,11 +141,18 @@ function FallbackIcon({
 }) {
   return (
     <div
-      className={cn(
-        "bg-muted text-muted-foreground flex items-center justify-center rounded-full",
-        className
-      )}
-      style={{ width: size, height: size, ...style }}
+      className={className}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "9999px",
+        backgroundColor: "#f3f4f6", // gray-100/muted equivalent
+        color: "#6b7280", // gray-500/muted-foreground equivalent
+        width: size,
+        height: size,
+        ...style,
+      }}
     >
       <span
         style={{ fontSize: typeof size === "number" ? size * 0.5 : "12px" }}
@@ -160,6 +168,7 @@ export default function CustomIcon({
   name,
   size = 24,
   className,
+  unoptimized,
   ...props
 }: IconProps) {
   if (!icon) return <FallbackIcon size={size} className={className} />;
@@ -173,6 +182,7 @@ export default function CustomIcon({
         name={name}
         size={size}
         className={className}
+        unoptimized={unoptimized}
         {...props}
       />
     );
@@ -189,6 +199,7 @@ export default function CustomIcon({
           name={name}
           size={size}
           className={className}
+          unoptimized={unoptimized}
           {...props}
         />
       );
@@ -199,6 +210,7 @@ export default function CustomIcon({
           name={name}
           size={size}
           className={className}
+          unoptimized={unoptimized}
           {...props}
         />
       );
@@ -209,6 +221,7 @@ export default function CustomIcon({
           name={name}
           size={size}
           className={className}
+          unoptimized={unoptimized}
           {...props}
         />
       );
@@ -219,6 +232,7 @@ export default function CustomIcon({
           name={name}
           size={size}
           className={className}
+          unoptimized={unoptimized}
           {...props}
         />
       );
