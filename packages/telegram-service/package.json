@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/telegram-service",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A powerful, abstract Telegram bot service wrapper for MayR Labs applications. Includes a CLI for easy service generation and testing.",
   "keywords": [
     "telegram",
