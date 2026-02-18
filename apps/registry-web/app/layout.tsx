@@ -22,8 +22,11 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icons/mayrlabs-mobius-strip.png",
+    shortcut: "/icons/mayrlabs-mobius-strip.png",
+    apple: "/icons/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

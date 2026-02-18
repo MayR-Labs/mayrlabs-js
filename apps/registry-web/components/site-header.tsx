@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+
 import { Menu, Github } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -18,12 +18,6 @@ import { FloatingHeader } from "@/components/layout/floating-header";
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const pathname = usePathname();
-
-  const navItems = [
-    { name: "Blocks", href: "/blocks" },
-    { name: "Documentation", href: "/docs" },
-  ];
 
   return (
     <FloatingHeader>
@@ -40,22 +34,6 @@ export function SiteHeader() {
             MayR Registry
           </span>
         </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-white",
-                pathname === item.href ? "text-white" : "text-zinc-400"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </div>
       </div>
 
       {/* Right Side / Actions */}
@@ -99,19 +77,6 @@ export function SiteHeader() {
               </SheetTitle>
             </SheetHeader>
             <div className="flex flex-col p-6 space-y-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={cn(
-                    "text-lg font-medium transition-colors hover:text-white block py-2",
-                    pathname === item.href ? "text-white" : "text-zinc-400"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
               <div className="pt-4 border-t border-zinc-800">
                 <Link
                   href="https://github.com/MayR-Labs/mayrlabs-js"
