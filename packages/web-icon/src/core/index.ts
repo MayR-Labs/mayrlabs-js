@@ -1,5 +1,5 @@
-import { Generator } from "../generator";
-import { cn } from "../utils";
+import { Generator } from "@/generator";
+import { cn } from "@/utils";
 
 interface IconProps {
   icon: string;
