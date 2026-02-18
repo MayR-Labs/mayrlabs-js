@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Github } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FloatingHeader } from "@/components/layout/floating-header";
 import Image from "next/image";
@@ -23,11 +22,7 @@ export function SiteHeader() {
             className="rounded-full"
           />
 
-          <span
-            className={cn("hidden md:block transition-opacity duration-300")}
-          >
-            MayR Registry
-          </span>
+          <span className="transition-opacity duration-300">MayR Registry</span>
         </Link>
       </div>
 
@@ -36,7 +31,7 @@ export function SiteHeader() {
           href="https://github.com/MayR-Labs/mayrlabs-js"
           target="_blank"
           rel="noreferrer"
-          className="hidden md:block"
+          className=""
         >
           <Button
             variant="ghost"

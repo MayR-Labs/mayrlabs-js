@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Github, Twitter } from "lucide-react";
+import Image from "next/image";
 
 export function SiteFooter() {
   return (
@@ -10,9 +11,16 @@ export function SiteFooter() {
             href="/"
             className="flex items-center gap-2 font-bold text-xl text-white"
           >
-            <div className="h-6 w-6 rounded bg-linear-to-br from-white to-zinc-500" />
+            <Image
+              src="/icons/mayrlabs-mobius-strip.png"
+              alt="MayR Labs"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
             MayR Registry
           </Link>
+
           <p className="text-sm text-zinc-500 text-center md:text-left">
             Beautifully designed components for your applications.
           </p>

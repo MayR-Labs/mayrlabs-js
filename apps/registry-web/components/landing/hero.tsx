@@ -56,6 +56,14 @@ export function Hero() {
             Browse Blocks
           </Button>
         </Link>
+        <Link href="/components">
+          <Button
+            size="lg"
+            className="h-12 px-8 text-base bg-white text-black hover:bg-zinc-200 w-full sm:w-auto"
+          >
+            Browse Components
+          </Button>
+        </Link>
         <Link
           href="https://github.com/MayR-Labs/mayrlabs-js"
           target="_blank"
@@ -64,7 +72,7 @@ export function Hero() {
           <Button
             variant="outline"
             size="lg"
-            className="h-12 px-8 text-base border-zinc-800 bg-black/50 hover:bg-zinc-900 hover:text-white w-full sm:w-auto backdrop-blur-sm"
+            className="h-12 px-8 text-base border-zinc-800 bg-black/50 text-white hover:bg-zinc-900 hover:text-white w-full sm:w-auto backdrop-blur-sm"
           >
             GitHub
           </Button>

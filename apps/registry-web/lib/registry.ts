@@ -56,6 +56,14 @@ export async function getAllBlocks(): Promise<RegistryItem[]> {
   return registry.items.filter((item) => item.type === "registry:block");
 }
 
+export async function getAllComponents(): Promise<RegistryItem[]> {
+  const registry = await getRegistry();
+
+  if (!registry) return [];
+
+  return registry.items.filter((item) => item.type === "registry:component");
+}
+
 export async function getBlock(name: string): Promise<RegistryItem | null> {
   try {
     const res = await fetch(`${clientEnv.NEXT_PUBLIC_APP_URL}/r/${name}.json`, {
