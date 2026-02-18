@@ -49,7 +49,9 @@ export function createPackageJson(packageDir: string, options: PackageOptions) {
     packageJson.private = true;
   }
 
-  if (type === "bin" || type === "both") {
+  // @ai: This is too complex, please refactor this to easier to understand
+
+  if (type === "bin") {
     packageJson.bin = { [name]: "dist/cli.cjs" };
     packageJson.main = "dist/cli.cjs";
     packageJson.module = "dist/cli.mjs";
@@ -61,17 +63,34 @@ export function createPackageJson(packageDir: string, options: PackageOptions) {
 
     packageJson.scripts.demo = "tsx src/cli.ts";
     packageJson.scripts["demo:dist"] = "node dist/cli.cjs";
-  } else {
-    packageJson.main = "dist/index.js";
+  } else if (type === "lib") {
+    packageJson.main = "dist/index.cjs";
     packageJson.module = "dist/index.mjs";
 
     packageJson.exports["."] = {
       import: "./dist/index.mjs",
-      require: "./dist/index.js",
+      require: "./dist/index.cjs",
     };
 
     packageJson.scripts.demo = "tsx src/index.ts";
     packageJson.scripts["demo:dist"] = "node dist/index.js";
+  } else {
+    packageJson.bin = { [name]: "dist/cli.cjs" };
+    packageJson.main = "dist/index.cjs";
+    packageJson.module = "dist/index.mjs";
+    packageJson.types = "dist/index.d.mts";
+
+    packageJson.exports["."] = {
+      types: "./dist/index.d.mts",
+      import: "./dist/index.mjs",
+      require: "./dist/index.cjs",
+    };
+
+    packageJson.scripts.demo = "tsx src/index.ts";
+    packageJson.scripts["demo:dist"] = "node dist/index.cjs";
+
+    packageJson.scripts.cli = "tsx src/cli.ts";
+    packageJson.scripts["cli:dist"] = "node dist/cli.cjs";
   }
 
   fs.writeFileSync(

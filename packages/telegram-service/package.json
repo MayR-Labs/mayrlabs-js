@@ -1,0 +1,80 @@
+{
+  "name": "@mayrlabs/telegram-service",
+  "version": "0.0.0",
+  "description": "A powerful, abstract Telegram bot service wrapper for MayR Labs applications. Includes a CLI for easy service generation and testing.",
+  "keywords": [
+    "telegram",
+    "bot",
+    "service",
+    "typescript",
+    "mayrlabs",
+    "notification",
+    "cli"
+  ],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/telegram-service#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/telegram-service"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "pkg:dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build",
+    "demo": "tsx src/cli.ts",
+    "demo:dist": "node dist/cli.cjs"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "@mayrlabs/debugger": "^1.0.0",
+    "dotenv": "^16.4.7",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@types/node": "^25.2.3",
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.0",
+    "tsdown": "^0.20.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "telegram-service": "dist/cli.cjs"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "./dist/index.d.mts"
+}

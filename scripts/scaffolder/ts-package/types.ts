@@ -26,8 +26,9 @@ export interface PackageJson {
   type: "commonjs" | "module";
   main?: string;
   module?: string;
+  types?: string;
   bin?: Record<string, string>;
-  exports: Record<string, { import: string; require: string }>;
+  exports: Record<string, { types?: string; import: string; require: string }>;
   publishConfig?: { access: "public" | "restricted" };
   scripts: Record<string, string>;
   dependencies?: Record<string, string>;

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Playground for @mayrlabs/debugger",
   "devDependencies": {
-    "@mayrlabs/debugger": "file:../../packages/debugger"
+    "@mayrlabs/debugger": "file:../../packages/debugger",
+    "typescript": "^5.9.3"
   }
 }
