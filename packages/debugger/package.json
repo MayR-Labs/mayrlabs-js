@@ -16,6 +16,10 @@
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
   },
   "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "author": {
     "name": "Aghogho Meyoron",
     "email": "youngmayor.dev@gmail.com",
@@ -33,13 +37,6 @@
     "package.json"
   ],
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
-  },
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
@@ -60,11 +57,14 @@
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   },
-  "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts"
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  }
 }

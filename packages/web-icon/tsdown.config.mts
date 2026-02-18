@@ -11,25 +11,28 @@ const copyrightYear = (): string => {
 };
 
 const BANNER = {
-  js: `/// (c) ${copyrightYear()} MayR Labs https://mayrlabs.com`,
+  js: `/// (c) ${copyrightYear()} MayR Labs - https://mayrlabs.com`,
 };
 
 const FOOTER = {
-  js: ``,
+  js: `/// Built with discipline by MayR Labs`,
 };
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: [
+    "src/index.ts",
+    "src/core/index.ts",
+    "src/react/index.tsx",
+    "src/vue/index.ts",
+    "src/next/index.tsx",
+  ],
   format: ["cjs", "esm"],
   clean: true,
   shims: true,
+  target: "node18",
   minify: true,
   dts: true,
+  exports: true,
   banner: BANNER,
   footer: FOOTER,
-  exports: true,
-
-  sourcemap: false,
-  outDir: "dist",
-  target: "es2022",
 });
