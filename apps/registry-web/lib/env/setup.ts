@@ -1,6 +1,8 @@
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
+// require('@dotenvx/dotenvx').config()
+import dotenv from "@dotenvx/dotenvx";
 
-dotenv.config({ path: ".env.netlify" });
+dotenv.config({ path: ".env.netlify", debug: true });
 
 console.log("NEXT_PUBLIC_APP_URL: ", process.env.NEXT_PUBLIC_APP_URL);
 
