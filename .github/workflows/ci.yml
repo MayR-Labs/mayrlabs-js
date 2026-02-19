@@ -9,6 +9,8 @@ jobs:
     name: Build and Test
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    env:
+      CREATE_LOCAL_ENV: 1
     # To use Remote Caching, uncomment the next lines and follow the steps below.
     # env:
     #  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -29,7 +31,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          CREATE_LOCAL_ENV: "1"
+          CREATE_LOCAL_ENV2: "1"
       # - name: Test
       #   run: npm run test
       - name: Lint
