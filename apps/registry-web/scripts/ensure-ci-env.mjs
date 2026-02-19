@@ -1,15 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
+import { z } from "zod";
 
-const createLocalEnv = Boolean(process.env.CREATE_LOCAL_ENV);
+const shouldCreate = z.coerce.number().parse(process.env.CREATE_LOCAL_ENV);
 
-console.log(
-  "Create Local Env:",
-  process.env.CREATE_LOCAL_ENV,
-  process.env.CREATE_LOCAL_ENV2
-);
-
-if (!createLocalEnv) process.exit(0);
+if (!shouldCreate) process.exit(0);
 
 const root = process.cwd();
 const examplePath = path.join(root, ".env.example");
