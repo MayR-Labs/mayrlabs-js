@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 
-const shouldCreate = z.coerce.number().parse(process.env.CREATE_LOCAL_ENV);
+const shouldCreate = z.coerce
+  .number()
+  .default(0)
+  .parse(process.env.CREATE_LOCAL_ENV);
 
 if (!shouldCreate) process.exit(0);
 
