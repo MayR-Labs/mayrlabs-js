@@ -6,10 +6,11 @@ console.log("NEXT_PUBLIC_APP_URL: ", process.env.NEXT_PUBLIC_APP_URL);
 
 export const clientEnv = createEnv({
   client: {
-    NEXT_PUBLIC_APP_URL: z.string(),
+    NEXT_PUBLIC_APP_URL: z.string().url(),
   },
   extends: [netlify()],
   experimental__runtimeEnv: {
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_APP_URL:
+      process.env.DEPLOY_PRIME_URL || process.env.NEXT_PUBLIC_APP_URL,
   },
 });
