@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.netlify" });
 
+console.log("NEXT_PUBLIC_APP_URL: ", process.env.NEXT_PUBLIC_APP_URL);
+
 // const envFile = process.env.NETLIFY
 //   ? ".env.netlify"
 //   : process.env.CI
