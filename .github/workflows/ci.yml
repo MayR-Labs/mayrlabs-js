@@ -28,6 +28,8 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+        env:
+          CREATE_LOCAL_ENV: "1"
       # - name: Test
       #   run: npm run test
       - name: Lint

@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const isCI = Boolean(process.env.CI) || Boolean(process.env.GITHUB_ACTIONS);
+const createLocalEnv = Boolean(process.env.CREATE_LOCAL_ENV);
 
-if (!isCI) process.exit(0);
+if (!createLocalEnv) process.exit(0);
 
 const root = process.cwd();
 const examplePath = path.join(root, ".env.example");
