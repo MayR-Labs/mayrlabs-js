@@ -12,6 +12,8 @@ console.log(
   "NEXT_PUBLIC_APP_URL_OTHER: ",
   process.env.NEXT_PUBLIC_APP_URL_OTHER
 );
+console.log("APP_CONTEXT: ", process.env.APP_CONTEXT);
+console.log("NET_URL: ", process.env.NET_URL);
 
 // const envFile = process.env.NETLIFY
 //   ? ".env.netlify"
