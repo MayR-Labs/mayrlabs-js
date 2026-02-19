@@ -14,6 +14,14 @@ console.log(
 );
 console.log("APP_CONTEXT: ", process.env.APP_CONTEXT);
 console.log("NET_URL: ", process.env.NET_URL);
+console.log(
+  "NEXT_PUBLIC_APP_URL_TMP_OLD: ",
+  process.env.NEXT_PUBLIC_APP_URL_TMP_OLD
+);
+console.log(
+  "$NEXT_PUBLIC_APP_URL_TMP_OLD: ",
+  process.env.$NEXT_PUBLIC_APP_URL_TMP_OLD
+);
 
 // const envFile = process.env.NETLIFY
 //   ? ".env.netlify"
