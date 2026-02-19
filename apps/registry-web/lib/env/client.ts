@@ -11,6 +11,8 @@ export const clientEnv = createEnv({
   extends: [netlify()],
   experimental__runtimeEnv: {
     NEXT_PUBLIC_APP_URL:
-      process.env.DEPLOY_PRIME_URL || process.env.NEXT_PUBLIC_APP_URL,
+      process.env.DEPLOY_PRIME_URL ||
+      "https://registry.mayrlabs.com" ||
+      process.env.NEXT_PUBLIC_APP_URL,
   },
 });
