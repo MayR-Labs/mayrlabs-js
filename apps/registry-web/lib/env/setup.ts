@@ -1,10 +1,17 @@
-// import dotenv from "dotenv";
+import dotenv from "dotenv";
 // require('@dotenvx/dotenvx').config()
-import dotenv from "@dotenvx/dotenvx";
+// import dotenv from "@dotenvx/dotenvx";
+import expand from "dotenv-expand";
 
-dotenv.config({ path: ".env.netlify", debug: true });
+// expand.expand(dotenv.config())
+
+expand.expand(dotenv.config({ path: ".env.netlify", debug: true }));
 
 console.log("NEXT_PUBLIC_APP_URL: ", process.env.NEXT_PUBLIC_APP_URL);
+console.log(
+  "NEXT_PUBLIC_APP_URL_OTHER: ",
+  process.env.NEXT_PUBLIC_APP_URL_OTHER
+);
 
 // const envFile = process.env.NETLIFY
 //   ? ".env.netlify"
