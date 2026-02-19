@@ -3,6 +3,7 @@
   "name": "hello-world",
   "title": "Hello World",
   "description": "A simple hello world component.",
+  "registryDependencies": ["button"],
   "files": [
     {
       "path": "registry/new-york/hello-world/hello-world.tsx",
@@ -10,5 +11,5 @@
       "type": "registry:component"
     }
   ],
-  "type": "registry:block"
+  "type": "registry:component"
 }

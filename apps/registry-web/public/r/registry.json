@@ -5,12 +5,27 @@
   "items": [
     {
       "name": "hello-world",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Hello World",
       "description": "A simple hello world component.",
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "registry/new-york/hello-world/hello-world.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "floating-header-react",
+      "type": "registry:component",
+      "title": "Floating Header React",
+      "description": "A generic wrapper component for a floating header.",
+      "registryDependencies": ["utils"],
+      "dependencies": ["react"],
+      "files": [
+        {
+          "path": "registry/new-york/floating-header-react/floating-header.tsx",
           "type": "registry:component"
         }
       ]

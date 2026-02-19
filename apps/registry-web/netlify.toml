@@ -1,0 +1,2 @@
+[build]
+command = "NEXT_PUBLIC_APP_URL=$DEPLOY_PRIME_URL turbo run build --filter registry-web"

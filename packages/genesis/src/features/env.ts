@@ -84,19 +84,24 @@ export async function installEnv(config: Config) {
 
   await fs.ensureDir(location);
 
+  // @ai: The presets need to actually be imported and used
+  // Example:
+  // import { netlify, vercel } from "@t3-oss/env-nextjs/presets-zod";
+  // extends: [netlify(), vercel()],
   const presetImport =
     presets && presets.length > 0 ? `// Presets: ${presets.join(", ")}\n` : "";
 
+  // @ai: The import type for zod is `import { z } from zod;`
   const content = `import { createEnv } from "${variant}";\nimport { ${validator} } from "${validator}";\n\n${presetImport}`;
 
   if (split === "split") {
     await fs.outputFile(
       path.join(location, "env/server.ts"),
-      `${content}\n// Server env definition\nexport const env = createEnv({\n  server: {\n    // ...\n  },\n  experimental__runtimeEnv: process.env\n});`
+      `${content}\n// Server env definition\nexport const serverEnv = createEnv({\n  server: {\n    // ...\n  },\n  experimental__runtimeEnv: process.env\n});`
     );
     await fs.outputFile(
       path.join(location, "env/client.ts"),
-      `${content}\n// Client env definition\nexport const env = createEnv({\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`
+      `${content}\n// Client env definition\nexport const clientEnv = createEnv({\n  client: {\n    // ...\n  },\n  experimental__runtimeEnv: {\n    // ...\n  }\n});`
     );
   } else {
     await fs.outputFile(

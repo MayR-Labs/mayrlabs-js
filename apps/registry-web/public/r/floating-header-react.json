@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "floating-header-react",
+  "title": "Floating Header React",
+  "description": "A generic wrapper component for a floating header.",
+  "dependencies": ["react"],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "path": "registry/new-york/floating-header-react/floating-header.tsx",
+      "content": "\"use client\";\n\nimport React, { useState, useEffect } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ninterface FloatingHeaderProps {\n  className?: string;\n  children?: React.ReactNode;\n}\n\nexport function FloatingHeader({ className, children }: FloatingHeaderProps) {\n  const [isScrolled, setIsScrolled] = useState(false);\n\n  useEffect(() => {\n    const handleScroll = () => {\n      setIsScrolled(window.scrollY > 50);\n    };\n\n    window.addEventListener(\"scroll\", handleScroll);\n    return () => window.removeEventListener(\"scroll\", handleScroll);\n  }, []);\n\n  return (\n    <header className=\"sticky top-0 z-50 w-full max-w-[1200px] mx-auto print:hidden\">\n      <nav\n        className={cn(\n          \"flex items-center justify-between px-6 py-3 transition-all duration-500 ease-in-out mx-auto\",\n          isScrolled\n            ? \"rounded-full shadow-lg backdrop-blur-xl w-[90%] mt-2\"\n            : \"bg-transparent w-full max-w-[1200px] border-transparent\",\n          className\n        )}\n      >\n        {children}\n      </nav>\n    </header>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}
