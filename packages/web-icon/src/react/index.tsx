@@ -28,28 +28,46 @@ const imageStyle: CSSProperties = {
   objectFit: "contain",
 };
 
+function BaseIconWrapper({
+  src,
+  alt,
+  size,
+  className,
+  style,
+  ...props
+}: { src: string; alt: string } & SpecificIconProps) {
+  return (
+    <div
+      className={className}
+      style={getWrapperStyle(size ?? 24, style)}
+      {...props}
+    >
+      <img src={src} alt={alt} style={imageStyle} />
+    </div>
+  );
+}
+
 function SimpleIcon({
   slug,
   size = 24,
-  className,
-  style,
   name,
   ...props
 }: { slug: string } & SpecificIconProps) {
   const iconUrl = Generator.simpleIcon.url(slug);
 
   return (
-    <div className={className} style={getWrapperStyle(size, style)} {...props}>
-      <img src={iconUrl} alt={`${name || slug} icon`} style={imageStyle} />
-    </div>
+    <BaseIconWrapper
+      src={iconUrl}
+      alt={`${name || slug} simple icon`}
+      size={size}
+      {...props}
+    />
   );
 }
 
 function DevIcon({
   config,
   size = 24,
-  className,
-  style,
   name,
   ...props
 }: { config: string } & SpecificIconProps) {
@@ -57,40 +75,46 @@ function DevIcon({
   const iconUrl = Generator.devIcon.url(iconName, iconType);
 
   return (
-    <div className={className} style={getWrapperStyle(size, style)} {...props}>
-      <img src={iconUrl} alt={`${name || iconName} icon`} style={imageStyle} />
-    </div>
+    <BaseIconWrapper
+      src={iconUrl}
+      alt={`${name || iconName} dev icon`}
+      size={size}
+      {...props}
+    />
   );
 }
 
 function LocalIcon({
   path,
   size = 24,
-  className,
-  style,
   name,
   ...props
 }: { path: string } & SpecificIconProps) {
   const src = path.startsWith("/") ? path : `/${path}`;
+
   return (
-    <div className={className} style={getWrapperStyle(size, style)} {...props}>
-      <img src={src} alt={`${name || "Local"} icon`} style={imageStyle} />
-    </div>
+    <BaseIconWrapper
+      src={src}
+      alt={`${name || "local"} icon`}
+      size={size}
+      {...props}
+    />
   );
 }
 
 function RemoteIcon({
   url,
   size = 24,
-  className,
-  style,
   name,
   ...props
 }: { url: string } & SpecificIconProps) {
   return (
-    <div className={className} style={getWrapperStyle(size, style)} {...props}>
-      <img src={url} alt={`${name || "Remote"} icon`} style={imageStyle} />
-    </div>
+    <BaseIconWrapper
+      src={url}
+      alt={`${name || "remote"} icon`}
+      size={size}
+      {...props}
+    />
   );
 }
 

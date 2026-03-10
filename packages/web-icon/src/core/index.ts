@@ -48,7 +48,7 @@ function SimpleIcon({
     style
   );
   const url = Generator.simpleIcon.url(slug);
-  return renderDiv(cls, st, url, `${name || slug} icon`);
+  return renderDiv(cls, st, url, `${name || slug} simple icon`);
 }
 
 function DevIcon({
@@ -65,7 +65,7 @@ function DevIcon({
     className,
     style
   );
-  return renderDiv(cls, st, url, `${name || iconName} icon`);
+  return renderDiv(cls, st, url, `${name || iconName} dev icon`);
 }
 
 function LocalIcon({
@@ -81,7 +81,7 @@ function LocalIcon({
     className,
     style
   );
-  return renderDiv(cls, st, src, `${name || "Local"} icon`);
+  return renderDiv(cls, st, src, `${name || "local"} icon`);
 }
 
 function RemoteIcon({
@@ -96,7 +96,7 @@ function RemoteIcon({
     className,
     style
   );
-  return renderDiv(cls, st, url, `${name || "Remote"} icon`);
+  return renderDiv(cls, st, url, `${name || "remote"} icon`);
 }
 
 function FallbackIcon({

@@ -27,106 +27,103 @@ const imageStyle: CSSProperties = {
   objectFit: "contain",
 };
 
-function SimpleIcon({
-  slug,
-  size = 24,
+function BaseIconWrapper({
+  src,
+  alt,
+  size,
   className,
   style,
-  name,
-  unoptimized = false,
+  unoptimized,
   ...props
-}: { slug: string } & SpecificIconProps) {
-  const iconUrl = Generator.simpleIcon.url(slug);
-
+}: { src: string; alt: string } & SpecificIconProps) {
   return (
-    <div className={className} style={getWrapperStyle(size, style)}>
+    <div className={className} style={getWrapperStyle(size ?? 24, style)}>
       <Image
-        src={iconUrl}
-        alt={`${name || slug} icon`}
+        src={src}
+        alt={alt}
         fill
-        sizes={`${size}px`}
+        sizes={`${size ?? 24}px`}
         style={imageStyle}
         unoptimized={unoptimized}
         {...props}
       />
     </div>
+  );
+}
+
+function SimpleIcon({
+  slug,
+  size = 24,
+  name,
+  unoptimized = false,
+  ...props
+}: { slug: string } & SpecificIconProps) {
+  const iconUrl = Generator.simpleIcon.url(slug);
+  return (
+    <BaseIconWrapper
+      src={iconUrl}
+      alt={`${name || slug} simple icon`}
+      size={size}
+      unoptimized={unoptimized}
+      {...props}
+    />
   );
 }
 
 function DevIcon({
   config,
   size = 24,
-  className,
-  style,
   name,
   unoptimized = false,
   ...props
 }: { config: string } & SpecificIconProps) {
   const [iconName, iconType = "original"] = config.split(":");
   const iconUrl = Generator.devIcon.url(iconName, iconType);
-
   return (
-    <div className={className} style={getWrapperStyle(size, style)}>
-      <Image
-        src={iconUrl}
-        alt={`${name || iconName} icon`}
-        fill
-        sizes={`${size}px`}
-        style={imageStyle}
-        unoptimized={unoptimized}
-        {...props}
-      />
-    </div>
+    <BaseIconWrapper
+      src={iconUrl}
+      alt={`${name || iconName} dev icon`}
+      size={size}
+      unoptimized={unoptimized}
+      {...props}
+    />
   );
 }
 
 function LocalIcon({
   path,
   size = 24,
-  className,
-  style,
   name,
   unoptimized = false,
   ...props
 }: { path: string } & SpecificIconProps) {
   const src = path.startsWith("/") ? path : `/${path}`;
-
   return (
-    <div className={className} style={getWrapperStyle(size, style)}>
-      <Image
-        src={src}
-        alt={`${name || "Local"} icon`}
-        fill
-        sizes={`${size}px`}
-        style={imageStyle}
-        unoptimized={unoptimized}
-        {...props}
-      />
-    </div>
+    <BaseIconWrapper
+      src={src}
+      alt={`${name || "local"} icon`}
+      size={size}
+      unoptimized={unoptimized}
+      {...props}
+    />
   );
 }
 
 function RemoteIcon({
   url,
   size = 24,
-  className,
-  style,
   name,
   unoptimized = false,
   ...props
 }: { url: string } & SpecificIconProps) {
   return (
-    <div className={className} style={getWrapperStyle(size, style)}>
-      <Image
-        src={url}
-        alt={`${name || "Remote"} icon`}
-        fill
-        sizes={`${size}px`}
-        style={imageStyle}
-        unoptimized={unoptimized}
-        {...props}
-      />
-    </div>
+    <BaseIconWrapper
+      src={url}
+      alt={`${name || "remote"} icon`}
+      size={size}
+      unoptimized={unoptimized}
+      {...props}
+    />
   );
 }
 
@@ -137,7 +134,7 @@ function FallbackIcon({
 }: {
   size?: number | string;
   className?: string;
-  style?: React.CSSProperties;
+  style?: React.CSSProperties; // Use React.CSSProperties, explicit type
 }) {
   return (
     <div

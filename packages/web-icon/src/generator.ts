@@ -14,9 +14,23 @@ export class Generator {
    * Generates the URL and slug for a Dev Icon.
    */
   static devIcon = {
-    url: (slug: string, type: string = "original") =>
-      `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${slug}/${slug}-${type}.svg`,
-    slug: (slug: string, type: string = "original") => `${slug}:${type}`,
+    _resolveType: (type: string = "original") => {
+      const validVariants = [
+        "original",
+        "original-wordmark",
+        "plain",
+        "plain-wordmark",
+      ];
+      return validVariants.includes(type) ? type : "original";
+    },
+    url: (slug: string, type: string = "original") => {
+      const resolvedType = Generator.devIcon._resolveType(type);
+      return `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${slug}/${slug}-${resolvedType}.svg`;
+    },
+    slug: (slug: string, type: string = "original") => {
+      const resolvedType = Generator.devIcon._resolveType(type);
+      return `${slug}:${resolvedType}`;
+    },
   };
 
   /**

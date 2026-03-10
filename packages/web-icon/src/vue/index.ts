@@ -22,24 +22,42 @@ const imgStyle: StyleValue = {
   objectFit: "contain",
 };
 
-const SimpleIcon = defineComponent({
-  name: "SimpleIcon",
-  props: { ...props, slug: { type: String, required: true } },
+// Base wrapper component to avoid repeating the div+img combination
+const BaseIconWrapper = defineComponent({
+  name: "BaseIconWrapper",
+  props: {
+    ...props,
+    src: { type: String, required: true },
+    alt: { type: String, required: true },
+  },
   setup(props) {
-    return () => {
-      const iconUrl = Generator.simpleIcon.url(props.slug);
-      return h(
+    return () =>
+      h(
         "div",
         {
           class: props.className || props.class,
           style: getStyle(props.size),
         },
         h("img", {
-          src: iconUrl,
-          alt: `${props.name || props.slug} icon`,
+          src: props.src,
+          alt: props.alt,
           style: imgStyle,
         })
       );
+  },
+});
+
+const SimpleIcon = defineComponent({
+  name: "SimpleIcon",
+  props: { ...props, slug: { type: String, required: true } },
+  setup(props) {
+    return () => {
+      const iconUrl = Generator.simpleIcon.url(props.slug);
+      return h(BaseIconWrapper, {
+        ...props,
+        src: iconUrl,
+        alt: `${props.name || props.slug} simple icon`,
+      });
     };
   },
 });
@@ -51,18 +69,11 @@ const DevIcon = defineComponent({
     return () => {
       const [iconName, iconType = "original"] = props.config.split(":");
       const iconUrl = Generator.devIcon.url(iconName, iconType);
-      return h(
-        "div",
-        {
-          class: props.className || props.class,
-          style: getStyle(props.size),
-        },
-        h("img", {
-          src: iconUrl,
-          alt: `${props.name || iconName} icon`,
-          style: imgStyle,
-        })
-      );
+      return h(BaseIconWrapper, {
+        ...props,
+        src: iconUrl,
+        alt: `${props.name || iconName} dev icon`,
+      });
     };
   },
 });
@@ -73,18 +84,11 @@ const LocalIcon = defineComponent({
   setup(props) {
     return () => {
       const src = props.path.startsWith("/") ? props.path : `/${props.path}`;
-      return h(
-        "div",
-        {
-          class: props.className || props.class,
-          style: getStyle(props.size),
-        },
-        h("img", {
-          src: src,
-          alt: `${props.name || "Local"} icon`,
-          style: imgStyle,
-        })
-      );
+      return h(BaseIconWrapper, {
+        ...props,
+        src: src,
+        alt: `${props.name || "local"} icon`,
+      });
     };
   },
 });
@@ -94,18 +98,11 @@ const RemoteIcon = defineComponent({
   props: { ...props, url: { type: String, required: true } },
   setup(props) {
     return () => {
-      return h(
-        "div",
-        {
-          class: props.className || props.class,
-          style: getStyle(props.size),
-        },
-        h("img", {
-          src: props.url,
-          alt: `${props.name || "Remote"} icon`,
-          style: imgStyle,
-        })
-      );
+      return h(BaseIconWrapper, {
+        ...props,
+        src: props.url,
+        alt: `${props.name || "remote"} icon`,
+      });
     };
   },
 });
