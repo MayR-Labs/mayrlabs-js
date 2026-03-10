@@ -1,5 +1,11 @@
 # @mayrlabs/web-icon
 
+## 0.2.0
+
+### Minor Changes
+
+- d730038: Support for next 16 and react 20
+
 ## 0.1.0
 
 ### Minor Changes
