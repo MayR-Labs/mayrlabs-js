@@ -1,5 +1,11 @@
 # @mayrlabs/web-icon
 
+## 0.3.0
+
+### Minor Changes
+
+- 45f17b7: Doc update
+
 ## 0.2.0
 
 ### Minor Changes
