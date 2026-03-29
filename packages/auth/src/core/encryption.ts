@@ -1,48 +1,98 @@
-import * as crypto from "node:crypto";
+/**
+ * AES-256-GCM encryption/decryption using the universally supported Web Crypto API.
+ * This ensures compatibility with Node.js, Edge, and Browser runtimes.
+ */
 
 /**
- * Derives a 32-byte encryption key from the client secret using SHA-256.
+ * Derives an AES-GCM CryptoKey from the client secret using SHA-256.
  */
-function deriveKey(secret: string): Buffer {
-  return crypto.createHash("sha256").update(secret).digest();
+async function getCryptoKey(secret: string): Promise<CryptoKey> {
+  const secretBuffer = new TextEncoder().encode(secret);
+
+  const hash = await crypto.subtle.digest("SHA-256", secretBuffer);
+
+  return crypto.subtle.importKey("raw", hash, "AES-GCM", false, [
+    "encrypt",
+    "decrypt",
+  ]);
 }
 
 /**
  * Encrypts a string using AES-256-GCM.
  * Format: iv:authTag:encryptedText (all Base64 encoded)
  */
-export function encrypt(text: string, secret: string): string {
-  const iv = crypto.randomBytes(12); // GCM standard IV size
-  const key = deriveKey(secret);
-  const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+export async function encrypt(text: string, secret: string): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await getCryptoKey(secret);
+  const encoded = new TextEncoder().encode(text);
 
-  let encrypted = cipher.update(text, "utf8", "base64");
-  encrypted += cipher.final("base64");
+  // encrypt() returns ciphertext with the auth tag appended (last 16 bytes)
+  const result = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: iv as any },
+    key,
+    encoded as any
+  );
 
-  const authTag = cipher.getAuthTag().toString("base64");
+  const uint8Result = new Uint8Array(result);
+  const authTag = uint8Result.slice(-16);
+  const ciphertext = uint8Result.slice(0, -16);
 
-  return `${iv.toString("base64")}:${authTag}:${encrypted}`;
+  return `${toBase64(iv)}:${toBase64(authTag)}:${toBase64(ciphertext)}`;
 }
 
 /**
  * Decrypts an AES-256-GCM encrypted string.
  */
-export function decrypt(encryptedData: string, secret: string): string {
+export async function decrypt(
+  encryptedData: string,
+  secret: string
+): Promise<string> {
   const [ivBase64, authTagBase64, encryptedText] = encryptedData.split(":");
 
   if (!ivBase64 || !authTagBase64 || !encryptedText) {
     throw new Error("Invalid encrypted data format");
   }
 
-  const iv = Buffer.from(ivBase64, "base64");
-  const authTag = Buffer.from(authTagBase64, "base64");
-  const key = deriveKey(secret);
+  const iv = fromBase64(ivBase64);
+  const authTag = fromBase64(authTagBase64);
+  const ciphertext = fromBase64(encryptedText);
 
-  const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
-  decipher.setAuthTag(authTag);
+  // Combine ciphertext and authTag for Web Crypto API
+  const combined = new Uint8Array(ciphertext.length + authTag.length);
+  combined.set(ciphertext);
+  combined.set(authTag, ciphertext.length);
 
-  let decrypted = decipher.update(encryptedText, "base64", "utf8");
-  decrypted += decipher.final("utf8");
+  const key = await getCryptoKey(secret);
 
-  return decrypted;
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: iv as any },
+    key,
+    combined as any
+  );
+
+  return new TextDecoder().decode(decrypted);
+}
+
+/**
+ * Helper to convert Uint8Array to Base64 (environment agnostic)
+ */
+function toBase64(arr: Uint8Array): string {
+  if (typeof Buffer !== "undefined") return Buffer.from(arr).toString("base64");
+
+  return btoa(String.fromCharCode.apply(null, arr as any));
+}
+
+/**
+ * Helper to convert Base64 to Uint8Array (environment agnostic)
+ */
+function fromBase64(b64: string): Uint8Array {
+  if (typeof Buffer !== "undefined") {
+    return new Uint8Array(Buffer.from(b64, "base64"));
+  }
+
+  return new Uint8Array(
+    atob(b64)
+      .split("")
+      .map((c) => c.charCodeAt(0))
+  );
 }
