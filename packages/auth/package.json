@@ -1,0 +1,60 @@
+{
+  "name": "@mayrlabs/auth",
+  "version": "0.0.0",
+  "description": "The central authentication and identity provider package for all MayR Labs products.",
+  "keywords": [],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/auth"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "pkg:dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build",
+    "demo": "tsx src/index.ts",
+    "demo:dist": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.2",
+    "eslint": "^10.1.0",
+    "tsdown": "^0.21.7",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs"
+}
