@@ -90,17 +90,5 @@ const data = { score: 100 };
 const result = await auth.sendRequest("update-score", user.id, data);
 ```
 
-## 🛠️ Local Development
-
-To bypass SSO during development, set the following environment variable in your `.env`:
-
-```bash
-MAYRLABS_AUTH_PROVIDER=null
-```
-
-This will redirect to the mock login screen of the central account system where you can select a test user.
-
----
-
 Built with discipline by [MayR Labs](https://mayrlabs.com).
 Build. Ship. Repeat intelligently.

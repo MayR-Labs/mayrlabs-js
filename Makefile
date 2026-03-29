@@ -1,8 +1,9 @@
-.PHONY: help %-pg-setup
+.PHONY: help %-pg-setup %-yalc
 
 help:
 	@echo "Available commands:"
 	@echo "  make <package>-pg-setup   - Setup playground for <package>"
+	@echo "  make <package>-yalc       - Publish package to yalc"
 
 %-pg-setup:
 	@echo "Setting up playground for $*..."
@@ -12,3 +13,7 @@ help:
 	@echo "Installing dependencies..."
 	@cd playground/$*-pg && npm install
 	@echo "Setup complete for $*"
+
+%-yalc:
+	@echo "Publishing $* to yalc..."
+	@cd "packages/$*" && yalc publish

@@ -59,13 +59,6 @@ export class AuthSetup {
    */
   async verifyToken(token: string): Promise<MayRLabsUser | null> {
     try {
-      // Development mode (Null provider)
-      if (process.env.MAYRLABS_AUTH_PROVIDER === "null") {
-        const decrypted = await this.decrypt(token);
-        return JSON.parse(decrypted) as MayRLabsUser;
-      }
-
-      // Production mode
       const secret = new TextEncoder().encode(this.config.clientSecret);
       const { payload } = await jwtVerify(token, secret);
       return payload as unknown as MayRLabsUser;
