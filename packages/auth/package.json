@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "The central authentication and identity provider package for all MayR Labs products.",
   "keywords": [],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth#readme",
