@@ -2,18 +2,10 @@ import { decrypt, encrypt } from "./encryption";
 import { AuthConfig, MayRLabsUser, M2MPayload } from "../types";
 import { jwtVerify } from "jose";
 
-export type InternalAuthConfig = {
-  appId: string;
-  clientSecret: string;
-  accountUrl: string;
-  redirects: { error: string; success: string };
-  session: { key: string };
-};
-
 export class AuthSetup {
   public config: AuthConfig;
 
-  constructor(config: InternalAuthConfig) {
+  constructor(config: AuthConfig) {
     this.config = {
       appId: config.appId,
       clientSecret: config.clientSecret,
@@ -25,7 +17,7 @@ export class AuthSetup {
       session: {
         key: config.session?.key || "mayrlabs-session",
       },
-    } as AuthConfig;
+    };
   }
 
   /**
