@@ -57,17 +57,17 @@ export function createNextAuth(setup: AuthSetup) {
     },
 
     /**
-     * Middleware helper to protect routes.
+     * Auth Proxy helper to protect routes.
      * If unauthenticated, redirects to the central login.
+     * Returns NextResponse.next() if authenticated.
      */
-    async middleware(request: NextRequest) {
+    async authProxy(request: NextRequest) {
       const cookieStore = await cookies();
       const token = cookieStore.get(setup.config.session.key)?.value;
 
       let user: MayRLabsUser | null = null;
-      if (token) {
-        user = await setup.verifyToken(token);
-      }
+
+      if (token) user = await setup.verifyToken(token);
 
       if (!user) {
         const loginUrl = setup.getLoginUrl(request.nextUrl.pathname);

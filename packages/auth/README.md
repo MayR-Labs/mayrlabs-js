@@ -5,7 +5,7 @@ The premium authentication and identity provider package for the MayR Labs ecosy
 ## ✨ Features
 
 - 🔐 **Framework Agnostic Core**: Secure logic for encryption, JWT decoding, and session management.
-- ⚡ **Next.js Integration**: Optimized handlers for Middleware, Server Components, and Actions.
+- ⚡ **Next.js Integration**: Optimized handlers for Proxy/Middleware, Server Components, and Actions.
 - 🛡️ **AES-256-GCM Encryption**: Enterprise-grade security for cross-app data sharing.
 - 🛠️ **Local Dev Friendly**: Support for "Null" provider to bypass live SSO during development.
 - 📦 **Type Safe**: Fully written in TypeScript with comprehensive type definitions.
@@ -41,7 +41,7 @@ Initialize the Next.js utilities using your auth setup.
 import { createNextAuth } from "@mayrlabs/auth/nextjs";
 import { auth } from "./setup";
 
-export const { handleCallback, getUser, middleware, logout } =
+export const { handleCallback, getUser, authProxy, logout } =
   createNextAuth(auth);
 ```
 
@@ -54,13 +54,27 @@ import { handleCallback } from "@/lib/auth";
 export const GET = handleCallback;
 ```
 
-### Middleware Protection
+### Proxy Protection (Next.js Middleware)
+
+In MayR Labs applications, the `middleware.ts` (or `proxy.ts`) can optionally call the `authProxy` helper to protect specific routes.
 
 ```typescript
-// middleware.ts
-import { middleware } from "@/lib/auth";
+// proxy.ts (Next.js Middleware)
+import { authProxy } from "@/lib/auth";
+import type { NextRequest, NextFetchEvent } from "next/server";
+import { NextResponse } from "next/server";
 
-export default middleware;
+export default async function proxy(
+  request: NextRequest,
+  event: NextFetchEvent
+) {
+  // Optional: Only apply auth to specific routes
+  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+    return authProxy(request);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/dashboard/:path*", "/settings/:path*"],

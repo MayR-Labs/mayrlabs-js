@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import * as crypto from "node:crypto";
 
 /**
  * Derives a 32-byte encryption key from the client secret using SHA-256.

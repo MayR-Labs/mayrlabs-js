@@ -1,4 +1,4 @@
-.PHONY: help %-pg-setup %-yalc %-build
+.PHONY: help %-pg-setup %-yalc %-yalc-push %-build
 
 help:
 	@echo "Available commands:"
@@ -18,6 +18,10 @@ help:
 %-yalc:
 	@echo "Publishing $* to yalc..."
 	@cd "packages/$*" && yalc publish
+
+%-yalc-push:
+	@echo "Publishing $* to yalc..."
+	@cd "packages/$*" && yalc push
 
 %-build:
 	@echo "Building $*..."
