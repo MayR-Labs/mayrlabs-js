@@ -6,20 +6,14 @@ export type InternalAuthConfig = {
   appId: string;
   clientSecret: string;
   accountUrl: string;
-  redirects: {
-    error: string;
-    success: string;
-  };
-  session: {
-    key: string;
-    cookieOptions: any;
-  };
+  redirects: { error: string; success: string };
+  session: { key: string };
 };
 
 export class AuthSetup {
-  public config: InternalAuthConfig;
+  public config: AuthConfig;
 
-  constructor(config: AuthConfig) {
+  constructor(config: InternalAuthConfig) {
     this.config = {
       appId: config.appId,
       clientSecret: config.clientSecret,
@@ -30,14 +24,8 @@ export class AuthSetup {
       },
       session: {
         key: config.session?.key || "mayrlabs-session",
-        cookieOptions: config.session?.cookieOptions || {
-          path: "/",
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-        },
       },
-    } as InternalAuthConfig;
+    } as AuthConfig;
   }
 
   /**
@@ -60,7 +48,9 @@ export class AuthSetup {
   async verifyToken(token: string): Promise<MayRLabsUser | null> {
     try {
       const secret = new TextEncoder().encode(this.config.clientSecret);
+
       const { payload } = await jwtVerify(token, secret);
+
       return payload as unknown as MayRLabsUser;
     } catch (error) {
       // Only log errors in non-production or if they are unexpected
@@ -70,6 +60,7 @@ export class AuthSetup {
           error instanceof Error ? error.message : error
         );
       }
+
       return null;
     }
   }
@@ -79,10 +70,11 @@ export class AuthSetup {
    */
   getLoginUrl(returnTo?: string): string {
     const url = new URL(`${this.config.accountUrl}/login`);
+
     url.searchParams.set("app_id", this.config.appId);
-    if (returnTo) {
-      url.searchParams.set("return_to", returnTo);
-    }
+
+    if (returnTo) url.searchParams.set("return_to", returnTo);
+
     return url.toString();
   }
 

@@ -21,7 +21,7 @@ help:
 
 %-yalc-push:
 	@echo "Publishing $* to yalc..."
-	@cd "packages/$*" && yalc push
+	@cd "packages/$*" && npm run build && yalc push
 
 %-build:
 	@echo "Building $*..."

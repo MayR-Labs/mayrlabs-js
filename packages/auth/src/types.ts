@@ -14,13 +14,12 @@ export interface AuthConfig {
   appId: string;
   clientSecret: string;
   accountUrl?: string; // Default: https://myaccount.mayrlabs.com
-  redirects?: {
-    error?: string; // Default: /login
-    success?: string; // Default: /dashboard
+  redirects: {
+    error: string; // Default: /login
+    success: string; // Default: /dashboard
   };
-  session?: {
-    key?: string; // Default: mayrlabs-session
-    cookieOptions?: any;
+  session: {
+    key: string; // Default: mayrlabs-session
   };
 }
 
