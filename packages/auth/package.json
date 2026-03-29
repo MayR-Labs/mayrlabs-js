@@ -27,8 +27,14 @@
   "type": "commonjs",
   "exports": {
     ".": {
+      "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./nextjs": {
+      "types": "./dist/nextjs.d.mts",
+      "import": "./dist/nextjs.mjs",
+      "require": "./dist/nextjs.cjs"
     }
   },
   "scripts": {
@@ -39,13 +45,17 @@
     "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build",
     "demo": "tsx src/index.ts",
-    "demo:dist": "node dist/index.js"
+    "demo:dist": "node dist/index.js",
+    "lint": "eslint .",
+    "format": "oxfmt .",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.2",
     "eslint": "^10.1.0",
+    "next": "^15.1.0",
     "tsdown": "^0.21.7",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
@@ -56,5 +66,8 @@
     "access": "public"
   },
   "main": "dist/index.cjs",
-  "module": "dist/index.mjs"
+  "module": "dist/index.mjs",
+  "dependencies": {
+    "jose": "^6.2.2"
+  }
 }

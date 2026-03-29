@@ -32,7 +32,10 @@ const FOOTER = {
 };
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: {
+    index: "src/index.ts",
+    nextjs: "src/nextjs/index.ts",
+  },
   format: ["cjs", "esm"],
   clean: true,
   shims: true,

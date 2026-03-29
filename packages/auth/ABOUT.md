@@ -56,7 +56,7 @@ export interface MayRLabsUser {
 export interface AuthConfig {
   appId: string;
   clientSecret: string;
-  accountUrl?: string; // Default: https://account.mayrlabs.com
+  accountUrl?: string; // Default: https://myaccount.mayrlabs.com
   redirects?: {
     error?: string; // Default: /login
     success?: string; // Default: /dashboard
