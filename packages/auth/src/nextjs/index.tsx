@@ -45,6 +45,24 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
 
+    // 1. Check for error token from the central account system
+    const errorToken = searchParams.get("error");
+
+    if (errorToken) {
+      try {
+        const decryptedError = await setup.decrypt(errorToken);
+        const { errorCode, message } = JSON.parse(decryptedError);
+
+        const errorUrl = new URL(setup.config.redirects.error, request.url);
+        errorUrl.searchParams.set("errorCode", errorCode);
+        errorUrl.searchParams.set("errorMessage", message);
+
+        return NextResponse.redirect(errorUrl);
+      } catch {
+        return redirectTo(setup.config.redirects.error, request.url);
+      }
+    }
+
     const token = searchParams.get("token");
 
     if (!token) return redirectTo(setup.config.redirects.error, request.url);
