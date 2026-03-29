@@ -35,6 +35,11 @@
       "types": "./dist/nextjs.d.mts",
       "import": "./dist/nextjs.mjs",
       "require": "./dist/nextjs.cjs"
+    },
+    "./nextjs/client": {
+      "types": "./dist/nextjs/client.d.mts",
+      "import": "./dist/nextjs/client.mjs",
+      "require": "./dist/nextjs/client.cjs"
     }
   },
   "scripts": {

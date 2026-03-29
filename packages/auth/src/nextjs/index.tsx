@@ -7,8 +7,6 @@ import { MayRLabsUser, NextAuthOptions } from "../types";
 import { redirectTo } from "./_utils";
 import { AuthClientProvider } from "./provider";
 
-export { useUser } from "./provider";
-
 /**
  * Creates Next.js specific auth utilities.
  * Automatically handles environment variables and validation.
@@ -165,7 +163,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   }): Promise<React.JSX.Element | null> {
     const user = await getUser();
 
-    if (!user) redirect(setup.config.redirects.error);
+    // This should call redirectToLogin(), the client app is not expected to have a Login page
+    if (!user) redirectToLogin();
 
     return <AuthClientProvider user={user}>{children}</AuthClientProvider>;
   }
