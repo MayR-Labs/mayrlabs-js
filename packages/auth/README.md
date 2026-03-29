@@ -44,13 +44,10 @@ export const {
   AuthProvider,
   useUser,
 } = createNextAuth({
-  redirects: {
-    error: "/login",
-    success: "/dashboard",
-  },
-  session: {
-    key: "mayrlabs-session",
-  },
+  // error is redirected to when there is authentication error
+  // and success is redirected to after a successful authentication
+  redirects: { error: "/login", success: "/dashboard" },
+  session: { key: "mayrlabs-session" },
 });
 ```
 
@@ -86,20 +83,22 @@ export const config = {
 
 ### ⚛️ React Providers
 
-Wrap your root layout with the `AuthProvider` to enable client-side user access.
+The `AuthProvider` is a Server Component that handles two key things:
+
+1. **Hydration**: It pre-fetches the user on the server and provides it to the client context via `AuthClientProvider`.
+2. **Protection**: If the user is unauthenticated, it automatically redirects them to the `redirects.error` page (usually `/login`).
+
+> [!TIP]
+> Use `AuthProvider` in layouts that wrap protected portions of your application (e.g., `(dashboard)/layout.tsx`) rather than the root layout if some pages are public.
 
 ```tsx
-// app/layout.tsx
+// app/(dashboard)/layout.tsx
 import { AuthProvider } from "@/lib/auth";
 
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
-    </html>
-  );
+export default function DashboardLayout({ children }) {
+  // This layout and all its children are now protected.
+  // Unauthenticated users will be redirected to /login automatically.
+  return <AuthProvider>{children}</AuthProvider>;
 }
 ```
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { AuthSetup } from "../core/auth";
 import { MayRLabsUser, NextAuthOptions } from "../types";
 import { redirectTo } from "./_utils";
@@ -43,11 +44,13 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    */
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
+
     const token = searchParams.get("token");
 
     if (!token) return redirectTo(setup.config.redirects.error, request.url);
 
     const user = await setup.verifyToken(token);
+
     if (!user) return redirectTo(setup.config.redirects.error, request.url);
 
     const response = redirectTo(setup.config.redirects.success, request.url);
@@ -141,8 +144,11 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     children,
   }: {
     children: React.ReactNode;
-  }): Promise<React.JSX.Element> {
+  }): Promise<React.JSX.Element | null> {
     const user = await getUser();
+
+    if (!user) redirect(setup.config.redirects.error);
+
     return <AuthClientProvider user={user}>{children}</AuthClientProvider>;
   }
 
