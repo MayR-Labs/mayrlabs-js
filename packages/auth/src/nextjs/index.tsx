@@ -7,7 +7,7 @@ import { MayRLabsUser, NextAuthOptions } from "../types";
 import { redirectTo } from "./_utils";
 import { AuthClientProvider } from "./provider";
 
-export * from "./provider";
+export { useUser } from "./provider";
 
 /**
  * Creates Next.js specific auth utilities.

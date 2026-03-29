@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { MayRLabsUser } from "../types";
 
 /**
@@ -26,8 +26,10 @@ export const AuthClientProvider = ({
  */
 export const useUser = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useUser must be used within an AuthClientProvider");
   }
+
   return context;
 };
