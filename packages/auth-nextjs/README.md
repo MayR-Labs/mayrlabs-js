@@ -40,7 +40,6 @@ export const {
   getUserOrThrow,
   getUserOrRedirect,
   authProxy,
-  logout,
   logoutHandler,
   sendRequest,
   redirectToLogin,
@@ -141,7 +140,7 @@ import { AuthProvider } from "@/lib/auth";
 
 export default function DashboardLayout({ children }) {
   // This layout and all its children are now protected.
-  // Unauthenticated users will be redirected to /login automatically.
+  // Unauthenticated users will be redirected to the centralized login URL automatically.
   return <AuthProvider>{children}</AuthProvider>;
 }
 ```
