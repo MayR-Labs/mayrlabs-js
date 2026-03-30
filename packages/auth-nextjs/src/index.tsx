@@ -2,11 +2,14 @@ import React from "react";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AuthSetup } from "../core/auth";
-import { MayRLabsUser, NextAuthOptions } from "../types";
+import {
+  AuthSetup,
+  MayRLabsUser,
+  NextAuthOptions,
+  UnauthenticatedError,
+} from "@mayrlabs/auth";
 import { redirectTo } from "./_utils";
-import { AuthClientProvider } from "./provider";
-import { UnauthenticatedError } from "../errors";
+import { AuthClientProvider } from "./client";
 
 /**
  * Creates Next.js specific auth utilities.

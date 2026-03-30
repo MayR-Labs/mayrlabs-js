@@ -20,7 +20,8 @@ const FOOTER = {
 
 export default defineConfig({
   entry: {
-    index: "src/index.ts",
+    index: "src/index.tsx",
+    client: "src/client.tsx",
   },
   format: ["cjs", "esm"],
   clean: true,
@@ -29,7 +30,7 @@ export default defineConfig({
   minify: true,
   dts: true,
   deps: {
-    neverBundle: ["jose"],
+    neverBundle: [/^next($|(\/.*))/, "react", "@mayrlabs/auth"],
   },
   banner: BANNER,
   footer: FOOTER,

@@ -1,0 +1,9 @@
+{
+  "name": "auth-nextjs-pg",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Playground for @mayrlabs/auth-nextjs",
+  "devDependencies": {
+    "@mayrlabs/auth-nextjs": "file:../../packages/auth-nextjs"
+  }
+}
