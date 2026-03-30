@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth-nextjs",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "NextJS Wrapper",
   "keywords": [
     "nextjs",
