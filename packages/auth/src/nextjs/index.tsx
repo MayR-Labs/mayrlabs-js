@@ -53,7 +53,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     const errorToken = searchParams.get("error");
 
     if (errorToken) {
-      const errorData = await setup.verifyError(errorToken);
+      const errorData = await setup.verifyErrorToken(errorToken);
 
       return redirectToError(
         errorData?.errorCode || "CLIENT_UNEXPECTED_ERROR",
@@ -70,7 +70,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
       );
     }
 
-    const user = await setup.verifyToken(token);
+    const user = await setup.verifyAuthToken(token);
 
     if (!user) {
       return redirectToError(
@@ -101,7 +101,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
 
     if (!token) return null;
 
-    return setup.verifyToken(token);
+    return setup.verifyAuthToken(token);
   };
 
   /**
@@ -114,7 +114,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     const token = cookieStore.get(setup.config.session.key)?.value;
 
     let user: MayRLabsUser | null = null;
-    if (token) user = await setup.verifyToken(token);
+
+    if (token) user = await setup.verifyAuthToken(token);
 
     if (!user) {
       const loginUrl = setup.getLoginUrl(request.nextUrl.pathname);

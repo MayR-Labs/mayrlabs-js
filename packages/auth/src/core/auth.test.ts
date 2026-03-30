@@ -23,12 +23,12 @@ describe("AuthSetup", () => {
       .setProtectedHeader({ alg: "HS256" })
       .sign(secret);
 
-    const verified = await setup.verifyError(token);
+    const verified = await setup.verifyErrorToken(token);
     expect(verified).toMatchObject(errorPayload);
   });
 
   it("should return null for an invalid error token", async () => {
-    const verified = await setup.verifyError("invalid-token");
+    const verified = await setup.verifyErrorToken("invalid-token");
     expect(verified).toBeNull();
   });
 
@@ -44,7 +44,7 @@ describe("AuthSetup", () => {
       .setProtectedHeader({ alg: "HS256" })
       .sign(secret);
 
-    const verified = await setup.verifyError(token);
+    const verified = await setup.verifyErrorToken(token);
     expect(verified).toBeNull();
   });
 });

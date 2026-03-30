@@ -34,18 +34,14 @@ export class AuthSetup {
     return decrypt(encrypted, this.config.clientSecret);
   }
 
-  /**
-   * Verifies the session token and returns the user data.
-   */
-  async verifyToken(token: string): Promise<MayRLabsUser | null> {
+  async #verifyToken<PayloadT>(token: string): Promise<PayloadT | null> {
     try {
       const secret = new TextEncoder().encode(this.config.clientSecret);
 
       const { payload } = await jwtVerify(token, secret);
 
-      return payload as unknown as MayRLabsUser;
+      return payload as unknown as PayloadT;
     } catch (error) {
-      // Only log errors in non-production or if they are unexpected
       if (process.env.NODE_ENV !== "production") {
         console.warn(
           "Auth: Token verification failed:",
@@ -58,24 +54,19 @@ export class AuthSetup {
   }
 
   /**
+   * Verifies the session token and returns the user data.
+   */
+  async verifyAuthToken(token: string): Promise<MayRLabsUser | null> {
+    return this.#verifyToken<MayRLabsUser>(token);
+  }
+
+  /**
    * Verifies an error token and returns its payload.
    */
-  async verifyError(
+  async verifyErrorToken(
     token: string
   ): Promise<{ errorCode: string; message: string } | null> {
-    try {
-      const secret = new TextEncoder().encode(this.config.clientSecret);
-      const { payload } = await jwtVerify(token, secret);
-      return payload as unknown as { errorCode: string; message: string };
-    } catch (error) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn(
-          "Auth: Error token verification failed:",
-          error instanceof Error ? error.message : error
-        );
-      }
-      return null;
-    }
+    return this.#verifyToken<{ errorCode: string; message: string }>(token);
   }
 
   /**
