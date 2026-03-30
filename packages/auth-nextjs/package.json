@@ -1,9 +1,17 @@
 {
-  "name": "@mayrlabs/auth",
-  "version": "1.0.0",
-  "description": "The central authentication and identity provider package for all MayR Labs products.",
-  "keywords": [],
-  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth#readme",
+  "name": "@mayrlabs/auth-nextjs",
+  "version": "0.0.0",
+  "description": "NextJS Wrapper",
+  "keywords": [
+    "nextjs",
+    "auth",
+    "authentication",
+    "sso",
+    "react",
+    "app-router",
+    "mayrlabs"
+  ],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth-nextjs#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
   },
@@ -16,7 +24,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
-    "directory": "packages/auth"
+    "directory": "packages/auth-nextjs"
   },
   "files": [
     "dist",
@@ -31,6 +39,12 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
       "default": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client.d.mts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.cjs",
+      "default": "./dist/client.cjs"
     }
   },
   "scripts": {
@@ -39,18 +53,26 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "npm run build",
-    "demo": "tsx src/index.ts",
-    "demo:dist": "node dist/index.js",
-    "lint": "eslint .",
-    "format": "oxfmt .",
-    "type-check": "tsc --noEmit"
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@mayrlabs/auth": "^1.0.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@types/node": "^25.5.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@vitest/coverage-v8": "^4.1.2",
     "eslint": "^10.1.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tsdown": "^0.21.7",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
@@ -61,8 +83,5 @@
     "access": "public"
   },
   "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "dependencies": {
-    "jose": "^6.2.2"
-  }
+  "module": "dist/index.mjs"
 }
