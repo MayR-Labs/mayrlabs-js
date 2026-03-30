@@ -57,7 +57,7 @@ const auth = new AuthSetup({
 
 Once instantiated, your `AuthSetup` instance (`auth` in the example above) exposes several fundamental methods for handling SSO handshakes.
 
-### `getLoginUrl(returnTo?: string): string`
+### `getLoginUrl(): string`
 
 Constructs the secure Single Sign-On URL for the MayR Labs Account system.
 
