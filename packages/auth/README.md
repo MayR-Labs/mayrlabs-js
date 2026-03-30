@@ -5,6 +5,7 @@ The premium authentication and identity provider package for the MayR Labs ecosy
 ## ✨ Features
 
 - 🔐 **Framework Agnostic Core**: Secure logic for encryption, JWT decoding, and session management.
+- 🛡️ **JWT Error Verification**: Securely verify error tokens from the central identity provider.
 - ⚡ **Next.js Integration**: Optimized handlers for Proxy, Server Components, and Actions.
 - ⚛️ **React Providers**: Out-of-the-box Context Providers and hooks for client-side user access.
 - 🛡️ **AES-256-GCM Encryption**: Environment-agnostic Web Crypto implementation for secure M2M.
@@ -37,12 +38,14 @@ import { createNextAuth } from "@mayrlabs/auth/nextjs";
 export const {
   handleCallback,
   getUser,
+  getUserOrThrow,
+  getUserOrRedirect,
   authProxy,
+  logout,
   logoutHandler,
   sendRequest,
   redirectToLogin,
   AuthProvider,
-  useUser,
 } = createNextAuth({
   // error is redirected to when there is authentication error
   // and success is redirected to after a successful authentication
@@ -88,6 +91,41 @@ export const config = {
 };
 ```
 
+### 🔒 Server-Side User (getUserOrThrow / getUserOrRedirect)
+
+For Server Actions, Route Handlers, or complex Server Components where you need to ensure a user is authenticated, use `getUserOrThrow` or `getUserOrRedirect`.
+
+#### `getUserOrThrow`
+
+Returns the user object or throws an `UnauthenticatedError`. Ideal for Server Actions where you want to handle the error in a try/catch.
+
+```typescript
+// app/actions/update-profile.ts
+"use server";
+import { getUserOrThrow } from "@/lib/auth";
+
+export async function updateProfile(data: any) {
+  const user = await getUserOrThrow(); // Throws if not authenticated
+
+  // Proceed with authorized action...
+}
+```
+
+#### `getUserOrRedirect`
+
+Returns the user object or automatically redirects to the login page if not authenticated. Ideal for Server Components (Page or Layout).
+
+```tsx
+// app/dashboard/page.tsx
+import { getUserOrRedirect } from "@/lib/auth";
+
+export default async function DashboardPage() {
+  const user = await getUserOrRedirect(); // Redirects if not authenticated
+
+  return <div>Welcome back, {user.firstName}</div>;
+}
+```
+
 ### ⚛️ React Providers
 
 The `AuthProvider` is a Server Component that handles two key things:
@@ -109,7 +147,7 @@ export default function DashboardLayout({ children }) {
 }
 ```
 
-Use the `useUser` hook in any Client Component.
+Use the `useUser` hook in any Client Component. **Note**: This must be imported from the client-specific entry point to avoid server-only code in your client bundle.
 
 ```tsx
 "use client";

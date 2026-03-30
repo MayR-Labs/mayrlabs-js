@@ -6,6 +6,7 @@ import { AuthSetup } from "../core/auth";
 import { MayRLabsUser, NextAuthOptions } from "../types";
 import { redirectTo } from "./_utils";
 import { AuthClientProvider } from "./provider";
+import { UnauthenticatedError } from "../errors";
 
 /**
  * Creates Next.js specific auth utilities.
@@ -105,6 +106,30 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   };
 
   /**
+   * Gets the current user or throws an UnauthenticatedError if not logged in.
+   * Useful for Server Actions and protected Route Handlers.
+   */
+  const getUserOrThrow = async (): Promise<MayRLabsUser> => {
+    const user = await getUser();
+
+    if (!user) throw new UnauthenticatedError();
+
+    return user;
+  };
+
+  /**
+   * Gets the current user or redirects to the login page if not logged in.
+   * Useful for Server Components.
+   */
+  const getUserOrRedirect = async (): Promise<MayRLabsUser> => {
+    const user = await getUser();
+
+    if (!user) return redirect(setup.getLoginUrl());
+
+    return user;
+  };
+
+  /**
    * Auth Proxy helper to protect routes.
    * If unauthenticated, redirects to the central login.
    * Returns NextResponse.next() if authenticated.
@@ -139,7 +164,9 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    */
   const logoutHandler = async (request: NextRequest) => {
     const response = redirectTo(setup.config.redirects.error, request.url);
+
     response.cookies.delete(setup.config.session.key);
+
     return response;
   };
 
@@ -183,6 +210,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     setup,
     handleCallback,
     getUser,
+    getUserOrThrow,
+    getUserOrRedirect,
     authProxy,
     logout,
     logoutHandler,

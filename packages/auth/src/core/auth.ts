@@ -100,37 +100,30 @@ export class AuthSetup {
 
     const encrypted = await this.encrypt(JSON.stringify(innerPayload));
 
+    const body = new FormData();
+    body.set("app_id", this.config.appId);
+    body.set("action", action);
+    body.set("payload", encrypted);
+
     const response = await fetch(
       `${this.config.accountUrl}/api/encrypted-request`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          app_id: this.config.appId,
-          action,
-          payload: encrypted,
-        }),
-      }
+      { method: "POST", body }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
+
       throw new Error(`M2M Request failed: ${response.status} ${errorText}`);
     }
 
     const result = (await response.json()) as any;
 
-    // If the response payload is encrypted, decrypt it.
-    if (
-      result &&
-      typeof result === "object" &&
-      "payload" in result &&
-      typeof result.payload === "string"
-    ) {
-      const decrypted = await this.decrypt(result.payload);
+    if (result.success) {
+      const decrypted = await this.decrypt(result.data.response);
+
       return JSON.parse(decrypted) as T;
     }
 
-    return result as T;
+    throw new Error(result.error.message);
   }
 }
