@@ -138,8 +138,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Returns NextResponse.next() if authenticated.
    */
   const authProxy = async (request: NextRequest) => {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(setup.config.session.key)?.value;
+    const token = request.cookies.get(setup.config.session.key)?.value;
 
     let user: MayRLabsUser | null = null;
 
@@ -152,15 +151,6 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     }
 
     return NextResponse.next();
-  };
-
-  /**
-   * Clears the session cookie and redirects to the login/error page.
-   */
-  const logout = async (request: NextRequest) => {
-    const response = redirectTo(setup.config.redirects.error, request.url);
-    response.cookies.delete(setup.config.session.key);
-    return response;
   };
 
   /**
@@ -217,7 +207,6 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     getUserOrThrow,
     getUserOrRedirect,
     authProxy,
-    logout,
     logoutHandler,
     redirectToLogin,
     sendRequest,

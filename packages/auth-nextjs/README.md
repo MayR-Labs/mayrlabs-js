@@ -16,7 +16,7 @@ The Next.js integration wrapper for the MayR Labs authentication ecosystem (`@ma
 npm install @mayrlabs/auth-nextjs @mayrlabs/auth
 ```
 
-_(Note: `@mayrlabs/auth` is required as a peer dependency for core operations)._
+_(Note: `@mayrlabs/auth` is required by this package for core operations)._
 
 ### Environment Variables
 

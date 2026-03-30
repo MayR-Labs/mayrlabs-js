@@ -6,9 +6,9 @@ import { MayRLabsUser } from "@mayrlabs/auth";
 /**
  * Context for holding the authenticated user state on the client.
  */
-const AuthContext = createContext<{ user: MayRLabsUser | null }>({
-  user: null,
-});
+const AuthContext = createContext<{ user: MayRLabsUser | null } | undefined>(
+  undefined
+);
 
 /**
  * Client-side provider for auth context.

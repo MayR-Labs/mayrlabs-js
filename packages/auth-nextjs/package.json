@@ -61,7 +61,7 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@mayrlabs/auth": "^1.0.1"
+    "@mayrlabs/auth": "^1.0.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
