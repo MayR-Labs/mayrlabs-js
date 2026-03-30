@@ -71,12 +71,10 @@ export class AuthSetup {
   /**
    * Returns the centralized login URL.
    */
-  getLoginUrl(returnTo?: string): string {
+  getLoginUrl(): string {
     const url = new URL(`${this.config.accountUrl}/login`);
 
     url.searchParams.set("app_id", this.config.appId);
-
-    if (returnTo) url.searchParams.set("return_to", returnTo);
 
     return url.toString();
   }

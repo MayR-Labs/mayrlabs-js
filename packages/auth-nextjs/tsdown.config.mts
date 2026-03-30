@@ -30,7 +30,7 @@ export default defineConfig({
   minify: true,
   dts: true,
   deps: {
-    neverBundle: [/^next($|(\/.*))/, "react", "@mayrlabs/auth"],
+    neverBundle: [/^next($|(\/.*))/, "react", "react-dom", "@mayrlabs/auth"],
   },
   banner: BANNER,
   footer: FOOTER,
