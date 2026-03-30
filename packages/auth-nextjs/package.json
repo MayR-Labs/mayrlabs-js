@@ -2,7 +2,15 @@
   "name": "@mayrlabs/auth-nextjs",
   "version": "0.0.0",
   "description": "NextJS Wrapper",
-  "keywords": [],
+  "keywords": [
+    "nextjs",
+    "auth",
+    "authentication",
+    "sso",
+    "react",
+    "app-router",
+    "mayrlabs"
+  ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth-nextjs#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
