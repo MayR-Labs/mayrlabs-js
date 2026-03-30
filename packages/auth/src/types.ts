@@ -13,9 +13,9 @@ export interface MayRLabsUser {
 export interface AuthConfig {
   appId: string;
   clientSecret: string;
-  accountUrl?: string;
-  redirects?: { error: string; success: string };
-  session?: { key: string };
+  accountUrl: string;
+  redirects: { error: string; success: string };
+  session: { key: string };
 }
 
 export interface NextAuthOptions {

@@ -146,7 +146,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     if (token) user = await setup.verifyAuthToken(token);
 
     if (!user) {
-      const loginUrl = setup.getLoginUrl(request.nextUrl.pathname);
+      const loginUrl = setup.getLoginUrl();
+
       return redirectTo(loginUrl, request.url);
     }
 
@@ -176,8 +177,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   /**
    * Returns a redirect to the central login URL.
    */
-  const redirectToLogin = (request: NextRequest, returnTo?: string) => {
-    const loginUrl = setup.getLoginUrl(returnTo);
+  const redirectToLogin = (request: NextRequest) => {
+    const loginUrl = setup.getLoginUrl();
 
     return redirectTo(loginUrl, request.url);
   };
