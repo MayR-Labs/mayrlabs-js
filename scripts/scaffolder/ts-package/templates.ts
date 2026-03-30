@@ -53,24 +53,11 @@ const copyrightYear = (): string => {
 };
 
 const BANNER = {
-  js: \`
-/**
- * MayR Labs
- * Build. Ship. Repeat intelligently.
- *
- * (c) \${copyrightYear()} MayR Labs
- * https://mayrlabs.com
- */
-\`,
+  js: \`/// (c) \${copyrightYear()} MayR Labs https://mayrlabs.com\`,
 };
 
 const FOOTER = {
-  js: \`
-/**
- * Built with discipline by MayR Labs.
- * Software should feel intentional.
- */
-\`,
+  js: \`/// Built with discipline by MayR Labs.\`,
 };
 
 export default defineConfig({
