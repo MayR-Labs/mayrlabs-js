@@ -130,7 +130,7 @@ export default async function DashboardPage() {
 The `AuthProvider` is a Server Component that handles two key things:
 
 1. **Hydration**: It pre-fetches the user on the server and provides it to the client context via `AuthClientProvider`.
-2. **Protection**: If the user is unauthenticated, it automatically redirects them to the `redirects.error` page (usually `/login`).
+2. **Protection**: If the user is unauthenticated, it automatically redirects them to the centralized login URL (`setup.getLoginUrl()`).
 
 > [!TIP]
 > Use `AuthProvider` in layouts that wrap protected portions of your application (e.g., `(dashboard)/layout.tsx`) rather than the root layout if some pages are public.
