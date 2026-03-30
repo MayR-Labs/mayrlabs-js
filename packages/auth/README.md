@@ -58,9 +58,11 @@ export const {
 import { handleCallback } from "@/lib/auth";
 
 /**
- * Note: This callback URL (e.g., https://your-app.com/api/auth/callback)
- * must be configured in your application settings within the
- * MayR Labs Account Admin.
+ * IMPORTANT: This callback URL (e.g., https://your-app.com/api/auth/callback)
+ * must be registered and configured in your application settings
+ * within the MayR Labs Account Admin panel.
+ *
+ * Failure to do so will result in authentication errors.
  */
 export const GET = handleCallback;
 ```

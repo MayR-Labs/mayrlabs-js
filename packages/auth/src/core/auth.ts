@@ -58,6 +58,27 @@ export class AuthSetup {
   }
 
   /**
+   * Verifies an error token and returns its payload.
+   */
+  async verifyError(
+    token: string
+  ): Promise<{ errorCode: string; message: string } | null> {
+    try {
+      const secret = new TextEncoder().encode(this.config.clientSecret);
+      const { payload } = await jwtVerify(token, secret);
+      return payload as unknown as { errorCode: string; message: string };
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "Auth: Error token verification failed:",
+          error instanceof Error ? error.message : error
+        );
+      }
+      return null;
+    }
+  }
+
+  /**
    * Returns the centralized login URL.
    */
   getLoginUrl(returnTo?: string): string {

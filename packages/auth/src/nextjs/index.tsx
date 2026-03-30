@@ -31,9 +31,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
       error: options.redirects?.error || "/login",
       success: options.redirects?.success || "/dashboard",
     },
-    session: {
-      key: options.session?.key || "mayrlabs-session",
-    },
+    session: { key: options.session?.key || "mayrlabs-session" },
   });
 
   /**
@@ -43,35 +41,46 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
 
-    // 1. Check for error token from the central account system
+    const redirectToError = (code: string, message: string) => {
+      const errorUrl = new URL(setup.config.redirects.error, request.url);
+
+      errorUrl.searchParams.set("errorCode", code);
+      errorUrl.searchParams.set("errorMessage", message);
+
+      return NextResponse.redirect(errorUrl);
+    };
+
     const errorToken = searchParams.get("error");
 
     if (errorToken) {
-      try {
-        const decryptedError = await setup.decrypt(errorToken);
-        const { errorCode, message } = JSON.parse(decryptedError);
+      const errorData = await setup.verifyError(errorToken);
 
-        const errorUrl = new URL(setup.config.redirects.error, request.url);
-        errorUrl.searchParams.set("errorCode", errorCode);
-        errorUrl.searchParams.set("errorMessage", message);
-
-        return NextResponse.redirect(errorUrl);
-      } catch {
-        return redirectTo(setup.config.redirects.error, request.url);
-      }
+      return redirectToError(
+        errorData?.errorCode || "CLIENT_UNEXPECTED_ERROR",
+        errorData?.message || "An unexpected error occurred."
+      );
     }
 
     const token = searchParams.get("token");
 
-    if (!token) return redirectTo(setup.config.redirects.error, request.url);
+    if (!token) {
+      return redirectToError(
+        "CLIENT_MISSING_AUTH_TOKEN",
+        "Missing auth token."
+      );
+    }
 
     const user = await setup.verifyToken(token);
 
-    if (!user) return redirectTo(setup.config.redirects.error, request.url);
+    if (!user) {
+      return redirectToError(
+        "CLIENT_INVALID_AUTH_TOKEN",
+        "Invalid auth token."
+      );
+    }
 
     const response = redirectTo(setup.config.redirects.success, request.url);
 
-    // Set the session cookie
     response.cookies.set(setup.config.session.key, token, {
       path: "/",
       httpOnly: true,
@@ -138,6 +147,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    */
   const redirectToLogin = (request: NextRequest, returnTo?: string) => {
     const loginUrl = setup.getLoginUrl(returnTo);
+
     return redirectTo(loginUrl, request.url);
   };
 
@@ -163,8 +173,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   }): Promise<React.JSX.Element | null> {
     const user = await getUser();
 
-    // This should call redirectToLogin(), the client app is not expected to have a Login page
-    if (!user) redirectToLogin();
+    if (!user) return redirect(setup.getLoginUrl());
 
     return <AuthClientProvider user={user}>{children}</AuthClientProvider>;
   }
