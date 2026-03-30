@@ -162,14 +162,82 @@ export function UserProfile() {
 }
 ```
 
-## 🔒 Encryption & M2M
+## 🔒 Secure M2M Communication
 
-Securely send data between applications in the MayR Labs ecosystem using the `sendRequest` helper.
+The `sendRequest` utility allows for secure, encrypted Machine-to-Machine (M2M) communication between your application and the MayR Labs Account system.
+
+### How it works
+
+1. **Payload Preparation**: Your data is wrapped in an `M2MPayload` containing `appId`, `userId`, and the `action`.
+2. **Encryption**: The entire payload is encrypted using AES-256-GCM with your `MAYRLABS_CLIENT_SECRET`.
+3. **Transport**: The encrypted data is sent via `POST` (as `FormData`) to the Account Center.
+4. **Response**: The response is received in an encrypted envelope, which is automatically decrypted and validated by the SDK.
+
+### M2M Types
 
 ```typescript
-const result = await sendRequest("update-profile", user.id, {
-  theme: "dark",
-});
+/**
+ * Internal payload structure before encryption
+ */
+export interface M2MPayload {
+  app_id: string;
+  user_id: string;
+  action: string;
+  created_at: string;
+  payload: unknown;
+}
+
+/**
+ * Standard API response structure from the Account Center
+ * This represents the outer JSON envelope.
+ */
+export interface M2MResponse {
+  success: boolean;
+  data?: {
+    response: string; // The encrypted response payload
+  };
+  error?: { message: string; code: string };
+}
+
+/**
+ * Structure of the decrypted inner response
+ */
+export interface DecryptedM2MResponse<T> {
+  success: boolean;
+  data: T;
+  error?: { message: string; code: string };
+}
+```
+
+### Usage Example
+
+```typescript
+import { sendRequest } from "@/lib/auth";
+
+interface UserSettings {
+  theme: "light" | "dark";
+  notifications: boolean;
+}
+
+/**
+ * Sends an encrypted request to update user settings in the Account Center.
+ * Returns the decrypted data of type T.
+ */
+async function updateSettings(userId: string) {
+  try {
+    const settings = await sendRequest<UserSettings>(
+      "update_settings",
+      userId,
+      { theme: "dark", notifications: true }
+    );
+
+    console.log("Updated settings:", settings.theme);
+    return settings;
+  } catch (error) {
+    console.error("M2M Request failed:", error.message);
+    throw error;
+  }
+}
 ```
 
 ---

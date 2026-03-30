@@ -23,10 +23,4 @@ export interface NextAuthOptions {
   session?: { key?: string };
 }
 
-export interface M2MPayload {
-  app_id: string;
-  user_id: string;
-  action: string;
-  created_at: string;
-  payload: any;
-}
+export * from "./core/types/m2m";
