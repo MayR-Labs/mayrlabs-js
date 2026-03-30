@@ -1,0 +1,77 @@
+{
+  "name": "@mayrlabs/auth-nextjs",
+  "version": "0.0.0",
+  "description": "NextJS Wrapper",
+  "keywords": [],
+  "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth-nextjs#readme",
+  "bugs": {
+    "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Aghogho Meyoron",
+    "email": "youngmayor.dev@gmail.com",
+    "url": "https://mayrlabs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
+    "directory": "packages/auth-nextjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client.d.mts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "pkg:dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@mayrlabs/auth": "^1.0.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitest/coverage-v8": "^4.1.2",
+    "eslint": "^10.1.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsdown": "^0.21.7",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs"
+}
