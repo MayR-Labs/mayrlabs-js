@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The central authentication and identity provider package for all MayR Labs products.",
   "keywords": [
     "auth",

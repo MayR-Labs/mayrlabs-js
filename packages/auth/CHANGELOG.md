@@ -1,5 +1,11 @@
 # @mayrlabs/auth
 
+## 0.1.1
+
+### Patch Changes
+
+- Bumped version to 0.1.1 to ensure sync with @mayrlabs/auth-nextjs
+
 ## 0.1.0
 
 ### Major Changes
