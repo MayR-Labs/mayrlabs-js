@@ -1,7 +1,7 @@
 {
   "name": "@mayrlabs/auth-nextjs",
-  "version": "0.1.0",
-  "description": "NextJS Wrapper",
+  "version": "0.1.1",
+  "description": "The official Next.js App Router integration for @mayrlabs/auth featuring Middleware guards, Server Actions utilities, and React Context bindings.",
   "keywords": [
     "nextjs",
     "auth",
@@ -26,12 +26,12 @@
     "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
     "directory": "packages/auth-nextjs"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "CHANGELOG.md",
-    "package.json"
-  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "type": "commonjs",
   "exports": {
     ".": {
@@ -47,6 +47,12 @@
       "default": "./dist/client.cjs"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
@@ -56,12 +62,12 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "next": "^15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "^15.0.0 || ^16.0.0",
+    "react": "^18.0.0 || ^19.0.0 || ^20.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0 || ^20.0.0"
   },
   "dependencies": {
-    "@mayrlabs/auth": "0.1.0"
+    "@mayrlabs/auth": "^0.1.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
@@ -77,11 +83,5 @@
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
-  },
-  "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs"
+  }
 }

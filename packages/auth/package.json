@@ -1,7 +1,7 @@
 {
   "name": "@mayrlabs/auth",
   "version": "0.1.1",
-  "description": "The central authentication and identity provider package for all MayR Labs products.",
+  "description": "A strictly typed, universal JWT and M2M authentication core library powering the MayR Labs ecosystem.",
   "keywords": [
     "auth",
     "authentication",
@@ -26,12 +26,12 @@
     "url": "git+https://github.com/MayR-Labs/mayrlabs-js.git",
     "directory": "packages/auth"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "CHANGELOG.md",
-    "package.json"
-  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "type": "commonjs",
   "exports": {
     ".": {
@@ -41,6 +41,12 @@
       "default": "./dist/index.cjs"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
@@ -54,6 +60,9 @@
     "format": "oxfmt .",
     "type-check": "tsc --noEmit"
   },
+  "dependencies": {
+    "jose": "^6.2.2"
+  },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@types/node": "^25.5.0",
@@ -63,14 +72,5 @@
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
-  },
-  "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "dependencies": {
-    "jose": "^6.2.2"
   }
 }
