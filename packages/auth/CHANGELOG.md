@@ -1,5 +1,11 @@
 # @mayrlabs/auth
 
+## 0.1.2
+
+### Patch Changes
+
+- Aligned internal types exports to guarantee TypeScript compatibility and sync versions ahead of dependency pushes.
+
 ## 0.1.1
 
 ### Patch Changes

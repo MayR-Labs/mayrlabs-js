@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A strictly typed, universal JWT and M2M authentication core library powering the MayR Labs ecosystem.",
   "keywords": [
     "auth",
@@ -32,12 +32,18 @@
   },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.cts",
   "type": "commonjs",
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
       "default": "./dist/index.cjs"
     }
   },
