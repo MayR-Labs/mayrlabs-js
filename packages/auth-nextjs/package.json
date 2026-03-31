@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth-nextjs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The official Next.js App Router integration for @mayrlabs/auth featuring Middleware guards, Server Actions utilities, and React Context bindings.",
   "keywords": [
     "nextjs",
@@ -32,18 +32,36 @@
   },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.cts",
   "type": "commonjs",
+  "typesVersions": {
+    "*": {
+      "client": [
+        "dist/client.d.cts"
+      ]
+    }
+  },
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
       "default": "./dist/index.cjs"
     },
     "./client": {
-      "types": "./dist/client.d.mts",
-      "import": "./dist/client.mjs",
-      "require": "./dist/client.cjs",
+      "import": {
+        "types": "./dist/client.d.mts",
+        "default": "./dist/client.mjs"
+      },
+      "require": {
+        "types": "./dist/client.d.cts",
+        "default": "./dist/client.cjs"
+      },
       "default": "./dist/client.cjs"
     }
   },
@@ -67,7 +85,7 @@
     "react-dom": "^18.0.0 || ^19.0.0 || ^20.0.0"
   },
   "dependencies": {
-    "@mayrlabs/auth": "^0.1.1"
+    "@mayrlabs/auth": "^0.1.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

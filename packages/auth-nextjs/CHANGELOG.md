@@ -1,5 +1,18 @@
 # @mayrlabs/auth-nextjs
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated `exports` map resolution and reverted deep exports to fix `typesVersions` inference bugs.
+- Bumped peer `@mayrlabs/auth` dependency to strict `^0.1.2`.
+
+## 0.1.1
+
+### Patch Changes
+
+- Bumped dependency `@mayrlabs/auth` to `0.1.1` to ensure strict version synchronization across the MayR Labs ecosystem.
+
 ## 0.1.0
 
 ### Major Changes
