@@ -1,8 +1,16 @@
 {
   "name": "@mayrlabs/auth",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "The central authentication and identity provider package for all MayR Labs products.",
-  "keywords": [],
+  "keywords": [
+    "auth",
+    "authentication",
+    "sso",
+    "mayrlabs",
+    "jwt",
+    "encryption",
+    "m2m"
+  ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth#readme",
   "bugs": {
     "url": "https://github.com/MayR-Labs/mayrlabs-js/issues"

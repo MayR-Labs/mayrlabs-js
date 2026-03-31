@@ -160,6 +160,55 @@ export function UserProfile() {
 }
 ```
 
+### 🚪 Logging Out (logoutHandler)
+
+To securely clear the user's session locally and initiate a redirect to the central authentication flow (or log them out entirely), use the automated `logoutHandler` within a Route Handler:
+
+```typescript
+// app/api/auth/logout/route.ts
+import { logoutHandler } from "@/lib/auth";
+
+export const GET = logoutHandler;
+export const POST = logoutHandler;
+```
+
+### 🛠️ Server-to-Server Requests (sendRequest)
+
+Your server-side code can securely communicate with the MayR Labs central account system using the deeply integrated `sendRequest` utility. This internally utilizes AES-256-GCM encryption without leaking keys to the client.
+
+```typescript
+"use server";
+import { sendRequest, getUserOrThrow } from "@/lib/auth";
+
+export async function upgradeSubscription(planId: string) {
+  // 1. Ensure the user is actually logged in
+  const user = await getUserOrThrow();
+
+  // 2. Transmit the encrypted M2M payload securely
+  const result = await sendRequest<{ status: string }>(
+    "update_subscription", // Action scope
+    user.id, // Target user ID
+    { plan_id: planId } // Encrypted arbitrary inner payload
+  );
+
+  return result.status;
+}
+```
+
+### 🔀 Manual Redirection (redirectToLogin)
+
+If you have custom middleware flows or Server Actions that need specialized conditional redirection without throwing an error, utilize `redirectToLogin`:
+
+```typescript
+import { redirectToLogin } from "@/lib/auth";
+import { type NextRequest } from "next/server";
+
+export function myCustomGuard(req: NextRequest) {
+  // If some condition fails, manually redirect them to SSO:
+  return redirectToLogin(req);
+}
+```
+
 ---
 
 Built with discipline by [MayR Labs](https://mayrlabs.com).

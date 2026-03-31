@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth-nextjs",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "NextJS Wrapper",
   "keywords": [
     "nextjs",
@@ -61,7 +61,7 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@mayrlabs/auth": "^1.0.0"
+    "@mayrlabs/auth": "0.1.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
