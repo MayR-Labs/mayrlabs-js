@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from "react";
-import { MayRLabsUser } from "@mayrlabs/auth";
+import { type MayRLabsUser } from "@mayrlabs/auth";
 
 /**
  * Context for holding the authenticated user state on the client.

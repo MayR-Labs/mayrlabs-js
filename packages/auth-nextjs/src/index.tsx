@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import {
   AuthSetup,
-  MayRLabsUser,
-  NextAuthOptions,
+  type MayRLabsUser,
+  type NextAuthOptions,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { redirectTo } from "./_utils";
@@ -46,7 +46,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     const { searchParams } = new URL(request.url);
 
     const redirectToError = (code: string, message: string) => {
-      const errorUrl = new URL(setup.config.redirects.error, request.url);
+      const errorUrl = new URL(setup.config.redirects!.error, request.url);
 
       errorUrl.searchParams.set("errorCode", code);
       errorUrl.searchParams.set("errorMessage", message);
@@ -83,9 +83,9 @@ export function createNextAuth(options: NextAuthOptions = {}) {
       );
     }
 
-    const response = redirectTo(setup.config.redirects.success, request.url);
+    const response = redirectTo(setup.config.redirects!.success, request.url);
 
-    response.cookies.set(setup.config.session.key, token, {
+    response.cookies.set(setup.config.session!.key, token, {
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -101,7 +101,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    */
   const getUser = async (): Promise<MayRLabsUser | null> => {
     const cookieStore = await cookies();
-    const token = cookieStore.get(setup.config.session.key)?.value;
+
+    const token = cookieStore.get(setup.config.session!.key)?.value;
 
     if (!token) return null;
 
@@ -138,7 +139,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Returns NextResponse.next() if authenticated.
    */
   const authProxy = async (request: NextRequest) => {
-    const token = request.cookies.get(setup.config.session.key)?.value;
+    const token = request.cookies.get(setup.config.session!.key)?.value;
 
     let user: MayRLabsUser | null = null;
 
@@ -157,9 +158,9 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Specialized logout handler for Route Handlers (API /api/auth/logout).
    */
   const logoutHandler = async (request: NextRequest) => {
-    const response = redirectTo(setup.config.redirects.error, request.url);
+    const response = redirectTo(setup.config.redirects!.error, request.url);
 
-    response.cookies.delete(setup.config.session.key);
+    response.cookies.delete(setup.config.session!.key);
 
     return response;
   };
@@ -172,17 +173,6 @@ export function createNextAuth(options: NextAuthOptions = {}) {
 
     return redirectTo(loginUrl, request.url);
   };
-
-  /**
-   * Proxied sendRequest from AuthSetup.
-   */
-  async function sendRequest<T>(
-    action: string,
-    userId: string,
-    payload: any = {}
-  ): Promise<T> {
-    return setup.sendRequest<T>(action, userId, payload);
-  }
 
   /**
    * Server Component Provider that automatically fetches the user
@@ -209,7 +199,6 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     authProxy,
     logoutHandler,
     redirectToLogin,
-    sendRequest,
     AuthProvider,
   };
 }

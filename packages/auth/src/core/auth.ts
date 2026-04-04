@@ -1,7 +1,6 @@
 import { decrypt, encrypt } from "./encryption";
-import { AuthConfig, MayRLabsUser, M2MPayload } from "../types";
+import type { AuthConfig, MayRLabsUser } from "../types";
 import { jwtVerify } from "jose";
-import { DecryptedM2MResponse, M2MResponse } from "./types/m2m";
 
 export class AuthSetup {
   public config: AuthConfig;
@@ -77,81 +76,5 @@ export class AuthSetup {
     url.searchParams.set("app_id", this.config.appId);
 
     return url.toString();
-  }
-
-  /**
-   * Sends an encrypted M2M request to the MayR Labs Account system.
-   *
-   * @template T The expected data type of the action result.
-   * @param action The specific action key to execute (e.g., 'update_settings').
-   * @param userId The ID of the user the action is on behalf of.
-   * @param payload Optional data to include in the request.
-   * @returns A promise resolving to the decrypted result of the action.
-   */
-  async sendRequest<T>(
-    action: string,
-    userId: string,
-    payload: unknown = {}
-  ): Promise<T> {
-    const innerPayload: M2MPayload = {
-      app_id: this.config.appId,
-      user_id: userId,
-      action,
-      created_at: new Date().toISOString(),
-      payload,
-    };
-
-    // 1. Encrypt the inner payload
-    const encryptedPayload = await this.encrypt(JSON.stringify(innerPayload));
-
-    // 2. Prepare the FormData body
-    const body = new FormData();
-    body.set("app_id", this.config.appId);
-    body.set("action", action);
-    body.set("payload", encryptedPayload);
-
-    // 3. Dispatch the request
-    const response = await fetch(
-      `${this.config.accountUrl}/api/encrypted-request`,
-      { method: "POST", body }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`M2M HTTP Error: ${response.status} ${errorText}`);
-    }
-
-    // 4. Parse the outer JSON envelope
-    const outerResult = (await response.json()) as M2MResponse;
-
-    if (!outerResult.success) {
-      const msg = outerResult.error?.message ?? "Unknown M2M transport error";
-
-      throw new Error(
-        `M2M Transport Error: ${msg} [${outerResult.error?.code ?? "N/A"}]`
-      );
-    }
-
-    if (!outerResult.data?.response) {
-      throw new Error(
-        "M2M Error: Received successful response but missing encrypted data."
-      );
-    }
-
-    // 5. Decrypt and parse the actual result
-    const decryptedText = await this.decrypt(outerResult.data.response);
-
-    const innerResult = JSON.parse(decryptedText) as DecryptedM2MResponse<T>;
-
-    if (!innerResult.success) {
-      const msg =
-        innerResult.error?.message ?? "Action failed in account center";
-
-      throw new Error(
-        `M2M Action Error: ${msg} [${innerResult.error?.code ?? "N/A"}]`
-      );
-    }
-
-    return innerResult.data;
   }
 }
