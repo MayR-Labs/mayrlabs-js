@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createNextAuth } from "./index";
 import { NextRequest, NextResponse } from "next/server";
-import { AuthSetup, UnauthenticatedError } from "@mayrlabs/auth";
+import { ClientAuthSetup, UnauthenticatedError } from "@mayrlabs/auth";
 
 const {
   mockCookiesGet,
@@ -56,6 +56,11 @@ vi.mock("next/server", () => ({
 
 describe("createNextAuth", () => {
   beforeEach(() => {
+    process.env.MAYRLABS_AUTH_PUBLIC_JWK = JSON.stringify({
+      kty: "RSA",
+      n: "...",
+      e: "...",
+    });
     process.env.MAYRLABS_CLIENT_ID = "test-id";
     process.env.MAYRLABS_CLIENT_SECRET = "test-secret";
     process.env.MAYRLABS_ACCOUNT_URL = "https://testing.com";
@@ -67,13 +72,13 @@ describe("createNextAuth", () => {
     it("should throw if environment variables are missing", () => {
       delete process.env.MAYRLABS_CLIENT_ID;
       expect(() => createNextAuth()).toThrow(
-        /MAYRLABS_CLIENT_ID and MAYRLABS_CLIENT_SECRET are required/
+        /MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required/
       );
     });
 
     it("should instantiate successfully with valid environment variables", () => {
       const auth = createNextAuth();
-      expect(auth.setup).toBeInstanceOf(AuthSetup);
+      expect(auth.setup).toBeInstanceOf(ClientAuthSetup);
     });
   });
 
@@ -81,8 +86,10 @@ describe("createNextAuth", () => {
     it("should redirect to error URL when error query param is present", async () => {
       const auth = createNextAuth();
       vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
-        errorCode: "MOCK_ERR",
+        code: "MOCK_ERR",
         message: "Mock error msg",
+        iat: Date.now(),
+        iss: "auth.mayrlabs.com",
       });
 
       const req = new NextRequest(
@@ -98,8 +105,8 @@ describe("createNextAuth", () => {
     it("should redirect to success and set cookie when valid token is present", async () => {
       const auth = createNextAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
-        id: "123",
-        firstName: "Test",
+        userId: "123",
+        email: "test@mayrlabs.com",
       } as any);
 
       const req = new NextRequest(
@@ -139,10 +146,10 @@ describe("createNextAuth", () => {
 
     it("getUserOrRedirect should redirect via next/navigation if no user", async () => {
       mockCookiesGetSetter(() => undefined as any);
-      const redirectSpy = vi.spyOn(await import("next/navigation"), "redirect");
+      const { redirect } = await import("next/navigation");
       const auth = createNextAuth();
       await auth.getUserOrRedirect();
-      expect(redirectSpy).toHaveBeenCalledWith(auth.setup.getLoginUrl());
+      expect(redirect).toHaveBeenCalledWith(auth.setup.getLoginUrl());
     });
   });
 
@@ -151,7 +158,7 @@ describe("createNextAuth", () => {
       mockCookiesGetSetter(() => ({ value: "valid-token" }) as any);
       const auth = createNextAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
-        id: "123",
+        userId: "123",
       } as any);
 
       const req = new NextRequest("http://localhost/dashboard") as any;
@@ -169,7 +176,7 @@ describe("createNextAuth", () => {
       const res = (await auth.authProxy(req)) as any;
 
       expect(res.url).toContain("/login");
-      expect(res.url).toContain("app_id=");
+      expect(res.url).toContain("appId=");
     });
   });
 

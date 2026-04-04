@@ -1,80 +1,203 @@
-import { decrypt, encrypt } from "./encryption";
-import type { AuthConfig, MayRLabsUser } from "../types";
-import { jwtVerify } from "jose";
+import { importJWK, SignJWT, jwtVerify } from "jose";
+import type {
+  IssuerConfig,
+  ClientConfig,
+  MayRLabsAuthUserPayload,
+  MayRLabsAuthMachinePayload,
+  MayRLabsAuthErrorPayload,
+} from "../types";
+import { MayRLabsAuthError } from "../errors";
 
-export class AuthSetup {
-  public config: AuthConfig;
+export class IssuerAuthSetup {
+  private _key: any = null;
 
-  constructor(config: AuthConfig) {
+  private readonly privateKey: string;
+  private readonly issuer: string;
+
+  constructor(config: IssuerConfig) {
+    this.privateKey = config.privateKey;
+    this.issuer = config.issuer || "auth.mayrlabs.com";
+  }
+
+  private async getKey(): Promise<any> {
+    if (this._key) return this._key;
+
+    try {
+      this._key = (await importJWK(
+        JSON.parse(this.privateKey),
+        "PS256"
+      )) as any;
+
+      return this._key;
+    } catch (error) {
+      throw new MayRLabsAuthError(
+        `Failed to import Private JWK: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "INVALID_PRIVATE_KEY"
+      );
+    }
+  }
+
+  async signUserToken(
+    payload: Omit<MayRLabsAuthUserPayload, "iat" | "exp" | "iss" | "aud">,
+    options: { audience: string; expiresIn: string | number }
+  ): Promise<string> {
+    const key = await this.getKey();
+
+    return new SignJWT(payload as any)
+      .setProtectedHeader({ alg: "PS256" })
+      .setIssuer(this.issuer)
+      .setAudience(options.audience)
+      .setIssuedAt()
+      .setExpirationTime(options.expiresIn)
+      .sign(key);
+  }
+
+  async signMachineToken(
+    payload: { sub: string },
+    options: { expiresIn: string | number }
+  ): Promise<string> {
+    const key = await this.getKey();
+
+    const machinePayload: MayRLabsAuthMachinePayload = {
+      ...payload,
+      type: "machine",
+      iat: Math.floor(Date.now() / 1000),
+      exp: 0, // Will be overriden by setExpirationTime
+      iss: this.issuer as "auth.mayrlabs.com",
+      aud: "mayrlabs-internal",
+    };
+
+    return new SignJWT(machinePayload as any)
+      .setProtectedHeader({ alg: "PS256" })
+      .setIssuer(this.issuer)
+      .setAudience("mayrlabs-internal")
+      .setIssuedAt()
+      .setExpirationTime(options.expiresIn)
+      .sign(key);
+  }
+
+  async signErrorToken(payload: {
+    message: string;
+    code: string;
+  }): Promise<string> {
+    const key = await this.getKey();
+
+    const errorPayload: MayRLabsAuthErrorPayload = {
+      ...payload,
+      iat: Math.floor(Date.now() / 1000),
+      iss: this.issuer as "auth.mayrlabs.com",
+    };
+
+    return new SignJWT(errorPayload as any)
+      .setProtectedHeader({ alg: "PS256" })
+      .setIssuer(this.issuer)
+      .setIssuedAt()
+      .sign(key);
+  }
+}
+
+export class ClientAuthSetup {
+  private _key: any = null;
+  public readonly config: ClientConfig;
+
+  constructor(config: ClientConfig) {
     this.config = {
-      appId: config.appId,
-      clientSecret: config.clientSecret,
-      accountUrl: config.accountUrl || "https://myaccount.mayrlabs.com",
-      redirects: {
-        error: config.redirects?.error || "/login",
-        success: config.redirects?.success || "/dashboard",
-      },
-      session: { key: config.session?.key || "mayrlabs-session" },
+      ...config,
+      accountUrl: config.accountUrl.replace(/\/$/, ""),
     };
   }
 
-  /**
-   * Encrypts a payload for secure communication.
-   */
-  async encrypt(payload: string): Promise<string> {
-    return encrypt(payload, this.config.clientSecret);
-  }
+  private async getKey(): Promise<any> {
+    if (this._key) return this._key;
 
-  /**
-   * Decrypts a payload coming from a secure source.
-   */
-  async decrypt(encrypted: string): Promise<string> {
-    return decrypt(encrypted, this.config.clientSecret);
-  }
-
-  async #verifyToken<PayloadT>(token: string): Promise<PayloadT | null> {
     try {
-      const secret = new TextEncoder().encode(this.config.clientSecret);
+      this._key = (await importJWK(
+        JSON.parse(this.config.publicKey),
+        "PS256"
+      )) as any;
 
-      const { payload } = await jwtVerify(token, secret);
-
-      return payload as unknown as PayloadT;
+      return this._key;
     } catch (error) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn(
-          "Auth: Token verification failed:",
-          error instanceof Error ? error.message : error
-        );
-      }
+      throw new MayRLabsAuthError(
+        `Failed to import Public JWK: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "INVALID_PUBLIC_KEY"
+      );
+    }
+  }
 
+  getLoginUrl(): string {
+    const url = new URL(`${this.config.accountUrl}/login`);
+    url.searchParams.set("appId", this.config.clientId);
+    return url.toString();
+  }
+
+  async verifyAuthToken(
+    token: string
+  ): Promise<MayRLabsAuthUserPayload | null> {
+    try {
+      const key = await this.getKey();
+
+      const { payload } = await jwtVerify(token, key, {
+        algorithms: ["PS256"],
+      });
+
+      return payload as unknown as MayRLabsAuthUserPayload;
+    } catch {
       return null;
     }
   }
 
-  /**
-   * Verifies the session token and returns the user data.
-   */
-  async verifyAuthToken(token: string): Promise<MayRLabsUser | null> {
-    return this.#verifyToken<MayRLabsUser>(token);
-  }
-
-  /**
-   * Verifies an error token and returns its payload.
-   */
   async verifyErrorToken(
     token: string
-  ): Promise<{ errorCode: string; message: string } | null> {
-    return this.#verifyToken<{ errorCode: string; message: string }>(token);
+  ): Promise<MayRLabsAuthErrorPayload | null> {
+    try {
+      const key = await this.getKey();
+
+      const { payload } = await jwtVerify(token, key, {
+        algorithms: ["PS256"],
+      });
+
+      return payload as unknown as MayRLabsAuthErrorPayload;
+    } catch {
+      return null;
+    }
   }
 
-  /**
-   * Returns the centralized login URL.
-   */
-  getLoginUrl(): string {
-    const url = new URL(`${this.config.accountUrl}/login`);
+  async authenticateMachine(): Promise<string> {
+    try {
+      const response = await fetch(
+        `${this.config.accountUrl}/api/auth/service`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clientId: this.config.clientId,
+            clientSecret: this.config.clientSecret,
+          }),
+        }
+      );
 
-    url.searchParams.set("app_id", this.config.appId);
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => ({}))) as {
+          message?: string;
+          code?: string;
+        };
 
-    return url.toString();
+        throw new MayRLabsAuthError(
+          errorData.message || "Failed to authenticate machine",
+          errorData.code || "MACHINE_AUTH_FAILED"
+        );
+      }
+
+      const data = (await response.json()) as { token: string };
+
+      return data.token;
+    } catch (error) {
+      if (error instanceof MayRLabsAuthError) throw error;
+      throw new MayRLabsAuthError(
+        `Machine authentication failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "MACHINE_AUTH_FAILED"
+      );
+    }
   }
 }

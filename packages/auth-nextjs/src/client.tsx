@@ -1,14 +1,14 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from "react";
-import { type MayRLabsUser } from "@mayrlabs/auth";
+import { type MayRLabsAuthUserPayload } from "@mayrlabs/auth";
 
 /**
  * Context for holding the authenticated user state on the client.
  */
-const AuthContext = createContext<{ user: MayRLabsUser | null } | undefined>(
-  undefined
-);
+const AuthContext = createContext<
+  { user: MayRLabsAuthUserPayload | null } | undefined
+>(undefined);
 
 /**
  * Client-side provider for auth context.
@@ -17,7 +17,7 @@ export const AuthClientProvider = ({
   user,
   children,
 }: {
-  user: MayRLabsUser | null;
+  user: MayRLabsAuthUserPayload | null;
   children: ReactNode;
 }) => <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
 

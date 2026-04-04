@@ -1,24 +1,56 @@
-export interface MayRLabsUser {
-  id: string; // ULID
+export interface MayRLabsAuthUserPayload {
+  userId: string;
   email: string;
-  firstName: string | null;
-  lastName: string | null;
-  username: string | null;
+  firstName?: string;
+  lastName?: string;
   roles: string[];
-  avatarUrl: string;
-  hasGravatar: boolean;
-  passwordLastUpdatedAt: string | null; // ISO string
+  iat: number;
+  exp: number;
+  iss: "auth.mayrlabs.com";
+  aud: string;
 }
 
-export interface AuthConfig {
-  appId: string;
+export interface MayRLabsAuthMachinePayload {
+  sub: string;
+  type: "machine";
+  iat: number;
+  exp: number;
+  iss: "auth.mayrlabs.com";
+  aud: "mayrlabs-internal";
+}
+
+export interface MayRLabsAuthErrorPayload {
+  message: string;
+  code: string;
+  iat: number;
+  iss: "auth.mayrlabs.com";
+}
+
+export interface IssuerConfig {
+  privateKey: string;
+  issuer?: string;
+}
+
+export interface ClientConfig {
+  publicKey: string;
+  clientId: string;
   clientSecret: string;
-  accountUrl?: string;
-  redirects?: { error: string; success: string };
-  session?: { key: string };
+  accountUrl: string;
+  redirects?: {
+    error: string;
+    success: string;
+  };
+  session?: {
+    key: string;
+  };
 }
 
 export interface NextAuthOptions {
-  redirects?: { error?: string; success?: string };
-  session?: { key?: string };
+  redirects?: {
+    error?: string;
+    success?: string;
+  };
+  session?: {
+    key?: string;
+  };
 }
