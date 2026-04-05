@@ -36,21 +36,6 @@ export interface ClientConfig {
   clientId: string;
   clientSecret: string;
   accountUrl: string;
-  redirects?: {
-    error: string;
-    success: string;
-  };
-  session?: {
-    key: string;
-  };
-}
-
-export interface NextAuthOptions {
-  redirects?: {
-    error?: string;
-    success?: string;
-  };
-  session?: {
-    key?: string;
-  };
+  redirects?: { error: string; success: string };
+  session?: { key: string };
 }

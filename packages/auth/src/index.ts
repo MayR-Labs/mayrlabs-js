@@ -1,4 +1,4 @@
-export * from "./core/issuer";
 export * from "./core/client";
-export * from "./types";
+export * from "./core/issuer";
 export * from "./errors";
+export * from "./types";
