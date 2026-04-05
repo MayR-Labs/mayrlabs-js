@@ -134,6 +134,36 @@ describe("createNextClientAuth", () => {
 
       expect(res.url).toContain("CLIENT_INVALID_AUTH_TOKEN");
     });
+
+    it("should prioritize error over token in handleCallback", async () => {
+      const auth = createNextClientAuth();
+      const verifyErrorSpy = vi
+        .spyOn(auth.setup, "verifyErrorToken")
+        .mockResolvedValue({
+          code: "MOCK_ERR",
+          message: "Mock error msg",
+          iat: Date.now(),
+          iss: "auth.mayrlabs.com",
+        });
+      const verifyAuthSpy = vi.spyOn(auth.setup, "verifyAuthToken");
+
+      const req = new NextRequest(
+        "http://localhost/api/auth/callback?token=some-token&error=error-token"
+      ) as any;
+      const res = (await auth.handleCallback(req)) as any;
+
+      expect(verifyErrorSpy).toHaveBeenCalled();
+      expect(verifyAuthSpy).not.toHaveBeenCalled();
+      expect(res.url).toContain("errorCode=MOCK_ERR");
+    });
+
+    it("should redirect to error if both token and error are missing in handleCallback", async () => {
+      const auth = createNextClientAuth();
+      const req = new NextRequest("http://localhost/api/auth/callback") as any;
+      const res = (await auth.handleCallback(req)) as any;
+
+      expect(res.url).toContain("errorCode=CLIENT_MISSING_AUTH_TOKEN");
+    });
   });
 
   describe("Server Context Retrieval (getUser/getUserOrThrow/getUserOrRedirect)", () => {
@@ -142,6 +172,20 @@ describe("createNextClientAuth", () => {
       const auth = createNextClientAuth();
       const user = await auth.getUser();
       expect(user).toBeNull();
+    });
+
+    it("should use custom session key if provided", async () => {
+      const auth = createNextClientAuth({ session: { key: "custom-key" } });
+      mockCookiesGetSetter((name: string) => {
+        if (name === "custom-key") return { value: "valid-token" } as any;
+        return undefined as any;
+      });
+      vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
+        userId: "123",
+      } as any);
+
+      const user = await auth.getUser();
+      expect(user?.userId).toBe("123");
     });
 
     it("getUserOrThrow should throw UnauthenticatedError if no user", async () => {
@@ -195,6 +239,21 @@ describe("createNextClientAuth", () => {
 
       expect(res.url).toContain("/login"); // Defaults to error redirect which is /login
     });
+
+    it("should use custom redirect error path", async () => {
+      const auth = createNextClientAuth({ redirects: { error: "/my-error" } });
+      const req = new NextRequest(
+        "http://localhost/api/auth/callback?error=err-token"
+      ) as any;
+      vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
+        code: "ERR",
+        message: "msg",
+        iss: "iss",
+      });
+
+      const res = (await auth.handleCallback(req)) as any;
+      expect(res.url).toContain("/my-error");
+    });
   });
 });
 
@@ -244,5 +303,17 @@ describe("createNextIssuerAuth", () => {
     const res = (await auth.logoutHandler(req)) as any;
 
     expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-session");
+  });
+
+  it("should use custom session key and redirect in createNextIssuerAuth", async () => {
+    const auth = createNextIssuerAuth({
+      session: { key: "issuer-key" },
+      redirects: { error: "/issuer-login" },
+    });
+    const req = new NextRequest("http://localhost/api/auth/logout") as any;
+    const res = (await auth.logoutHandler(req)) as any;
+
+    expect(res.cookies.delete).toHaveBeenCalledWith("issuer-key");
+    expect(res.url).toContain("/issuer-login");
   });
 });

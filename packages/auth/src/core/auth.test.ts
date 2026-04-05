@@ -61,6 +61,24 @@ describe("Identity SDK", () => {
 
       expect(token).toBeDefined();
     });
+
+    it("should be able to verify its own tokens", async () => {
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+        issuer: "my-issuer",
+      });
+
+      const token = await issuer.signUserToken(
+        { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
+        { audience: "app1", expiresIn: "1h" }
+      );
+
+      const payload = await issuer.verifyAuthToken(token);
+      expect(payload).not.toBeNull();
+      expect(payload?.userId).toBe("u123");
+      expect(payload?.iss).toBe("my-issuer");
+    });
   });
 
   describe("ClientAuthSetup", () => {
