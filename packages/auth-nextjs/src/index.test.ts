@@ -1,9 +1,13 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: No energy to fix test */
 
-import { ClientAuthSetup, UnauthenticatedError } from "@mayrlabs/auth";
+import {
+  ClientAuthSetup,
+  IssuerAuthSetup,
+  UnauthenticatedError,
+} from "@mayrlabs/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createNextAuth } from "./index";
+import { createNextClientAuth, createNextIssuerAuth } from "./index";
 
 const {
   mockCookiesGet,
@@ -56,7 +60,7 @@ vi.mock("next/server", () => ({
   NextResponse: mockNextResponse,
 }));
 
-describe("createNextAuth", () => {
+describe("createNextClientAuth", () => {
   beforeEach(() => {
     process.env.MAYRLABS_AUTH_PUBLIC_JWK = JSON.stringify({
       kty: "RSA",
@@ -73,20 +77,20 @@ describe("createNextAuth", () => {
   describe("Initialization", () => {
     it("should throw if environment variables are missing", () => {
       delete process.env.MAYRLABS_CLIENT_ID;
-      expect(() => createNextAuth()).toThrow(
+      expect(() => createNextClientAuth()).toThrow(
         /MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required/
       );
     });
 
     it("should instantiate successfully with valid environment variables", () => {
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       expect(auth.setup).toBeInstanceOf(ClientAuthSetup);
     });
   });
 
   describe("handleCallback", () => {
     it("should redirect to error URL when error query param is present", async () => {
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
         code: "MOCK_ERR",
         message: "Mock error msg",
@@ -105,7 +109,7 @@ describe("createNextAuth", () => {
     });
 
     it("should redirect to success and set cookie when valid token is present", async () => {
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
         userId: "123",
         email: "test@mayrlabs.com",
@@ -120,7 +124,7 @@ describe("createNextAuth", () => {
     });
 
     it("should reject token when it fails verification", async () => {
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue(null);
 
       const req = new NextRequest(
@@ -135,21 +139,21 @@ describe("createNextAuth", () => {
   describe("Server Context Retrieval (getUser/getUserOrThrow/getUserOrRedirect)", () => {
     it("should return null if no session cookie exists", async () => {
       mockCookiesGetSetter(() => undefined as any);
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       const user = await auth.getUser();
       expect(user).toBeNull();
     });
 
     it("getUserOrThrow should throw UnauthenticatedError if no user", async () => {
       mockCookiesGetSetter(() => undefined as any);
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       await expect(auth.getUserOrThrow()).rejects.toThrow(UnauthenticatedError);
     });
 
     it("getUserOrRedirect should redirect via next/navigation if no user", async () => {
       mockCookiesGetSetter(() => undefined as any);
       const { redirect } = await import("next/navigation");
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       await auth.getUserOrRedirect();
       expect(redirect).toHaveBeenCalledWith(auth.setup.getLoginUrl());
     });
@@ -158,7 +162,7 @@ describe("createNextAuth", () => {
   describe("authProxy", () => {
     it("should pass request through if authenticated", async () => {
       mockCookiesGetSetter(() => ({ value: "valid-token" }) as any);
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
         userId: "123",
       } as any);
@@ -172,7 +176,7 @@ describe("createNextAuth", () => {
 
     it("should redirect to login if unauthenticated", async () => {
       mockCookiesGetSetter(() => undefined as any);
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
 
       const req = new NextRequest("http://localhost/dashboard") as any;
       const res = (await auth.authProxy(req)) as any;
@@ -184,12 +188,61 @@ describe("createNextAuth", () => {
 
   describe("logoutHandler", () => {
     it("should clear session cookie and redirect to error/login route", async () => {
-      const auth = createNextAuth();
+      const auth = createNextClientAuth();
       const req = new NextRequest("http://localhost/api/auth/logout") as any;
 
       const res = (await auth.logoutHandler(req)) as any;
 
       expect(res.url).toContain("/login"); // Defaults to error redirect which is /login
     });
+  });
+});
+
+describe("createNextIssuerAuth", () => {
+  beforeEach(() => {
+    process.env.MAYRLABS_AUTH_PRIVATE_JWK = JSON.stringify({
+      kty: "RSA",
+      n: "...",
+      e: "...",
+    });
+    process.env.MAYRLABS_AUTH_PUBLIC_JWK = JSON.stringify({
+      kty: "RSA",
+      n: "...",
+      e: "...",
+    });
+    process.env.MAYRLABS_AUTH_ISSUER = "test-issuer";
+    mockCookiesGetSetter(() => undefined);
+    vi.clearAllMocks();
+  });
+
+  it("should throw if environment variables are missing", () => {
+    delete process.env.MAYRLABS_AUTH_PRIVATE_JWK;
+    expect(() => createNextIssuerAuth()).toThrow(
+      /MAYRLABS_AUTH_PRIVATE_JWK, MAYRLABS_AUTH_PUBLIC_JWK, and MAYRLABS_AUTH_ISSUER are required/
+    );
+  });
+
+  it("should instantiate successfully with valid environment variables", () => {
+    const auth = createNextIssuerAuth();
+    expect(auth.setup).toBeInstanceOf(IssuerAuthSetup);
+  });
+
+  it("should retrieve user from session cookie", async () => {
+    mockCookiesGetSetter(() => ({ value: "issuer-session-token" }) as any);
+    const auth = createNextIssuerAuth();
+    vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
+      userId: "issuer-user",
+    } as any);
+
+    const user = await auth.getUser();
+    expect(user?.userId).toBe("issuer-user");
+  });
+
+  it("logoutHandler should clear session cookie", async () => {
+    const auth = createNextIssuerAuth();
+    const req = new NextRequest("http://localhost/api/auth/logout") as any;
+    const res = (await auth.logoutHandler(req)) as any;
+
+    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-session");
   });
 });

@@ -22,7 +22,11 @@ describe("Identity SDK", () => {
 
   describe("IssuerAuthSetup", () => {
     it("should sign a user token correctly", async () => {
-      const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+      });
+
       const token = await issuer.signUserToken(
         { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
         { audience: "app1", expiresIn: "1h" }
@@ -32,7 +36,11 @@ describe("Identity SDK", () => {
     });
 
     it("should sign a machine token correctly", async () => {
-      const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+      });
+
       const token = await issuer.signMachineToken(
         { sub: "service1" },
         { expiresIn: "1h" }
@@ -41,14 +49,16 @@ describe("Identity SDK", () => {
     });
 
     it("should sign an error token correctly", async () => {
-      const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+      });
+
       const token = await issuer.signErrorToken(
-        {
-          message: "Error",
-          code: "ERR_1",
-        },
+        { message: "Error", code: "ERR_1" },
         { audience: "app1", expiresIn: "1h" }
       );
+
       expect(token).toBeDefined();
     });
   });
@@ -63,7 +73,11 @@ describe("Identity SDK", () => {
     };
 
     it("should verify a valid user token", async () => {
-      const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+      });
+
       const token = await issuer.signUserToken(
         { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
         { audience: "app1", expiresIn: "1h" }
@@ -73,7 +87,9 @@ describe("Identity SDK", () => {
         ...clientConfig,
         publicKey: publicJWK,
       });
+
       const payload = await client.verifyAuthToken(token);
+
       expect(payload).not.toBeNull();
       expect(payload?.userId).toBe("u123");
       expect(payload?.email).toBe("test@mayrlabs.com");
@@ -84,17 +100,20 @@ describe("Identity SDK", () => {
         ...clientConfig,
         publicKey: publicJWK,
       });
+
       const payload = await client.verifyAuthToken("invalid-token");
+
       expect(payload).toBeNull();
     });
 
     it("should verify a valid error token", async () => {
-      const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+      });
+
       const token = await issuer.signErrorToken(
-        {
-          message: "Forbidden",
-          code: "FORBIDDEN",
-        },
+        { message: "Forbidden", code: "FORBIDDEN" },
         { audience: "app1", expiresIn: "1h" }
       );
 
@@ -102,7 +121,9 @@ describe("Identity SDK", () => {
         ...clientConfig,
         publicKey: publicJWK,
       });
+
       const payload = await client.verifyErrorToken(token);
+
       expect(payload).not.toBeNull();
       expect(payload?.code).toBe("FORBIDDEN");
     });
@@ -112,7 +133,9 @@ describe("Identity SDK", () => {
         ...clientConfig,
         publicKey: publicJWK,
       });
+
       const url = client.getLoginUrl();
+
       expect(url).toBe("https://auth.mayrlabs.com/login?appId=client1");
     });
 
@@ -122,15 +145,18 @@ describe("Identity SDK", () => {
           ...clientConfig,
           publicKey: publicJWK,
         });
+
         const mockToken = "mock-machine-token";
 
         const mockFetch = vi.fn().mockResolvedValue({
           ok: true,
           json: async () => ({ token: mockToken }),
         });
+
         vi.stubGlobal("fetch", mockFetch);
 
         const token = await client.authenticateMachine();
+
         expect(token).toBe(mockToken);
         expect(mockFetch).toHaveBeenCalledWith(
           "https://auth.mayrlabs.com/api/auth/service",
@@ -157,6 +183,7 @@ describe("Identity SDK", () => {
             code: "INVALID_SECRET",
           }),
         });
+
         vi.stubGlobal("fetch", mockFetch);
 
         await expect(client.authenticateMachine()).rejects.toThrow(

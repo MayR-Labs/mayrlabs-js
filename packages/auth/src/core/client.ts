@@ -1,11 +1,6 @@
-import { type CryptoKey, importJWK, jwtVerify } from "jose";
 import { MayRLabsAuthError } from "../errors";
-import type {
-  ClientConfig,
-  ClientConfigInput,
-  MayRLabsAuthErrorPayload,
-  MayRLabsAuthUserPayload,
-} from "../types";
+import type { ClientConfig, ClientConfigInput } from "../types";
+import { BaseAuthSetup } from "./base";
 import { ISSUER } from "./constants";
 
 const DEFAULTS = {
@@ -13,35 +8,14 @@ const DEFAULTS = {
   session: { key: "mayrlabs-session" },
 };
 
-export class ClientAuthSetup {
-  private _key: CryptoKey | null = null;
-  public readonly config: ClientConfig;
-
+export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
   constructor(input: ClientConfigInput) {
-    this.config = {
+    super({
       ...input,
       issuer: input.issuer || ISSUER,
       redirects: { ...DEFAULTS.redirects, ...input.redirects },
       session: { ...DEFAULTS.session, ...input.session },
-    };
-  }
-
-  private async getKey(): Promise<CryptoKey> {
-    if (this._key) return this._key;
-
-    try {
-      this._key = (await importJWK(
-        JSON.parse(this.config.publicKey),
-        "PS256"
-      )) as CryptoKey;
-
-      return this._key;
-    } catch (error) {
-      throw new MayRLabsAuthError(
-        `Failed to import Public JWK: ${error instanceof Error ? error.message : "Unknown error"}`,
-        "INVALID_PUBLIC_KEY"
-      );
-    }
+    });
   }
 
   getLoginUrl(): string {
@@ -49,45 +23,6 @@ export class ClientAuthSetup {
     url.searchParams.set("appId", this.config.clientId);
 
     return url.toString();
-  }
-
-  async verifyAuthToken(
-    token: string
-  ): Promise<MayRLabsAuthUserPayload | null> {
-    try {
-      const key = await this.getKey();
-
-      const { payload } = await jwtVerify(token, key, {
-        algorithms: ["PS256"],
-        issuer: this.config.issuer,
-        audience: this.config.audience,
-      });
-
-      return payload as unknown as MayRLabsAuthUserPayload;
-    } catch (error) {
-      if (error instanceof MayRLabsAuthError) throw error;
-      return null;
-    }
-  }
-
-  async verifyErrorToken(
-    token: string
-  ): Promise<MayRLabsAuthErrorPayload | null> {
-    try {
-      const key = await this.getKey();
-
-      const { payload } = await jwtVerify(token, key, {
-        algorithms: ["PS256"],
-        issuer: this.config.issuer,
-        audience: this.config.audience,
-      });
-
-      return payload as MayRLabsAuthErrorPayload;
-    } catch (error) {
-      if (error instanceof MayRLabsAuthError) throw error;
-
-      return null;
-    }
   }
 
   async authenticateMachine(): Promise<string> {
