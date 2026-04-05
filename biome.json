@@ -36,7 +36,9 @@
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": "on",
+        "noDuplicateClasses": "on",
+        "useSortedInterfaceMembers": "on"
       }
     }
   }

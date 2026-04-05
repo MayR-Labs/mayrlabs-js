@@ -1,12 +1,11 @@
 import { type CryptoKey, importJWK, SignJWT } from "jose";
-
+import { MayRLabsAuthError } from "../errors";
 import type {
   IssuerConfig,
-  MayRLabsAuthUserPayload,
-  MayRLabsAuthMachinePayload,
   MayRLabsAuthErrorPayload,
+  MayRLabsAuthMachinePayload,
+  MayRLabsAuthUserPayload,
 } from "../types";
-import { MayRLabsAuthError } from "../errors";
 
 export class IssuerAuthSetup {
   private _key: CryptoKey | null = null;
