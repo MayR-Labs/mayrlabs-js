@@ -42,6 +42,7 @@ function BaseIconWrapper({
       style={getWrapperStyle(size ?? 24, style)}
       {...props}
     >
+      {/* biome-ignore lint/performance/noImgElement: icons are rendered via external URLs */}
       <img src={src} alt={alt} style={imageStyle} />
     </div>
   );

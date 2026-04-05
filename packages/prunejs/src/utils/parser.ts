@@ -136,7 +136,9 @@ export function extractImports(filePath: string): string[] {
             ?.trim(),
         )
         .filter((n) => n) as string[];
-      names.forEach((name) => name && imports.add(name));
+      names.forEach((name) => {
+        if (name) imports.add(name);
+      });
     }
 
     const defaultImportMatch = line.match(REGEX.DEFAULT_IMPORT);

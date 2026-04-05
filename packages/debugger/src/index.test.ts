@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/suspicious/noExplicitAny: console spy object requires any for easy property access */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Debugger, debug } from "./index.js";
 

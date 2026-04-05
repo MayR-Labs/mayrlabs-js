@@ -1,6 +1,7 @@
 /**
  * Helper class for generating icon URLs and slugs.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: Helper class for icon URL generation
 export class Generator {
   /**
    * Generates the URL and slug for a Simple Icon.

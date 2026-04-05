@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/suspicious/noExplicitAny: mocks require any for vitest compatibility */
 import fs from "fs-extra";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Config } from "@/core/config";

@@ -15,7 +15,7 @@ import { findBlockEndFromLines } from "@/utils/file-system";
 type UnusedItem = (ExportInfo | NonExportedInfo) & { action?: string };
 
 export default async function fixCommand() {
-  let spinner;
+  let spinner = null;
   try {
     const config = await loadConfig();
     await validateConfig(config);

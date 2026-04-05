@@ -41,5 +41,10 @@
       "trailingCommas": "all",
       "semicolons": "always"
     }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   }
 }

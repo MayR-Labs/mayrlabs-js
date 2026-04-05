@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/suspicious/noExplicitAny: mocks require any for vitest compatibility */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { config } from "@/core/config";
 import * as formatter from "@/features/formatter";

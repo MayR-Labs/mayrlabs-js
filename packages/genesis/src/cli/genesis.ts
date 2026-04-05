@@ -40,7 +40,9 @@ async function main() {
       }),
     )) as string[] as Tool[];
 
-    tools.forEach((tool) => config.enableTool(tool));
+    tools.forEach((tool) => {
+      config.enableTool(tool);
+    });
 
     if (config.get("husky").selected) await promptHusky(config);
     if (config.get("formatter").selected) await promptFormatter(config);

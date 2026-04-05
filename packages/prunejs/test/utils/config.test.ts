@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/suspicious/noExplicitAny: tests use any for mocking process.exit */
 import fs from "fs-extra";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadConfig, validateConfig } from "@/utils/config";

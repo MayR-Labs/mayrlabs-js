@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/suspicious/noExplicitAny: tests use any for data mapping */
 import mockfs from "mock-fs";
 import { afterEach, describe, expect, it } from "vitest";
 import {

@@ -44,6 +44,7 @@ export function CTA() {
                 <span className="text-green-400">$</span> npx shadcn@latest init
               </span>
               <button
+                type="button"
                 onClick={() =>
                   copyToClipboard("npx shadcn@latest init", "init")
                 }
@@ -78,6 +79,7 @@ export function CTA() {
                 @mayrlabs/floating-header
               </span>
               <button
+                type="button"
                 onClick={() =>
                   copyToClipboard(
                     "npx shadcn@latest add @mayrlabs/floating-header",

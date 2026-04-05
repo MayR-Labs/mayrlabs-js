@@ -14,10 +14,10 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "biome lint .",
-    "lint:fix": "biome lint --apply .",
+    "lint:fix": "biome lint --write .",
     "fmt": "biome format .",
     "fmt:fix": "biome format --write .",
-    "check": "biome check --apply .",
+    "check": "biome check --write .",
     "pkg:dev": "turbo run pkg:dev",
     "check-types": "turbo run check-types",
     "release": "npx changeset publish --provenance",
@@ -39,7 +39,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,md,yml,yaml,css,scss}": [
-      "biome check --apply --no-errors-on-unmatched"
+      "biome check --write --no-errors-on-unmatched"
     ]
   },
   "engines": {

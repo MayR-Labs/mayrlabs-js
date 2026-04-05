@@ -143,7 +143,10 @@ const FallbackIcon = defineComponent({
   },
 });
 
-export default function CustomIcon(props: any, { attrs }: any) {
+export default function CustomIcon(
+  props: Record<string, unknown>,
+  { attrs }: { attrs: Record<string, unknown> },
+) {
   const icon = props.icon;
   if (!icon) return h(FallbackIcon, { ...props, ...attrs });
 

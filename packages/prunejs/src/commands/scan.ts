@@ -7,7 +7,7 @@ import { loadConfig, validateConfig } from "@/utils/config";
 import { GITIGNORE_CONTENT, PRUNE_DIR, REPORT_DIR } from "@/utils/constants";
 
 export default async function scanCommand() {
-  let spinner;
+  let spinner = null;
   try {
     const config = await loadConfig();
     await validateConfig(config);
