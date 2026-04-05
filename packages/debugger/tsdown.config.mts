@@ -30,6 +30,7 @@ export default defineConfig({
   exports: true,
 
   sourcemap: false,
+  logLevel: "warn",
   outDir: "dist",
   target: "es2022",
 });

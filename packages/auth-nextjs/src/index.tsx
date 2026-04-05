@@ -1,41 +1,42 @@
-import React from "react";
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import {
-  AuthSetup,
-  MayRLabsUser,
-  NextAuthOptions,
+  ClientAuthSetup,
+  type MayRLabsAuthUserPayload,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { type NextRequest, NextResponse } from "next/server";
+import type React from "react";
 import { redirectTo } from "./_utils";
 import { AuthClientProvider } from "./client";
+import type { NextAuthOptions } from "./types";
 
 /**
  * Creates Next.js specific auth utilities.
  * Automatically handles environment variables and validation.
  */
 export function createNextAuth(options: NextAuthOptions = {}) {
-  const appId = process.env.MAYRLABS_CLIENT_ID;
+  const publicKey = process.env.MAYRLABS_AUTH_PUBLIC_JWK;
+  const clientId = process.env.MAYRLABS_CLIENT_ID;
   const clientSecret = process.env.MAYRLABS_CLIENT_SECRET;
   const accountUrl =
     process.env.MAYRLABS_ACCOUNT_URL || "https://myaccount.mayrlabs.com";
 
-  if (!appId || !clientSecret) {
+  if (!publicKey || !clientId || !clientSecret) {
     throw new Error(
-      "MayRLabs Auth: MAYRLABS_CLIENT_ID and MAYRLABS_CLIENT_SECRET are required environment variables."
+      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required environment variables."
     );
   }
 
-  const setup = new AuthSetup({
-    appId,
+  const setup = new ClientAuthSetup({
+    publicKey,
+    clientId,
     clientSecret,
     accountUrl,
-    redirects: {
-      error: options.redirects?.error || "/login",
-      success: options.redirects?.success || "/dashboard",
-    },
-    session: { key: options.session?.key || "mayrlabs-session" },
+    audience: options.audience || clientId,
+    issuer: options.issuer || process.env.MAYRLABS_AUTH_ISSUER,
+    redirects: options.redirects,
+    session: options.session,
   });
 
   /**
@@ -60,7 +61,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
       const errorData = await setup.verifyErrorToken(errorToken);
 
       return redirectToError(
-        errorData?.errorCode || "CLIENT_UNEXPECTED_ERROR",
+        errorData?.code || "CLIENT_UNEXPECTED_ERROR",
         errorData?.message || "An unexpected error occurred."
       );
     }
@@ -99,8 +100,9 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Gets the current user from the session cookie.
    * Works in Server Components, Actions, and Route Handlers.
    */
-  const getUser = async (): Promise<MayRLabsUser | null> => {
+  const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
     const cookieStore = await cookies();
+
     const token = cookieStore.get(setup.config.session.key)?.value;
 
     if (!token) return null;
@@ -112,7 +114,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Gets the current user or throws an UnauthenticatedError if not logged in.
    * Useful for Server Actions and protected Route Handlers.
    */
-  const getUserOrThrow = async (): Promise<MayRLabsUser> => {
+  const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
     const user = await getUser();
 
     if (!user) throw new UnauthenticatedError();
@@ -124,7 +126,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Gets the current user or redirects to the login page if not logged in.
    * Useful for Server Components.
    */
-  const getUserOrRedirect = async (): Promise<MayRLabsUser> => {
+  const getUserOrRedirect = async (): Promise<MayRLabsAuthUserPayload> => {
     const user = await getUser();
 
     if (!user) return redirect(setup.getLoginUrl());
@@ -140,7 +142,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   const authProxy = async (request: NextRequest) => {
     const token = request.cookies.get(setup.config.session.key)?.value;
 
-    let user: MayRLabsUser | null = null;
+    let user: MayRLabsAuthUserPayload | null = null;
 
     if (token) user = await setup.verifyAuthToken(token);
 
@@ -174,17 +176,6 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   };
 
   /**
-   * Proxied sendRequest from AuthSetup.
-   */
-  async function sendRequest<T>(
-    action: string,
-    userId: string,
-    payload: any = {}
-  ): Promise<T> {
-    return setup.sendRequest<T>(action, userId, payload);
-  }
-
-  /**
    * Server Component Provider that automatically fetches the user
    * and wraps children with the AuthClientProvider.
    */
@@ -209,7 +200,6 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     authProxy,
     logoutHandler,
     redirectToLogin,
-    sendRequest,
     AuthProvider,
   };
 }

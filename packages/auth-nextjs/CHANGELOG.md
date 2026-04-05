@@ -1,5 +1,16 @@
 # @mayrlabs/auth-nextjs
 
+## 0.2.0
+
+### Major Changes
+
+- **Next.js SDK Modernization**: Updated `createNextAuth` to utilize the new asymmetric `ClientAuthSetup` from `@mayrlabs/auth`.
+- **Environment Variable Migration**: Replaced reliance on `MAYRLABS_CLIENT_SECRET` for verification with the mandatory `MAYRLABS_AUTH_PUBLIC_JWK` (JSON string).
+- **Type Refinement**: Fully aligned React context (`AuthClientProvider`) and hooks (`useUser`) with the new user payload structure.
+- **Improved Server Integrations**: Streamlined `getUser`, `getUserOrThrow`, and `getUserOrRedirect` with strict PS256 validation.
+- **Breaking Changes**: Fully removed legacy `sendRequest` proxy utility and symmetric encryption dependency.
+- **Dependency Update**: Bumped peer `@mayrlabs/auth` dependency to strict `^0.2.0`.
+
 ## 0.1.2
 
 ### Patch Changes

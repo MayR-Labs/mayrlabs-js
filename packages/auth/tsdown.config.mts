@@ -28,6 +28,7 @@ export default defineConfig({
   target: "node18",
   minify: true,
   dts: true,
+  logLevel: "warn",
   deps: {
     neverBundle: ["jose"],
   },

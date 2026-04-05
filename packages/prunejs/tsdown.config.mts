@@ -39,6 +39,7 @@ export default defineConfig({
   target: "node18",
   minify: true,
   dts: false,
+  logLevel: "warn",
   banner: BANNER,
   footer: FOOTER,
 });

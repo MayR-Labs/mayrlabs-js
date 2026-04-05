@@ -33,6 +33,7 @@ export default defineConfig({
   minify: true,
   dts: true,
   exports: true,
+  logLevel: "warn",
   banner: BANNER,
   footer: FOOTER,
 });
