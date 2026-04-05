@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { IssuerAuthSetup, ClientAuthSetup } from "./auth";
+import { IssuerAuthSetup } from "./issuer";
+import { ClientAuthSetup } from "./client";
+
 import { generateKeyPair, exportJWK } from "jose";
 
 describe("Identity SDK", () => {
