@@ -1,9 +1,9 @@
 export {
   MayRLabsAuthError,
-  UnauthenticatedError,
-  type MayRLabsAuthUserPayload,
-  type MayRLabsAuthMachinePayload,
   type MayRLabsAuthErrorPayload,
+  type MayRLabsAuthMachinePayload,
+  type MayRLabsAuthUserPayload,
+  UnauthenticatedError,
 } from "@mayrlabs/auth";
 export * from "./client";
 export * from "./issuer";
