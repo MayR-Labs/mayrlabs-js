@@ -11,6 +11,8 @@ import { redirectTo } from "../_utils";
 import type { NextAuthOptions } from "../types";
 import { AuthClientProvider } from "./provider";
 
+export { AuthClientProvider, useUser } from "./provider";
+
 /**
  * Creates Next.js specific client auth utilities.
  * Automatically handles environment variables and validation.
@@ -33,8 +35,7 @@ export function createNextClientAuth(options: NextAuthOptions = {}) {
     clientId,
     clientSecret,
     accountUrl,
-    audience: options.audience || clientId,
-    issuer: options.issuer || process.env.MAYRLABS_AUTH_ISSUER,
+    issuer: process.env.MAYRLABS_AUTH_ISSUER,
     redirects: options.redirects,
     session: options.session,
   });

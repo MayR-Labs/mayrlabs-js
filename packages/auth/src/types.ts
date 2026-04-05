@@ -6,20 +6,16 @@ export interface MayRLabsAuthUserPayload extends JWTPayload {
   roles: string[];
   firstName?: string;
   lastName?: string;
-  iss: string;
 }
 
 export interface MayRLabsAuthMachinePayload extends JWTPayload {
   sub: string;
   type: "machine";
-  aud: "mayrlabs-internal";
-  iss: string;
 }
 
 export interface MayRLabsAuthErrorPayload extends JWTPayload {
   code: string;
   message: string;
-  iss: string;
 }
 
 export interface IssuerConfig {
@@ -37,7 +33,6 @@ export interface ClientConfig {
   clientId: string;
   clientSecret: string;
   publicKey: string;
-  audience: string;
   issuer: string;
   redirects: { error: string; success: string };
   session: { key: string };

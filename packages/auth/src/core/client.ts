@@ -1,5 +1,10 @@
 import { MayRLabsAuthError } from "../errors";
-import type { ClientConfig, ClientConfigInput } from "../types";
+import type {
+  ClientConfig,
+  ClientConfigInput,
+  MayRLabsAuthErrorPayload,
+  MayRLabsAuthUserPayload,
+} from "../types";
 import { BaseAuthSetup } from "./base";
 import { ISSUER } from "./constants";
 
@@ -62,5 +67,19 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
         "MACHINE_AUTH_NETWORK_ERROR"
       );
     }
+  }
+
+  async verifyAuthToken(
+    token: string,
+    audience?: string
+  ): Promise<MayRLabsAuthUserPayload | null> {
+    return super.verifyAuthToken(token, audience || this.config.clientId);
+  }
+
+  async verifyErrorToken(
+    token: string,
+    audience?: string
+  ): Promise<MayRLabsAuthErrorPayload | null> {
+    return super.verifyErrorToken(token, audience || this.config.clientId);
   }
 }

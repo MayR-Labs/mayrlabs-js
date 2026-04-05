@@ -48,20 +48,6 @@ describe("Identity SDK", () => {
       expect(token).toBeDefined();
     });
 
-    it("should sign a machine token with custom audience", async () => {
-      const issuer = new IssuerAuthSetup({
-        privateKey: privateJWK,
-        publicKey: publicJWK,
-      });
-
-      const token = await issuer.signMachineToken(
-        { sub: "service1" },
-        { audience: "custom-internal", expiresIn: "1h" }
-      );
-      expect(token).toBeDefined();
-      // We could verify it here if we wanted to be thorough
-    });
-
     it("should sign an error token correctly", async () => {
       const issuer = new IssuerAuthSetup({
         privateKey: privateJWK,
@@ -88,7 +74,7 @@ describe("Identity SDK", () => {
         { audience: "app1", expiresIn: "1h" }
       );
 
-      const payload = await issuer.verifyAuthToken(token);
+      const payload = await issuer.verifyAuthToken(token, "app1");
       expect(payload).not.toBeNull();
       expect(payload?.userId).toBe("u123");
       expect(payload?.iss).toBe("my-issuer");
@@ -97,11 +83,9 @@ describe("Identity SDK", () => {
 
   describe("ClientAuthSetup", () => {
     const clientConfig = {
-      publicKey: "", // will be set in it blockers
       clientId: "client1",
       clientSecret: "secret1",
       accountUrl: "https://auth.mayrlabs.com",
-      audience: "app1",
     };
 
     it("should verify a valid user token", async () => {
@@ -112,7 +96,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signUserToken(
         { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
-        { audience: "app1", expiresIn: "1h" }
+        { audience: "client1", expiresIn: "1h" }
       );
 
       const client = new ClientAuthSetup({
@@ -146,7 +130,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signErrorToken(
         { message: "Forbidden", code: "FORBIDDEN" },
-        { audience: "app1", expiresIn: "1h" }
+        { audience: "client1", expiresIn: "1h" }
       );
 
       const client = new ClientAuthSetup({

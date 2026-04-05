@@ -45,7 +45,7 @@ export const {
   getUserOrRedirect,
   authProxy,
   logoutHandler,
-  AuthClientProvider, // React Client Provider
+  AuthProvider, // Server Component Provider
 } = createNextClientAuth({
   redirects: { error: "/login", success: "/dashboard" },
   session: { key: "mayrlabs-session" },
@@ -54,17 +54,17 @@ export const {
 
 ### ⚛️ React Setup
 
-The `AuthClientProvider` should be wrapped around your layout to provide the authentication context to client components.
+The `AuthProvider` is a Server Component that should be wrapped around your layout. It automatically handles the session and provides the context to client components.
 
 ```tsx
 // app/layout.tsx
-import { AuthClientProvider } from "@/lib/auth";
+import { AuthProvider } from "@/lib/auth";
 
 export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <AuthClientProvider>{children}</AuthClientProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

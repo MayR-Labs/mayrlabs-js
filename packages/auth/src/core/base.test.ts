@@ -7,7 +7,6 @@ import { BaseAuthSetup } from "./base";
 class MockAuthSetup extends BaseAuthSetup<{
   publicKey: string;
   issuer: string;
-  audience?: string;
 }> {
   public async testGetKey(keyString: string, type: "Public" | "Private") {
     return this._getKey(keyString, type);
@@ -69,7 +68,6 @@ describe("BaseAuthSetup", () => {
       const setup = new MockAuthSetup({
         publicKey: publicJWK,
         issuer: ISSUER,
-        audience: AUDIENCE,
       });
 
       const token = await new SignJWT({ userId: "123" })
@@ -81,7 +79,7 @@ describe("BaseAuthSetup", () => {
         // biome-ignore lint/suspicious/noExplicitAny: PS256 key type compatibility in tests
         .sign((await importJWK(JSON.parse(privateJWK), "PS256")) as any);
 
-      const payload = await setup.verifyAuthToken(token);
+      const payload = await setup.verifyAuthToken(token, AUDIENCE);
       expect(payload).toBeNull();
     });
 
@@ -89,7 +87,6 @@ describe("BaseAuthSetup", () => {
       const setup = new MockAuthSetup({
         publicKey: publicJWK,
         issuer: ISSUER,
-        audience: AUDIENCE,
       });
 
       const token = await new SignJWT({ userId: "123" })
@@ -101,7 +98,7 @@ describe("BaseAuthSetup", () => {
         // biome-ignore lint/suspicious/noExplicitAny: PS256 key type compatibility in tests
         .sign((await importJWK(JSON.parse(privateJWK), "PS256")) as any);
 
-      const payload = await setup.verifyAuthToken(token);
+      const payload = await setup.verifyAuthToken(token, AUDIENCE);
       expect(payload).toBeNull();
     });
 
@@ -109,7 +106,6 @@ describe("BaseAuthSetup", () => {
       const setup = new MockAuthSetup({
         publicKey: publicJWK,
         issuer: ISSUER,
-        audience: AUDIENCE,
       });
 
       const token = await new SignJWT({ userId: "123" })
@@ -121,7 +117,7 @@ describe("BaseAuthSetup", () => {
         // biome-ignore lint/suspicious/noExplicitAny: PS256 key type compatibility in tests
         .sign((await importJWK(JSON.parse(privateJWK), "PS256")) as any);
 
-      const payload = await setup.verifyAuthToken(token);
+      const payload = await setup.verifyAuthToken(token, AUDIENCE);
       expect(payload).toBeNull();
     });
 
@@ -129,7 +125,6 @@ describe("BaseAuthSetup", () => {
       const setup = new MockAuthSetup({
         publicKey: publicJWK,
         issuer: ISSUER,
-        audience: AUDIENCE,
       });
 
       const token = await new SignJWT({ userId: "123" })
@@ -148,7 +143,7 @@ describe("BaseAuthSetup", () => {
       ).toString("base64url");
       const tamperedToken = `${parts[0]}.${tamperedPayload}.${parts[2]}`;
 
-      const payload = await setup.verifyAuthToken(tamperedToken);
+      const payload = await setup.verifyAuthToken(tamperedToken, AUDIENCE);
       expect(payload).toBeNull();
     });
   });

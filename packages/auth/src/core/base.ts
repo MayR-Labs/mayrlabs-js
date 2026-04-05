@@ -2,11 +2,13 @@ import { type CryptoKey, importJWK, jwtVerify } from "jose";
 import { MayRLabsAuthError } from "../errors";
 import type {
   MayRLabsAuthErrorPayload,
+  MayRLabsAuthMachinePayload,
   MayRLabsAuthUserPayload,
 } from "../types";
+import { MACHINE_AUDIENCE } from "./constants";
 
 export abstract class BaseAuthSetup<
-  T extends { publicKey: string; issuer: string; audience?: string },
+  T extends { publicKey: string; issuer: string },
 > {
   protected _publicKey: CryptoKey | null = null;
 
@@ -36,17 +38,20 @@ export abstract class BaseAuthSetup<
     return this._publicKey;
   }
 
-  async #verifyToken<ResponseT>(token: string): Promise<ResponseT | null> {
+  async #verifyToken<ResponseT>(
+    token: string,
+    audience?: string
+  ): Promise<ResponseT | null> {
     try {
       const key = await this.getPublicKey();
 
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["PS256"],
         issuer: this.config.issuer,
-        audience: this.config.audience,
+        audience,
       });
 
-      return payload as unknown as ResponseT;
+      return payload as ResponseT;
     } catch (error) {
       if (error instanceof MayRLabsAuthError) throw error;
       return null;
@@ -54,14 +59,25 @@ export abstract class BaseAuthSetup<
   }
 
   async verifyAuthToken(
-    token: string
+    token: string,
+    audience?: string
   ): Promise<MayRLabsAuthUserPayload | null> {
-    return this.#verifyToken<MayRLabsAuthUserPayload>(token);
+    return this.#verifyToken<MayRLabsAuthUserPayload>(token, audience);
   }
 
   async verifyErrorToken(
-    token: string
+    token: string,
+    audience?: string
   ): Promise<MayRLabsAuthErrorPayload | null> {
-    return this.#verifyToken<MayRLabsAuthErrorPayload>(token);
+    return this.#verifyToken<MayRLabsAuthErrorPayload>(token, audience);
+  }
+
+  async verifyMachineToken(
+    token: string
+  ): Promise<MayRLabsAuthMachinePayload | null> {
+    return this.#verifyToken<MayRLabsAuthMachinePayload>(
+      token,
+      MACHINE_AUDIENCE
+    );
   }
 }

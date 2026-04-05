@@ -7,7 +7,7 @@ import type {
   MayRLabsAuthUserPayload,
 } from "../types";
 import { BaseAuthSetup } from "./base";
-import { ISSUER } from "./constants";
+import { ISSUER, MACHINE_AUDIENCE } from "./constants";
 
 export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
   private _privateKey: CryptoKey | null = null;
@@ -24,51 +24,47 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
 
   async signUserToken(
     payload: Omit<MayRLabsAuthUserPayload, "iat" | "exp" | "iss" | "aud">,
-    options: { audience: string; expiresIn: string | number }
+    options: { audience: string; expiresIn?: string | number }
   ): Promise<string> {
     const key = await this.getPrivateKey();
 
-    return new SignJWT(payload)
+    return new SignJWT(payload as unknown as Record<string, unknown>)
       .setProtectedHeader({ alg: "PS256" })
       .setIssuer(this.config.issuer)
       .setAudience(options.audience)
       .setIssuedAt()
-      .setExpirationTime(options.expiresIn)
+      .setExpirationTime(options.expiresIn || "7d")
       .sign(key);
   }
 
   async signMachineToken(
     payload: { sub: string },
-    options: { audience?: string; expiresIn: string | number }
+    options: { expiresIn?: string | number }
   ): Promise<string> {
     const key = await this.getPrivateKey();
-    const audience = options.audience || "mayrlabs-internal";
 
     const machinePayload: MayRLabsAuthMachinePayload = {
       ...payload,
       type: "machine",
-      iss: this.config.issuer,
-      aud: "mayrlabs-internal", // Internal structure still uses this, but JWT aud is set by setAudience
     };
 
     return new SignJWT(machinePayload as unknown as Record<string, unknown>)
       .setProtectedHeader({ alg: "PS256" })
       .setIssuer(this.config.issuer)
-      .setAudience(audience)
+      .setAudience(MACHINE_AUDIENCE)
       .setIssuedAt()
-      .setExpirationTime(options.expiresIn)
+      .setExpirationTime(options.expiresIn || "1h")
       .sign(key);
   }
 
   async signErrorToken(
     payload: { message: string; code: string },
-    options: { audience: string; expiresIn: string | number }
+    options: { audience: string; expiresIn?: string | number }
   ): Promise<string> {
     const key = await this.getPrivateKey();
 
     const errorPayload: MayRLabsAuthErrorPayload = {
       ...payload,
-      iss: this.config.issuer,
     };
 
     return new SignJWT(errorPayload as unknown as Record<string, unknown>)
@@ -76,7 +72,7 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
       .setIssuer(this.config.issuer)
       .setAudience(options.audience)
       .setIssuedAt()
-      .setExpirationTime(options.expiresIn)
+      .setExpirationTime(options.expiresIn || "1h")
       .sign(key);
   }
 }

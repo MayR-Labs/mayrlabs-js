@@ -15,7 +15,7 @@ import type { NextIssuerAuthOptions } from "../types";
 export function createNextIssuerAuth(options: NextIssuerAuthOptions = {}) {
   const privateKey = process.env.MAYRLABS_AUTH_PRIVATE_JWK;
   const publicKey = process.env.MAYRLABS_AUTH_PUBLIC_JWK;
-  const issuer = options.issuer || process.env.MAYRLABS_AUTH_ISSUER;
+  const issuer = process.env.MAYRLABS_AUTH_ISSUER;
   const sessionKey = options.session?.key || "mayrlabs-session";
   const errorRedirect = options.redirects?.error || "/login";
 
@@ -25,11 +25,7 @@ export function createNextIssuerAuth(options: NextIssuerAuthOptions = {}) {
     );
   }
 
-  const setup = new IssuerAuthSetup({
-    privateKey,
-    publicKey,
-    issuer,
-  });
+  const setup = new IssuerAuthSetup({ privateKey, publicKey, issuer });
 
   /**
    * Gets the current user from the session cookie.

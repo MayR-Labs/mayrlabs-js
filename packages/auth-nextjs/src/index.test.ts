@@ -95,7 +95,6 @@ describe("createNextClientAuth", () => {
         code: "MOCK_ERR",
         message: "Mock error msg",
         iat: Date.now(),
-        iss: "auth.mayrlabs.com",
       });
 
       const req = new NextRequest(
@@ -143,7 +142,6 @@ describe("createNextClientAuth", () => {
           code: "MOCK_ERR",
           message: "Mock error msg",
           iat: Date.now(),
-          iss: "auth.mayrlabs.com",
         });
       const verifyAuthSpy = vi.spyOn(auth.setup, "verifyAuthToken");
 
@@ -248,7 +246,6 @@ describe("createNextClientAuth", () => {
       vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
         code: "ERR",
         message: "msg",
-        iss: "iss",
       });
 
       const res = (await auth.handleCallback(req)) as any;

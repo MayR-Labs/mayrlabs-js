@@ -45,6 +45,8 @@ const issuer = new IssuerAuthSetup({
 - `signUserToken(payload, options)`: Signs a JWT for an authenticated user.
 - `signMachineToken(payload, options)`: Signs a JWT for a service (M2M).
 - `signErrorToken(payload, options)`: Signs an error JWT for SSO failure reporting.
+- `verifyAuthToken(token, audience?)`: Verifies a user token for a given audience.
+- `verifyMachineToken(token)`: Verifies an M2M token using the internal machine audience.
 
 ---
 
@@ -62,7 +64,6 @@ const auth = new ClientAuthSetup({
   clientId: process.env.MAYRLABS_CLIENT_ID!,
   clientSecret: process.env.MAYRLABS_CLIENT_SECRET!,
   accountUrl: process.env.MAYRLABS_ACCOUNT_URL!, // e.g., "https://myaccount.mayrlabs.com"
-  audience: process.env.MAYRLABS_CLIENT_ID!, // Required: The expected audience (client ID)
   issuer: "auth.mayrlabs.com", // Optional, defaults to auth.mayrlabs.com
 });
 ```
@@ -73,11 +74,11 @@ const auth = new ClientAuthSetup({
 
 Returns the SSO redirect URL to send unauthenticated users to.
 
-#### `verifyAuthToken(token: string): Promise<MayRLabsAuthUserPayload | null>`
+#### `verifyAuthToken(token: string, audience?: string): Promise<MayRLabsAuthUserPayload | null>`
 
-Locally verifies a signed User JWT. No network requests are made.
+Locally verifies a signed User JWT. Defaults to using `clientId` as audience if none provided.
 
-#### `verifyErrorToken(token: string): Promise<MayRLabsAuthErrorPayload | null>`
+#### `verifyErrorToken(token: string, audience?: string): Promise<MayRLabsAuthErrorPayload | null>`
 
 Locally verifies a signed Error JWT.
 
