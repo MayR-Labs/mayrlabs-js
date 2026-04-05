@@ -1,7 +1,8 @@
-import { generateKeyPair, exportJWK, SignJWT, importJWK } from "jose";
-import { describe, expect, it, beforeEach } from "vitest";
-import { BaseAuthSetup } from "./base";
+import { Buffer } from "node:buffer";
+import { exportJWK, generateKeyPair, importJWK, SignJWT } from "jose";
+import { beforeEach, describe, expect, it } from "vitest";
 import { MayRLabsAuthError } from "../errors";
+import { BaseAuthSetup } from "./base";
 
 class MockAuthSetup extends BaseAuthSetup<{
   publicKey: string;

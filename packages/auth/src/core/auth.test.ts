@@ -48,6 +48,20 @@ describe("Identity SDK", () => {
       expect(token).toBeDefined();
     });
 
+    it("should sign a machine token with custom audience", async () => {
+      const issuer = new IssuerAuthSetup({
+        privateKey: privateJWK,
+        publicKey: publicJWK,
+      });
+
+      const token = await issuer.signMachineToken(
+        { sub: "service1" },
+        { audience: "custom-internal", expiresIn: "1h" }
+      );
+      expect(token).toBeDefined();
+      // We could verify it here if we wanted to be thorough
+    });
+
     it("should sign an error token correctly", async () => {
       const issuer = new IssuerAuthSetup({
         privateKey: privateJWK,

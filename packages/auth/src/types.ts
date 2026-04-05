@@ -26,7 +26,6 @@ export interface IssuerConfig {
   privateKey: string;
   publicKey: string;
   issuer: string;
-  audience?: string;
 }
 
 export interface IssuerConfigInput extends Omit<IssuerConfig, "issuer"> {

@@ -35,6 +35,7 @@ import { IssuerAuthSetup } from "@mayrlabs/auth";
 
 const issuer = new IssuerAuthSetup({
   privateKey: process.env.MAYRLABS_AUTH_PRIVATE_JWK!, // The full JSON private JWK string
+  publicKey: process.env.MAYRLABS_AUTH_PUBLIC_JWK!, // The full JSON public JWK string
   issuer: "auth.mayrlabs.com", // Optional, defaults to auth.mayrlabs.com
 });
 ```
@@ -43,7 +44,7 @@ const issuer = new IssuerAuthSetup({
 
 - `signUserToken(payload, options)`: Signs a JWT for an authenticated user.
 - `signMachineToken(payload, options)`: Signs a JWT for a service (M2M).
-- `signErrorToken(payload)`: Signs an error JWT for SSO failure reporting.
+- `signErrorToken(payload, options)`: Signs an error JWT for SSO failure reporting.
 
 ---
 
@@ -102,7 +103,7 @@ If you are using **Next.js**, please utilize our native Next.js integration wrap
 npm install @mayrlabs/auth-nextjs @mayrlabs/auth
 ```
 
-See the [`@mayrlabs/auth-nextjs` documentation](../auth-nextjs/README.md) for full guidelines!
+See the [`@mayrlabs/auth-nextjs` documentation](../auth-nextjs/README.md) for full guidelines on `createNextClientAuth` and `createNextIssuerAuth`!
 
 ---
 

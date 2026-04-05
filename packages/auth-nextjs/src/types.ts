@@ -7,7 +7,6 @@ export interface NextAuthOptions {
 
 export interface NextIssuerAuthOptions {
   issuer?: string;
-  audience?: string;
   session?: Partial<{ key: string }>;
   redirects?: Partial<{ error: string }>;
 }

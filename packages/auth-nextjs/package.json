@@ -38,6 +38,9 @@
     "*": {
       "client": [
         "dist/client.d.cts"
+      ],
+      "issuer": [
+        "dist/issuer.d.cts"
       ]
     }
   },

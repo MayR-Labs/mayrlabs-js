@@ -29,7 +29,6 @@ export function createNextIssuerAuth(options: NextIssuerAuthOptions = {}) {
     privateKey,
     publicKey,
     issuer,
-    audience: options.audience,
   });
 
   /**

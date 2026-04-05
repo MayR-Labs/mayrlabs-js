@@ -39,21 +39,22 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
 
   async signMachineToken(
     payload: { sub: string },
-    options: { expiresIn: string | number }
+    options: { audience?: string; expiresIn: string | number }
   ): Promise<string> {
     const key = await this.getPrivateKey();
+    const audience = options.audience || "mayrlabs-internal";
 
     const machinePayload: MayRLabsAuthMachinePayload = {
       ...payload,
       type: "machine",
       iss: this.config.issuer,
-      aud: "mayrlabs-internal",
+      aud: "mayrlabs-internal", // Internal structure still uses this, but JWT aud is set by setAudience
     };
 
     return new SignJWT(machinePayload as unknown as Record<string, unknown>)
       .setProtectedHeader({ alg: "PS256" })
       .setIssuer(this.config.issuer)
-      .setAudience("mayrlabs-internal")
+      .setAudience(audience)
       .setIssuedAt()
       .setExpirationTime(options.expiresIn)
       .sign(key);
