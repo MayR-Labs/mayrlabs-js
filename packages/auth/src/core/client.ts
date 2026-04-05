@@ -9,13 +9,8 @@ import type {
 import { ISSUER } from "./constants";
 
 const DEFAULTS = {
-  redirects: {
-    error: "/login",
-    success: "/dashboard",
-  },
-  session: {
-    key: "mayrlabs_session",
-  },
+  redirects: { error: "/login", success: "/dashboard" },
+  session: { key: "mayrlabs-session" },
 };
 
 export class ClientAuthSetup {
@@ -87,9 +82,10 @@ export class ClientAuthSetup {
         audience: this.config.audience,
       });
 
-      return payload as unknown as MayRLabsAuthErrorPayload;
+      return payload as MayRLabsAuthErrorPayload;
     } catch (error) {
       if (error instanceof MayRLabsAuthError) throw error;
+
       return null;
     }
   }
