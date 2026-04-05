@@ -1,33 +1,33 @@
 #!/usr/bin/env node
 
-import { prompts } from "@/utils/prompts";
-import pc from "picocolors";
 import { program } from "commander";
-import { promptHusky } from "@/features/husky";
-import { promptFormatter } from "@/features/formatter";
-import { promptLinter } from "@/features/linter";
-import { promptLintStaged } from "@/features/lint-staged";
-import { promptEnv } from "@/features/env";
-import { promptTest } from "@/features/test";
-import { promptEditorConfig } from "@/features/editor-config";
-import { promptLicense } from "@/features/license";
-import { config } from "@/core/config";
-import { withCancelHandling } from "@/utils/handle-cancel";
-import { TOOL_OPTIONS } from "@/constants/options";
-import { Tool } from "@/core/types";
-import { execution } from "@/steps/execution";
-import { logError } from "@/utils/logger";
-import gitCheck from "@/steps/git-check";
-import { introScreen } from "../utils/intro.js";
+import pc from "picocolors";
 import { configure } from "@/cli/commands/configure";
+import { TOOL_OPTIONS } from "@/constants/options";
+import { config } from "@/core/config";
+import type { Tool } from "@/core/types";
+import { promptEditorConfig } from "@/features/editor-config";
+import { promptEnv } from "@/features/env";
+import { promptFormatter } from "@/features/formatter";
+import { promptHusky } from "@/features/husky";
+import { promptLicense } from "@/features/license";
+import { promptLintStaged } from "@/features/lint-staged";
+import { promptLinter } from "@/features/linter";
+import { promptTest } from "@/features/test";
+import { execution } from "@/steps/execution";
+import gitCheck from "@/steps/git-check";
 import { showAbout, showManual, showVisit } from "@/utils/display.js";
+import { withCancelHandling } from "@/utils/handle-cancel";
+import { logError } from "@/utils/logger";
+import { prompts } from "@/utils/prompts";
+import { introScreen } from "../utils/intro.js";
 
 async function main() {
   try {
     introScreen();
 
     prompts.intro(
-      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard ")))
+      pc.inverse(pc.bold(pc.cyan(" Welcome to the Project Setup Wizard "))),
     );
 
     await gitCheck();
@@ -37,7 +37,7 @@ async function main() {
         message: "Select tools to configure:",
         options: TOOL_OPTIONS,
         required: false,
-      })
+      }),
     )) as string[] as Tool[];
 
     tools.forEach((tool) => config.enableTool(tool));
@@ -56,7 +56,7 @@ async function main() {
     const proceed = (await withCancelHandling(async () =>
       prompts.confirm({
         message: "Do you want to proceed with the installation?",
-      })
+      }),
     )) as boolean;
 
     if (!proceed) {
@@ -71,7 +71,7 @@ async function main() {
     const logPath = await logError(error);
 
     prompts.outro(
-      pc.red(`\nSomething went wrong!\nError log saved to: ${logPath}`)
+      pc.red(`\nSomething went wrong!\nError log saved to: ${logPath}`),
     );
 
     process.exit(1);

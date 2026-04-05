@@ -1,10 +1,10 @@
-import * as p from "@clack/prompts";
-import color from "picocolors";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkGitStatus } from "./git.js";
-import { getPackages, selectPackages, confirmPin } from "./prompts.js";
+import * as p from "@clack/prompts";
+import color from "picocolors";
 import { deletePackages } from "./actions.js";
+import { checkGitStatus } from "./git.js";
+import { confirmPin, getPackages, selectPackages } from "./prompts.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

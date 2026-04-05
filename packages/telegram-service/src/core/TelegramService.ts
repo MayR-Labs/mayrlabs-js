@@ -1,6 +1,6 @@
-import TelegramBot from "node-telegram-bot-api";
 import { Debugger } from "@mayrlabs/debugger";
-import { TelegramOperationResult } from "@/contracts";
+import TelegramBot from "node-telegram-bot-api";
+import type { TelegramOperationResult } from "@/contracts";
 
 const error = (error: string): TelegramOperationResult => ({
   success: false,
@@ -69,7 +69,7 @@ export abstract class TelegramService<T> {
   public async sendNotification(
     data: T,
     chatIds?: string[] | null,
-    options?: TelegramBot.SendMessageOptions
+    options?: TelegramBot.SendMessageOptions,
   ): Promise<TelegramOperationResult> {
     if (!this.isEnabled()) {
       return error("Telegram notifications are not enabled");
@@ -97,7 +97,7 @@ export abstract class TelegramService<T> {
           options || {
             parse_mode: "Markdown",
             disable_web_page_preview: true,
-          }
+          },
         );
 
         successCount++;

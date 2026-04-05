@@ -1,5 +1,6 @@
-import React, { CSSProperties } from "react";
-import Image, { ImageProps } from "next/image";
+import Image, { type ImageProps } from "next/image";
+import type React from "react";
+import type { CSSProperties } from "react";
 import { Generator } from "@/generator";
 
 interface IconProps extends Omit<ImageProps, "src" | "alt"> {
@@ -14,7 +15,7 @@ interface SpecificIconProps extends Omit<IconProps, "icon"> {}
 // Wrapper style to enforce size and positioning for Next.js Image fill
 const getWrapperStyle = (
   size: number | string,
-  style?: CSSProperties
+  style?: CSSProperties,
 ): CSSProperties => ({
   position: "relative",
   display: "inline-block",

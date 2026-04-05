@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { promptHusky, installHusky } from "./husky";
-import { promptFormatter, installFormatter } from "./formatter";
-import { promptLinter, installLinter } from "./linter";
-import { promptLintStaged, installLintStaged } from "./lint-staged";
-import { promptEnv, installEnv } from "./env";
-import { promptTest, installTest } from "./test";
-import { promptEditorConfig, installEditorConfig } from "./editor-config";
-import { promptLicense, installLicense } from "./license";
+import fs from "fs-extra";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Config } from "@/core/config";
 import * as pm from "@/utils/pm";
 import { prompts } from "@/utils/prompts";
-import fs from "fs-extra";
+import { installEditorConfig, promptEditorConfig } from "./editor-config";
+import { installEnv, promptEnv } from "./env";
+import { installFormatter, promptFormatter } from "./formatter";
+import { installHusky, promptHusky } from "./husky";
+import { installLicense, promptLicense } from "./license";
+import { installLintStaged, promptLintStaged } from "./lint-staged";
+import { installLinter, promptLinter } from "./linter";
+import { installTest, promptTest } from "./test";
 
 vi.mock("@/utils/pm");
 vi.mock("fs-extra");
@@ -105,7 +105,7 @@ describe("Features", () => {
 
       expect(pm.installPackages).toHaveBeenCalledWith(
         expect.arrayContaining(["eslint"]),
-        true
+        true,
       );
     });
   });
@@ -163,7 +163,7 @@ describe("Features", () => {
 
       expect(pm.installPackages).toHaveBeenCalledWith(
         ["@t3-oss/env-nextjs", "zod"],
-        false
+        false,
       );
     });
   });
@@ -214,7 +214,7 @@ describe("Features", () => {
         website: "website.com",
       };
 
-      // @ts-ignore
+      // @ts-expect-error
       vi.spyOn(fs, "pathExists").mockResolvedValue(false);
       vi.spyOn(fs, "readJson").mockResolvedValue({});
 

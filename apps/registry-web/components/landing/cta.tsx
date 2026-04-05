@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 
 export function CTA() {
@@ -81,7 +81,7 @@ export function CTA() {
                 onClick={() =>
                   copyToClipboard(
                     "npx shadcn@latest add @mayrlabs/floating-header",
-                    "add"
+                    "add",
                   )
                 }
                 className="p-2 rounded-md hover:bg-zinc-900 text-zinc-500 hover:text-white transition-all absolute right-2 top-2"

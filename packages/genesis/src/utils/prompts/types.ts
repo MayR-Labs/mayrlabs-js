@@ -25,7 +25,7 @@ export interface PromptProvider {
     placeholder?: string;
     initialValue?: string;
     defaultValue?: string;
-    validate?: (value: string) => string | void;
+    validate?: (value: string) => string | undefined;
   }): Promise<string | symbol>;
 
   /** Prompt for confirmation (boolean) */

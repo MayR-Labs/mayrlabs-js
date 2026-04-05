@@ -1,15 +1,15 @@
-import {
+import type {
   EditorConfigValue,
-  HuskyHookValue,
-  FormatterValue,
-  LinterValue,
-  LintStagedExtensionValue,
-  EnvVariantValue,
-  EnvValidatorValue,
   EnvPresetValue,
   EnvSplitValue,
-  TestRunnerValue,
+  EnvValidatorValue,
+  EnvVariantValue,
+  FormatterValue,
+  HuskyHookValue,
   LicenseTypeValue,
+  LinterValue,
+  LintStagedExtensionValue,
+  TestRunnerValue,
 } from "@/constants/options";
 
 export interface Option {

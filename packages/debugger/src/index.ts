@@ -32,7 +32,7 @@ export class Debugger {
 
       // Check for import.meta.env.DEV if available (Vite/ESM)
       try {
-        // @ts-ignore
+        // @ts-expect-error
         if (import.meta && import.meta.env && import.meta.env.DEV) return true;
       } catch {}
 
@@ -55,7 +55,7 @@ export class Debugger {
   private formatMessage(level: string, message: unknown[], color: string) {
     const prefix = this.namespace ? ` [${this.namespace}]` : "";
 
-    // @ts-ignore
+    // @ts-expect-error
     if (typeof window === "undefined") {
       return [`[${this.getTimestamp()}]${prefix} [${level}]`, ...message];
     }

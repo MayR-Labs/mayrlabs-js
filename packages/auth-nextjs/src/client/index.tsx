@@ -24,7 +24,7 @@ export function createNextClientAuth(options: NextAuthOptions = {}) {
 
   if (!publicKey || !clientId || !clientSecret) {
     throw new Error(
-      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required environment variables."
+      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required environment variables.",
     );
   }
 
@@ -61,7 +61,7 @@ export function createNextClientAuth(options: NextAuthOptions = {}) {
 
       return redirectToError(
         errorData?.code || "CLIENT_UNEXPECTED_ERROR",
-        errorData?.message || "An unexpected error occurred."
+        errorData?.message || "An unexpected error occurred.",
       );
     }
 
@@ -70,7 +70,7 @@ export function createNextClientAuth(options: NextAuthOptions = {}) {
     if (!token) {
       return redirectToError(
         "CLIENT_MISSING_AUTH_TOKEN",
-        "Missing auth token."
+        "Missing auth token.",
       );
     }
 
@@ -79,7 +79,7 @@ export function createNextClientAuth(options: NextAuthOptions = {}) {
     if (!user) {
       return redirectToError(
         "CLIENT_INVALID_AUTH_TOKEN",
-        "Invalid auth token."
+        "Invalid auth token.",
       );
     }
 

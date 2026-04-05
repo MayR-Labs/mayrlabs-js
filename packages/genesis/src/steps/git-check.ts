@@ -10,7 +10,7 @@ export default async function gitCheck() {
         prompts.confirm({
           message:
             "Your working directory is dirty. Would you like to commit changes before proceeding?",
-        })
+        }),
       )) as boolean;
 
       if (shouldCommit) {
@@ -21,7 +21,7 @@ export default async function gitCheck() {
             validate(value) {
               if (value.length === 0) return "Commit message is required";
             },
-          })
+          }),
         );
 
         if (typeof message === "string") {

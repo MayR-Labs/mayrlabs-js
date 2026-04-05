@@ -1,10 +1,13 @@
-import { prompts } from "@/utils/prompts";
+import path from "node:path";
 import fs from "fs-extra";
-import path from "path";
 import pc from "picocolors";
-import { Config } from "@/core/config";
-import { LICENSE_TYPE_OPTIONS, LicenseTypeValue } from "@/constants/options";
+import {
+  LICENSE_TYPE_OPTIONS,
+  type LicenseTypeValue,
+} from "@/constants/options";
+import type { Config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { prompts } from "@/utils/prompts";
 
 export async function promptLicense(config: Config) {
   prompts.log.message(pc.bgGreen(pc.black(" License Configuration ")));
@@ -16,7 +19,7 @@ export async function promptLicense(config: Config) {
       message: "License Holder Name:",
       placeholder: "John Doe",
       initialValue: licenseOptions.name,
-    })
+    }),
   );
 
   licenseOptions.email = await withCancelHandling(async () =>
@@ -24,7 +27,7 @@ export async function promptLicense(config: Config) {
       message: "License Holder Email:",
       placeholder: "john@example.com",
       initialValue: licenseOptions.email,
-    })
+    }),
   );
 
   licenseOptions.website = await withCancelHandling(async () =>
@@ -32,14 +35,14 @@ export async function promptLicense(config: Config) {
       message: "License Holder Website:",
       placeholder: "https://example.com",
       initialValue: licenseOptions.website,
-    })
+    }),
   );
 
   licenseOptions.type = (await withCancelHandling(async () =>
     prompts.select({
       message: "Select License Type:",
       options: LICENSE_TYPE_OPTIONS,
-    })
+    }),
   )) as LicenseTypeValue;
 }
 
@@ -58,11 +61,11 @@ export async function installLicense(config: Config) {
       licenseContent = licenseContent.replace(/{HOLDER}/g, name || "");
       licenseContent = licenseContent.replace(
         /<{EMAIL}>/g,
-        email ? `<${email}>` : ""
+        email ? `<${email}>` : "",
       );
       licenseContent = licenseContent.replace(
         /\({WEBSITE}\)/g,
-        website ? `(${website})` : ""
+        website ? `(${website})` : "",
       );
 
       await fs.outputFile("LICENSE", licenseContent);

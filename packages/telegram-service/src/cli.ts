@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { intro, outro, select, isCancel } from "@clack/prompts";
+import { intro, isCancel, outro, select } from "@clack/prompts";
 import dotenv from "dotenv";
 import { createServiceClass } from "./cli/commands/create-service";
 import { sendTestMessage } from "./cli/commands/send-test";

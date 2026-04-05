@@ -1,6 +1,6 @@
 import { ClackProvider } from "./clack";
 import { TopCliProvider } from "./top";
-import type { PromptProvider, PromptOption, PromptLogger } from "./types";
+import type { PromptLogger, PromptOption, PromptProvider } from "./types";
 
 export class Prompts implements PromptProvider {
   private provider: PromptProvider;
@@ -42,7 +42,7 @@ export class Prompts implements PromptProvider {
   }
 
   confirm(
-    opts: Parameters<PromptProvider["confirm"]>[0]
+    opts: Parameters<PromptProvider["confirm"]>[0],
   ): Promise<boolean | symbol> {
     return this.provider.confirm(opts);
   }
@@ -83,4 +83,4 @@ export class Prompts implements PromptProvider {
 
 export const prompts = Prompts.getInstance();
 
-export type { PromptProvider, PromptOption, PromptLogger };
+export type { PromptLogger, PromptOption, PromptProvider };

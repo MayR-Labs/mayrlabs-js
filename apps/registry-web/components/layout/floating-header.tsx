@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface FloatingHeaderProps {
@@ -28,7 +29,7 @@ export function FloatingHeader({ className, children }: FloatingHeaderProps) {
           isScrolled
             ? "rounded-full shadow-lg backdrop-blur-xl w-[90%] mt-2"
             : "bg-transparent w-full max-w-[1200px] border-transparent",
-          className
+          className,
         )}
       >
         {children}

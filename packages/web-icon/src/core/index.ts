@@ -14,7 +14,7 @@ interface IconProps extends BaseIconProps {
 function getStyleAndClass(
   size: number | string = 24,
   className?: string,
-  userStyle?: string
+  userStyle?: string,
 ) {
   const sizeStyle =
     typeof size === "number"
@@ -29,7 +29,7 @@ function renderDiv(
   className: string,
   style: string,
   imgSrc: string,
-  alt: string
+  alt: string,
 ) {
   const imgStyle = "width: 100%; height: 100%; object-fit: contain;";
   return `<div class="${className}" style="${style}"><img src="${imgSrc}" alt="${alt}" style="${imgStyle}" /></div>`;
@@ -45,7 +45,7 @@ function SimpleIcon({
   const { style: st, className: cls } = getStyleAndClass(
     size,
     className,
-    style
+    style,
   );
   const url = Generator.simpleIcon.url(slug);
   return renderDiv(cls, st, url, `${name || slug} simple icon`);
@@ -63,7 +63,7 @@ function DevIcon({
   const { style: st, className: cls } = getStyleAndClass(
     size,
     className,
-    style
+    style,
   );
   return renderDiv(cls, st, url, `${name || iconName} dev icon`);
 }
@@ -79,7 +79,7 @@ function LocalIcon({
   const { style: st, className: cls } = getStyleAndClass(
     size,
     className,
-    style
+    style,
   );
   return renderDiv(cls, st, src, `${name || "local"} icon`);
 }
@@ -94,7 +94,7 @@ function RemoteIcon({
   const { style: st, className: cls } = getStyleAndClass(
     size,
     className,
-    style
+    style,
   );
   return renderDiv(cls, st, url, `${name || "remote"} icon`);
 }
@@ -111,7 +111,7 @@ function FallbackIcon({
   const { style: st, className: cls } = getStyleAndClass(
     size,
     className,
-    style
+    style,
   );
   // Inline styles for fallback: bg-gray-100, text-gray-500, rounded-full, flex center
   const fallbackStyle = `${st} display: flex; align-items: center; justify-content: center; border-radius: 9999px; background-color: #f3f4f6; color: #6b7280;`;

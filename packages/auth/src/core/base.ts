@@ -20,14 +20,14 @@ export abstract class BaseAuthSetup<
 
   protected async _getKey(
     keyString: string,
-    keyType: "Public" | "Private"
+    keyType: "Public" | "Private",
   ): Promise<CryptoKey> {
     try {
       return (await importJWK(JSON.parse(keyString), "PS256")) as CryptoKey;
     } catch (error) {
       throw new MayRLabsAuthError(
         `Failed to import ${keyType} JWK: ${error instanceof Error ? error.message : "Unknown error"}`,
-        `INVALID_${keyType.toUpperCase()}_KEY`
+        `INVALID_${keyType.toUpperCase()}_KEY`,
       );
     }
   }
@@ -40,7 +40,7 @@ export abstract class BaseAuthSetup<
 
   async #verifyToken<ResponseT>(
     token: string,
-    audience?: string
+    audience?: string,
   ): Promise<ResponseT | null> {
     try {
       const key = await this.getPublicKey();
@@ -60,24 +60,24 @@ export abstract class BaseAuthSetup<
 
   async verifyAuthToken(
     token: string,
-    audience?: string
+    audience?: string,
   ): Promise<MayRLabsAuthUserPayload | null> {
     return this.#verifyToken<MayRLabsAuthUserPayload>(token, audience);
   }
 
   async verifyErrorToken(
     token: string,
-    audience?: string
+    audience?: string,
   ): Promise<MayRLabsAuthErrorPayload | null> {
     return this.#verifyToken<MayRLabsAuthErrorPayload>(token, audience);
   }
 
   async verifyMachineToken(
-    token: string
+    token: string,
   ): Promise<MayRLabsAuthMachinePayload | null> {
     return this.#verifyToken<MayRLabsAuthMachinePayload>(
       token,
-      MACHINE_AUDIENCE
+      MACHINE_AUDIENCE,
     );
   }
 }

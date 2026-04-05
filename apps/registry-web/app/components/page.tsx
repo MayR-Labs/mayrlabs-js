@@ -1,5 +1,5 @@
-import { getAllComponents } from "@/lib/registry";
 import { ComponentCard } from "@/components/component-card";
+import { getAllComponents } from "@/lib/registry";
 
 export const metadata = {
   title: "Components",

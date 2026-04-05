@@ -1,9 +1,9 @@
-import picocolors from "picocolors";
 import figlet from "figlet";
+import picocolors from "picocolors";
 
 export function introScreen(
   name: string = "MayR Labs",
-  version: string = "1.0.0"
+  version: string = "1.0.0",
 ) {
   console.log();
   console.log(
@@ -14,8 +14,8 @@ export function introScreen(
         verticalLayout: "default",
         width: 80,
         whitespaceBreak: true,
-      })
-    )
+      }),
+    ),
   );
   console.log();
   console.log(picocolors.cyan(`${"_".repeat(30)}${name} - v${version}`));

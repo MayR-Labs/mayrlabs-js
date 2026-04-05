@@ -1,15 +1,14 @@
-import { prompts } from "@/utils/prompts";
-import { installPackages } from "@/utils/pm";
-import { promptFormatter, installFormatter } from "@/features/formatter";
-import { promptLinter, installLinter } from "@/features/linter";
-
 import pc from "picocolors";
-import { Config } from "@/core/config";
 import {
   LINT_STAGED_EXTENSIONS,
-  LintStagedExtensionValue,
+  type LintStagedExtensionValue,
 } from "@/constants/options";
+import type { Config } from "@/core/config";
+import { installFormatter, promptFormatter } from "@/features/formatter";
+import { installLinter, promptLinter } from "@/features/linter";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { installPackages } from "@/utils/pm";
+import { prompts } from "@/utils/prompts";
 
 export async function promptLintStaged(config: Config) {
   prompts.log.message(pc.bgGreen(pc.black(" Lint-staged Configuration ")));
@@ -19,7 +18,7 @@ export async function promptLintStaged(config: Config) {
       message: "Select extensions to lint:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
-    })
+    }),
   )) as LintStagedExtensionValue[];
 
   const formatExtensions = (await withCancelHandling(async () =>
@@ -27,7 +26,7 @@ export async function promptLintStaged(config: Config) {
       message: "Select extensions to format:",
       options: LINT_STAGED_EXTENSIONS,
       required: false,
-    })
+    }),
   )) as LintStagedExtensionValue[];
 
   config.get("lintStaged").options = {

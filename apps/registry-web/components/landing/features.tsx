@@ -1,4 +1,4 @@
-import { Terminal, Code2, Copy } from "lucide-react";
+import { Code2, Copy, Terminal } from "lucide-react";
 
 export function Features() {
   return (

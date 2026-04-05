@@ -1,20 +1,20 @@
-import * as p from "@clack/prompts";
+import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { execSync } from "node:child_process";
-import { promptPackageDetails } from "./prompts.js";
+import * as p from "@clack/prompts";
 import {
-  createPackageJson,
-  createTsConfig,
-  createReadme,
   createLicense,
+  createPackageJson,
+  createReadme,
   createSrcFiles,
+  createTsConfig,
   createTsdownConfig,
   createVitestConfig,
 } from "./generators.js";
 import { setupPlayground } from "./playground.js";
-import { PackageOptions } from "./types.js";
+import { promptPackageDetails } from "./prompts.js";
+import type { PackageOptions } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

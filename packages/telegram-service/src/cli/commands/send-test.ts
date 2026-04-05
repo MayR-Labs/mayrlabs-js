@@ -1,4 +1,4 @@
-import { multiselect, text, isCancel, note } from "@clack/prompts";
+import { isCancel, multiselect, note, text } from "@clack/prompts";
 import { TelegramService } from "@/core/TelegramService";
 
 // Internal test service implementation
@@ -58,7 +58,7 @@ export async function sendTestMessage() {
   spinner.start();
   const result = await testService.sendNotification(
     message.toString(),
-    selectedChatIds as string[]
+    selectedChatIds as string[],
   );
   spinner.stop();
 

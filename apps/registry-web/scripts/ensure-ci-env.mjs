@@ -15,7 +15,7 @@ const localPath = path.join(root, ".env.local");
 
 if (fs.existsSync(localPath)) {
   console.log(
-    "[env] CI detected; .env.local already exists, leaving it alone."
+    "[env] CI detected; .env.local already exists, leaving it alone.",
   );
   process.exit(0);
 }

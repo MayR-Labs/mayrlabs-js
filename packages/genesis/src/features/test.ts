@@ -1,10 +1,10 @@
-import { prompts } from "@/utils/prompts";
-import { installPackages } from "@/utils/pm";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/core/config";
-import { TEST_RUNNER_OPTIONS, TestRunnerValue } from "@/constants/options";
+import { TEST_RUNNER_OPTIONS, type TestRunnerValue } from "@/constants/options";
+import type { Config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { installPackages } from "@/utils/pm";
+import { prompts } from "@/utils/prompts";
 
 export async function promptTest(config: Config) {
   prompts.log.message(pc.bgYellow(pc.red(" Test Runner Configuration ")));
@@ -13,7 +13,7 @@ export async function promptTest(config: Config) {
     prompts.select({
       message: "Select a test runner:",
       options: TEST_RUNNER_OPTIONS,
-    })
+    }),
   )) as TestRunnerValue;
 
   config.get("test").options = { runner };
@@ -28,7 +28,7 @@ export async function installTest(config: Config) {
     if (!(await fs.pathExists(configFile))) {
       await fs.outputFile(
         configFile,
-        `import { defineConfig } from 'vitest/config';\n\nexport default defineConfig({\n  test: {\n    environment: 'node',\n  },\n});\n`
+        `import { defineConfig } from 'vitest/config';\n\nexport default defineConfig({\n  test: {\n    environment: 'node',\n  },\n});\n`,
       );
     }
   } else if (runner === "jest") {
@@ -37,7 +37,7 @@ export async function installTest(config: Config) {
     if (!(await fs.pathExists(configFile))) {
       await fs.outputFile(
         configFile,
-        `/** @type {import('ts-jest').JestConfigWithTsJest} */\nmodule.exports = {\n  preset: 'ts-jest',\n  testEnvironment: 'node',\n};\n`
+        `/** @type {import('ts-jest').JestConfigWithTsJest} */\nmodule.exports = {\n  preset: 'ts-jest',\n  testEnvironment: 'node',\n};\n`,
       );
     }
   }

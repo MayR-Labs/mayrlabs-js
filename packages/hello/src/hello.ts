@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import { intro, outro, select } from "@clack/prompts";
-import picocolors from "picocolors";
 import open from "open";
-import { introScreen } from "./utils/intro.js";
-import { PACKAGES, ABOUT } from "./constants.js";
+import picocolors from "picocolors";
 import packageJson from "../package.json";
+import { ABOUT, PACKAGES } from "./constants.js";
+import { introScreen } from "./utils/intro.js";
 
 async function showPackages() {
   const selectedPackage = await select({
@@ -14,7 +14,7 @@ async function showPackages() {
       ...PACKAGES.map((pkg) => ({
         value: pkg,
         label: pkg.name,
-        hint: pkg.description.slice(0, 50) + "...",
+        hint: `${pkg.description.slice(0, 50)}...`,
       })),
       { value: "back", label: "Example: Go Back" },
     ],
@@ -41,7 +41,7 @@ async function showPackages() {
 
   if (action === "github") {
     await open(
-      `https://github.com/MayR-Labs/mayrlabs-js/tree/main/${pkg.path}`
+      `https://github.com/MayR-Labs/mayrlabs-js/tree/main/${pkg.path}`,
     );
   } else if (action === "npm") {
     await open(`https://www.npmjs.com/package/${pkg.name}`);

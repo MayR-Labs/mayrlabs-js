@@ -1,10 +1,10 @@
-import * as p from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
-import { PackageOptions } from "./types.js";
+import * as p from "@clack/prompts";
+import type { PackageOptions } from "./types.js";
 
 export async function promptPackageDetails(
-  packagesDir: string
+  packagesDir: string,
 ): Promise<PackageOptions | symbol> {
   return p.group(
     {
@@ -79,6 +79,6 @@ export async function promptPackageDetails(
         p.cancel("Operation cancelled.");
         process.exit(0);
       },
-    }
+    },
   ) as Promise<PackageOptions | symbol>;
 }

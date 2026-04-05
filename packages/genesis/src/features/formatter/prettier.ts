@@ -1,6 +1,6 @@
 import fs from "fs-extra";
-import { installPackages } from "@/utils/pm";
 import { resolveConfigFile, writeConfig } from "@/utils/config-file";
+import { installPackages } from "@/utils/pm";
 
 export async function installPrettier() {
   await installPackages(["prettier"], true);
@@ -34,7 +34,7 @@ coverage
 build
 .astro
 .output
-`
+`,
     );
   }
 }

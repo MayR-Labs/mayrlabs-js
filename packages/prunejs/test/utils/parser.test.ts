@@ -1,12 +1,12 @@
-import { describe, it, expect, afterEach } from "vitest";
+import mockfs from "mock-fs";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   extractExports,
-  extractNonExportedDeclarations,
   extractImports,
-  shouldSkipName,
+  extractNonExportedDeclarations,
   isComment,
+  shouldSkipName,
 } from "@/utils/parser";
-import mockfs from "mock-fs";
 
 describe("parser", () => {
   const projectRoot = "/test-project";
@@ -68,7 +68,7 @@ describe("parser", () => {
       const exports = extractExports("/test-project/file.ts", projectRoot);
       expect(exports).toHaveLength(5);
       expect(exports.map((e: any) => e.name)).toEqual(
-        expect.arrayContaining(["a", "b", "C", "D", "E"])
+        expect.arrayContaining(["a", "b", "C", "D", "E"]),
       );
     });
 
@@ -84,7 +84,7 @@ describe("parser", () => {
       const exports = extractExports("/test-project/file.ts", projectRoot);
       expect(exports).toHaveLength(2);
       expect(exports.map((e: any) => e.name)).toEqual(
-        expect.arrayContaining(["a", "c"])
+        expect.arrayContaining(["a", "c"]),
       );
     });
 
@@ -112,11 +112,15 @@ describe("parser", () => {
 
       const decls = extractNonExportedDeclarations(
         "/test-project/file.ts",
-        projectRoot
+        projectRoot,
       );
       expect(decls).toHaveLength(3);
       expect(decls.map((d: any) => d.name)).toEqual(
-        expect.arrayContaining(["internalFunc", "InternalClass", "internalVar"])
+        expect.arrayContaining([
+          "internalFunc",
+          "InternalClass",
+          "internalVar",
+        ]),
       );
     });
 
@@ -130,7 +134,7 @@ describe("parser", () => {
 
       const decls = extractNonExportedDeclarations(
         "/test-project/file.ts",
-        projectRoot
+        projectRoot,
       );
       expect(decls).toHaveLength(1);
       expect(decls[0].name).toBe("internalFunc");
@@ -146,7 +150,7 @@ describe("parser", () => {
 
       const decls = extractNonExportedDeclarations(
         "/test-project/file.ts",
-        projectRoot
+        projectRoot,
       );
       expect(decls).toHaveLength(0);
     });

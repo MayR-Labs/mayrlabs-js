@@ -21,7 +21,7 @@ export function createNextIssuerAuth(options: NextIssuerAuthOptions = {}) {
 
   if (!privateKey || !publicKey || !issuer) {
     throw new Error(
-      "MayRLabs Auth: MAYRLABS_AUTH_PRIVATE_JWK, MAYRLABS_AUTH_PUBLIC_JWK, and MAYRLABS_AUTH_ISSUER are required environment variables for issuer auth."
+      "MayRLabs Auth: MAYRLABS_AUTH_PRIVATE_JWK, MAYRLABS_AUTH_PUBLIC_JWK, and MAYRLABS_AUTH_ISSUER are required environment variables for issuer auth.",
     );
   }
 

@@ -1,7 +1,7 @@
+import path from "node:path";
 import fs from "fs-extra";
-import path from "path";
 import { PATTERNS, REGEX } from "./constants";
-import { ExportInfo, NonExportedInfo } from "./types";
+import type { ExportInfo, NonExportedInfo } from "./types";
 
 export function isComment(line: string): boolean {
   return (
@@ -17,7 +17,7 @@ export function shouldSkipName(name: string): boolean {
 
 export function extractExports(
   filePath: string,
-  projectRoot: string
+  projectRoot: string,
 ): ExportInfo[] {
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
@@ -57,8 +57,8 @@ export function extractExports(
           n
             .trim()
             .split(/\s+as\s+/)
-            .pop()!
-            .trim()
+            .pop()
+            ?.trim(),
         )
         .filter((n) => n && !n.includes("*"));
 
@@ -81,7 +81,7 @@ export function extractExports(
 
 export function extractNonExportedDeclarations(
   filePath: string,
-  projectRoot: string
+  projectRoot: string,
 ): NonExportedInfo[] {
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
@@ -133,7 +133,7 @@ export function extractImports(filePath: string): string[] {
             .trim()
             .split(/\s+as\s+/)
             .pop()
-            ?.trim()
+            ?.trim(),
         )
         .filter((n) => n) as string[];
       names.forEach((name) => name && imports.add(name));

@@ -4,7 +4,7 @@ import path from "node:path";
 export function setupPlayground(
   rootDir: string,
   name: string,
-  packageName: string
+  packageName: string,
 ) {
   const playgroundSetupDir = path.join(rootDir, "playground", ".setup", name);
 
@@ -22,6 +22,6 @@ export function setupPlayground(
 
   fs.writeFileSync(
     path.join(playgroundSetupDir, "package.json"),
-    JSON.stringify(playgroundPackageJson, null, 2)
+    JSON.stringify(playgroundPackageJson, null, 2),
   );
 }

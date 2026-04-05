@@ -1,10 +1,10 @@
-import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import chalk from "chalk";
+import fs from "fs-extra";
 import ora from "ora";
+import { type ReportData, UnusedCodeFinder } from "@/utils/analyzer";
 import { loadConfig, validateConfig } from "@/utils/config";
-import { UnusedCodeFinder, ReportData } from "@/utils/analyzer";
-import { PRUNE_DIR, REPORT_DIR, GITIGNORE_CONTENT } from "@/utils/constants";
+import { GITIGNORE_CONTENT, PRUNE_DIR, REPORT_DIR } from "@/utils/constants";
 
 export default async function scanCommand() {
   let spinner;
@@ -20,12 +20,12 @@ export default async function scanCommand() {
     spinner.succeed("Scan complete!");
 
     // Console Output
-    console.log("\n" + chalk.bold.underline("Scan Summary"));
+    console.log(`\n${chalk.bold.underline("Scan Summary")}`);
     console.log(`Total Exports: ${report.totalExports} `);
     console.log(`Unused Exports: ${chalk.red(report.unusedExports.length)} `);
     console.log(`Total Non-Exported: ${report.totalNonExported} `);
     console.log(
-      `Unused Non-Exported: ${chalk.red(report.unusedNonExported.length)} `
+      `Unused Non-Exported: ${chalk.red(report.unusedNonExported.length)} `,
     );
 
     // Generate Markdown Report
@@ -52,7 +52,7 @@ export default async function scanCommand() {
       report.unusedNonExported.length > 0
     ) {
       console.log(
-        `\nRun ${chalk.yellow("prunejs fix")} to remove unused code.`
+        `\nRun ${chalk.yellow("prunejs fix")} to remove unused code.`,
       );
     }
   } catch (error) {

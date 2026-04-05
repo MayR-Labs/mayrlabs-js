@@ -55,6 +55,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "lint": "biome lint .",
+    "format": "biome format .",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -73,7 +75,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.16",
     "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^9.39.2",
     "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3",

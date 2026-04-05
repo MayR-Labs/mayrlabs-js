@@ -1,6 +1,6 @@
+import path from "node:path";
 import fs from "fs-extra";
-import path from "path";
-import ignore from "ignore";
+import type ignore from "ignore";
 
 export function getAllFiles(
   dir: string,
@@ -8,7 +8,7 @@ export function getAllFiles(
   ig: ReturnType<typeof ignore>,
   excludeDirs: string[],
   includeExtensions: string[],
-  files: string[] = []
+  files: string[] = [],
 ): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
 
@@ -28,7 +28,7 @@ export function getAllFiles(
           ig,
           excludeDirs,
           includeExtensions,
-          files
+          files,
         );
       }
     } else if (entry.isFile()) {
@@ -57,7 +57,7 @@ export function findBlockEnd(filePath: string, startLine: number): number {
 
 export function findBlockEndFromLines(
   lines: string[],
-  startLine: number
+  startLine: number,
 ): number {
   let braceCount = 0;
   let foundStart = false;

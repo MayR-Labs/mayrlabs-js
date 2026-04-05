@@ -1,5 +1,5 @@
-import * as p from "@clack/prompts";
 import { execSync } from "node:child_process";
+import * as p from "@clack/prompts";
 
 export async function checkGitStatus(rootDir: string) {
   try {

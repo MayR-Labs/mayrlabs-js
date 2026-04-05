@@ -1,7 +1,7 @@
-import * as p from "@clack/prompts";
-import color from "picocolors";
 import fs from "node:fs";
 import path from "node:path";
+import * as p from "@clack/prompts";
+import color from "picocolors";
 
 export function getPackages(packagesDir: string): string[] {
   try {

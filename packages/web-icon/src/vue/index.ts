@@ -42,7 +42,7 @@ const BaseIconWrapper = defineComponent({
           src: props.src,
           alt: props.alt,
           style: imgStyle,
-        })
+        }),
       );
   },
 });
@@ -136,8 +136,8 @@ const FallbackIcon = defineComponent({
                 typeof sizeVal === "number" ? `${sizeVal * 0.5}px` : "12px",
             },
           },
-          "?"
-        )
+          "?",
+        ),
       );
     };
   },

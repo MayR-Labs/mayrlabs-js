@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
-import inquirer from "inquirer";
-import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import chalk from "chalk";
-import initCommand from "@/commands/init";
-import scanCommand from "@/commands/scan";
+import { Command } from "commander";
+import fs from "fs-extra";
+import inquirer from "inquirer";
+import cleanCommand from "@/commands/clean";
 import fixCommand from "@/commands/fix";
 import globalCommand from "@/commands/global";
+import initCommand from "@/commands/init";
 import localCommand from "@/commands/local";
-import cleanCommand from "@/commands/clean";
+import scanCommand from "@/commands/scan";
 import packageJson from "../package.json";
 import { introScreen } from "./utils/intro.js";
 
@@ -21,8 +21,8 @@ async function checkPackageJson() {
   if (!fs.existsSync(packageJsonPath)) {
     console.log(
       chalk.yellow(
-        "Warning: You do not seem to be running prunejs from the project's root directory."
-      )
+        "Warning: You do not seem to be running prunejs from the project's root directory.",
+      ),
     );
     const { proceed } = await inquirer.prompt([
       {
@@ -43,7 +43,7 @@ async function checkPackageJson() {
 program
   .name("prunejs")
   .description(
-    "Scan JS/TS projects and detects unused files, functions, classes and exports"
+    "Scan JS/TS projects and detects unused files, functions, classes and exports",
   )
   .version(packageJson.version, "-v, --version");
 

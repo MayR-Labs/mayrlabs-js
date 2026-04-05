@@ -1,5 +1,5 @@
-import { getAllBlocks } from "@/lib/registry";
 import { BlockCard } from "@/components/block-card";
+import { getAllBlocks } from "@/lib/registry";
 
 export const metadata = {
   title: "Blocks",

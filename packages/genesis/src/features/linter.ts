@@ -1,8 +1,8 @@
-import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
-import { Config } from "@/core/config";
-import { LINTER_OPTIONS, LinterValue } from "@/constants/options";
+import { LINTER_OPTIONS, type LinterValue } from "@/constants/options";
+import type { Config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { prompts } from "@/utils/prompts";
 import { installEslint } from "./linter/eslint";
 import { installOxlint } from "./linter/oxlint";
 
@@ -15,7 +15,7 @@ export async function promptLinter(config: Config) {
       message: "Select a linter:",
       options: LINTER_OPTIONS,
       initialValue: linterConfig.options.choice,
-    })
+    }),
   )) as LinterValue;
 
   linterConfig.options = { choice: linter };

@@ -1,11 +1,11 @@
-import { prompts } from "@/utils/prompts";
-import { installPackages } from "@/utils/pm";
 import { execa } from "execa";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/core/config";
-import { HUSKY_HOOK_OPTIONS, HuskyHookValue } from "@/constants/options";
+import { HUSKY_HOOK_OPTIONS, type HuskyHookValue } from "@/constants/options";
+import type { Config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { installPackages } from "@/utils/pm";
+import { prompts } from "@/utils/prompts";
 
 export async function promptHusky(config: Config) {
   prompts.log.message(pc.bgMagenta(pc.black(" Husky Configuration ")));
@@ -14,7 +14,7 @@ export async function promptHusky(config: Config) {
     prompts.select({
       message: "What pre-commit hook would you like to use?",
       options: HUSKY_HOOK_OPTIONS,
-    })
+    }),
   )) as HuskyHookValue;
 
   const huskyConfig = config.get("husky");
@@ -31,7 +31,7 @@ export async function promptHusky(config: Config) {
         validate(value) {
           if (value.length === 0) return "Value is required!";
         },
-      })
+      }),
     )) as string;
 
     huskyConfig.options.customScript = script;

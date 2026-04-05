@@ -24,7 +24,7 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
 
   async signUserToken(
     payload: Omit<MayRLabsAuthUserPayload, "iat" | "exp" | "iss" | "aud">,
-    options: { audience: string; expiresIn?: string | number }
+    options: { audience: string; expiresIn?: string | number },
   ): Promise<string> {
     const key = await this.getPrivateKey();
 
@@ -39,7 +39,7 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
 
   async signMachineToken(
     payload: { sub: string },
-    options: { expiresIn?: string | number }
+    options: { expiresIn?: string | number },
   ): Promise<string> {
     const key = await this.getPrivateKey();
 
@@ -59,7 +59,7 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
 
   async signErrorToken(
     payload: { message: string; code: string },
-    options: { audience: string; expiresIn?: string | number }
+    options: { audience: string; expiresIn?: string | number },
   ): Promise<string> {
     const key = await this.getPrivateKey();
 

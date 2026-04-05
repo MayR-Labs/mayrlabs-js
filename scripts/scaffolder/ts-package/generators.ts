@@ -1,12 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import { PackageOptions, PackageJson } from "./types.js";
 import {
-  MIT_LICENSE,
-  ISC_LICENSE,
-  VITEST_CONFIG,
   getTsdownConfig,
+  ISC_LICENSE,
+  MIT_LICENSE,
+  VITEST_CONFIG,
 } from "./templates.js";
+import type { PackageJson, PackageOptions } from "./types.js";
 
 export function createPackageJson(packageDir: string, options: PackageOptions) {
   const { access, name, description, license, author, type } = options;
@@ -95,7 +95,7 @@ export function createPackageJson(packageDir: string, options: PackageOptions) {
 
   fs.writeFileSync(
     path.join(packageDir, "package.json"),
-    JSON.stringify(packageJson, null, 2)
+    JSON.stringify(packageJson, null, 2),
   );
 }
 
@@ -124,25 +124,25 @@ export function createTsConfig(packageDir: string) {
 
   fs.writeFileSync(
     path.join(packageDir, "tsconfig.json"),
-    JSON.stringify(tsconfig, null, 2)
+    JSON.stringify(tsconfig, null, 2),
   );
 }
 
 export function createReadme(
   packageDir: string,
   name: string,
-  description: string
+  description: string,
 ) {
   fs.writeFileSync(
     path.join(packageDir, "README.md"),
-    `# @mayrlabs/${name}\n\n${description}\n`
+    `# @mayrlabs/${name}\n\n${description}\n`,
   );
 }
 
 export function createLicense(
   packageDir: string,
   license: string,
-  author: { name: string; email: string; url: string }
+  author: { name: string; email: string; url: string },
 ) {
   let template = license === "MIT" ? MIT_LICENSE : ISC_LICENSE;
   const year = new Date().getFullYear().toString();
@@ -155,7 +155,7 @@ export function createLicense(
 
 export function createTsdownConfig(
   packageDir: string,
-  type: "bin" | "lib" | "both"
+  type: "bin" | "lib" | "both",
 ) {
   let entries: string[] = [];
   if (type === "bin") {
@@ -168,7 +168,7 @@ export function createTsdownConfig(
 
   fs.writeFileSync(
     path.join(packageDir, "tsdown.config.mts"),
-    getTsdownConfig(entries)
+    getTsdownConfig(entries),
   );
 }
 
@@ -179,7 +179,7 @@ export function createVitestConfig(packageDir: string) {
 export function createSrcFiles(
   packageDir: string,
   type: "bin" | "lib" | "both",
-  packageName: string
+  packageName: string,
 ) {
   const srcDir = path.join(packageDir, "src");
   fs.mkdirSync(srcDir);
@@ -187,14 +187,14 @@ export function createSrcFiles(
   if (type === "bin" || type === "both") {
     fs.writeFileSync(
       path.join(srcDir, "cli.ts"),
-      `#!/usr/bin/env node\n\nconsole.log('Hello from ${packageName} CLI');\n`
+      `#!/usr/bin/env node\n\nconsole.log('Hello from ${packageName} CLI');\n`,
     );
   }
 
   if (type === "lib" || type === "both") {
     fs.writeFileSync(
       path.join(srcDir, "index.ts"),
-      `export const hello = () => 'Hello from ${packageName}';\n`
+      `export const hello = () => 'Hello from ${packageName}';\n`,
     );
   }
 }

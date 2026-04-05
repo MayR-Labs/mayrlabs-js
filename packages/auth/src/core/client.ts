@@ -41,7 +41,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
             clientId: this.config.clientId,
             clientSecret: this.config.clientSecret,
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -52,7 +52,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
 
         throw new MayRLabsAuthError(
           errorData.message || "Failed to authenticate machine",
-          errorData.code || "MACHINE_AUTH_FAILED"
+          errorData.code || "MACHINE_AUTH_FAILED",
         );
       }
 
@@ -64,21 +64,21 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
 
       throw new MayRLabsAuthError(
         `Machine authentication network error: ${error instanceof Error ? error.message : "Unknown error"}`,
-        "MACHINE_AUTH_NETWORK_ERROR"
+        "MACHINE_AUTH_NETWORK_ERROR",
       );
     }
   }
 
   async verifyAuthToken(
     token: string,
-    audience?: string
+    audience?: string,
   ): Promise<MayRLabsAuthUserPayload | null> {
     return super.verifyAuthToken(token, audience || this.config.clientId);
   }
 
   async verifyErrorToken(
     token: string,
-    audience?: string
+    audience?: string,
   ): Promise<MayRLabsAuthErrorPayload | null> {
     return super.verifyErrorToken(token, audience || this.config.clientId);
   }

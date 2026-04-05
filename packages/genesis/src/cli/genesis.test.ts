@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import * as husky from "@/features/husky";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { config } from "@/core/config";
 import * as formatter from "@/features/formatter";
+import * as husky from "@/features/husky";
 import * as linter from "@/features/linter";
 import { prompts } from "@/utils/prompts";
-import { config } from "@/core/config";
 import { configure } from "./commands/configure";
 
 vi.mock("@/features/husky");

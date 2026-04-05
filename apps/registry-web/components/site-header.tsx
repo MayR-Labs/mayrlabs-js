@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { Github } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { FloatingHeader } from "@/components/layout/floating-header";
 import Image from "next/image";
+import Link from "next/link";
+import { FloatingHeader } from "@/components/layout/floating-header";
+import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
   return (

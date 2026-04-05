@@ -1,6 +1,6 @@
-import inquirer from "inquirer";
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 import chalk from "chalk";
+import inquirer from "inquirer";
 import ora from "ora";
 
 export default async function globalCommand(subcommand?: string) {
@@ -38,13 +38,13 @@ export default async function globalCommand(subcommand?: string) {
       spinner.start("Installing @mayrlabs/prunejs globally...");
       execSync("npm install -g @mayrlabs/prunejs", { stdio: "inherit" });
       spinner.succeed(
-        chalk.green("Successfully installed @mayrlabs/prunejs globally!")
+        chalk.green("Successfully installed @mayrlabs/prunejs globally!"),
       );
     } else if (action === "update") {
       spinner.start("Updating global @mayrlabs/prunejs...");
       execSync("npm update -g @mayrlabs/prunejs", { stdio: "inherit" });
       spinner.succeed(
-        chalk.green("Successfully updated global @mayrlabs/prunejs!")
+        chalk.green("Successfully updated global @mayrlabs/prunejs!"),
       );
     } else {
       console.log(chalk.red(`Unknown subcommand: ${action}`));

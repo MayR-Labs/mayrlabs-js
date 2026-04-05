@@ -52,9 +52,10 @@ export class Generator {
     switch (type) {
       case "simple":
         return Generator.simpleIcon.url(value);
-      case "dev":
+      case "dev": {
         const [iconName, iconType] = value.split(":");
         return Generator.devIcon.url(iconName, iconType);
+      }
       case "local":
         return value.startsWith("/") ? value : `/${value}`;
       case "remote":

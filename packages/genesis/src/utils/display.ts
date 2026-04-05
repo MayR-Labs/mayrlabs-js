@@ -10,12 +10,12 @@ export function showAbout() {
   introScreen();
   console.log(pc.bold("About:"));
   console.log(
-    "  Interactive CLI to setup project tools like Husky, Prettier, ESLint, etc."
+    "  Interactive CLI to setup project tools like Husky, Prettier, ESLint, etc.",
   );
   console.log("");
   console.log(pc.bold("How to use:"));
   console.log(
-    "  Run 'npx @mayrlabs/genesis' and follow the interactive prompts."
+    "  Run 'npx @mayrlabs/genesis' and follow the interactive prompts.",
   );
   console.log("");
 }
