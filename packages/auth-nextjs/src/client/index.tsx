@@ -11,7 +11,7 @@ import { redirectTo } from "../_utils";
 import type { NextAuthOptions } from "../types";
 import { AuthClientProvider } from "./provider";
 
-export { AuthClientProvider, useUser } from "./provider";
+export { useUser } from "./provider";
 
 /**
  * Creates Next.js specific client auth utilities.

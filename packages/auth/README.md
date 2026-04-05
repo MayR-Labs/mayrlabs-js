@@ -101,7 +101,7 @@ Fetches a **Machine Token** from the Account App's service endpoint using client
 If you are using **Next.js**, please utilize our native Next.js integration wrapper.
 
 ```bash
-npm install @mayrlabs/auth-nextjs @mayrlabs/auth
+npm install @mayrlabs/auth-nextjs
 ```
 
 See the [`@mayrlabs/auth-nextjs` documentation](../auth-nextjs/README.md) for full guidelines on `createNextClientAuth` and `createNextIssuerAuth`!

@@ -14,19 +14,18 @@ The Next.js integration wrapper for the MayR Labs authentication ecosystem (`@ma
 ### Installation
 
 ```bash
-npm install @mayrlabs/auth-nextjs @mayrlabs/auth
+npm install @mayrlabs/auth-nextjs
 ```
-
-_(Note: `@mayrlabs/auth` is required by this package for core operations)._
 
 ### Environment Variables
 
 Ensure the following are set in your `.env`:
 
 - `MAYRLABS_AUTH_PUBLIC_JWK`: Your application's Public JWK (JSON string).
+- `MAYRLABS_AUTH_ISSUER`: The expected issuer for your tokens (e.g., `auth.mayrlabs.com`).
 - `MAYRLABS_CLIENT_ID`: Your application's unique ID.
 - `MAYRLABS_CLIENT_SECRET`: Your application's secret key (keep this server-side only).
-- `MAYRLABS_ACCOUNT_URL`: (Optional) The URL of the central account system center. Defaults to `https://myaccount.mayrlabs.com`.
+- `MAYRLABS_ACCOUNT_URL`: (Optional) The URL of the central account system center.
 
 ---
 
@@ -75,7 +74,7 @@ Use the `useUser` hook in any Client Component:
 
 ```tsx
 "use client";
-import { useUser } from "@mayrlabs/auth-nextjs/client";
+import { useUser } from "@mayrlabs/auth-nextjs";
 
 export function UserProfile() {
   const { user } = useUser();
@@ -100,7 +99,6 @@ export const {
   getUserOrThrow,
   logoutHandler,
 } = createNextIssuerAuth({
-  issuer: "auth.mayrlabs.com",
   session: { key: "issuer-session" },
 });
 ```
