@@ -81,16 +81,16 @@
       },
       "default": "./dist/issuer.cjs"
     },
-    "./provider": {
+    "./hooks": {
       "import": {
-        "types": "./dist/provider.d.mts",
-        "default": "./dist/provider.mjs"
+        "types": "./dist/hooks.d.mts",
+        "default": "./dist/hooks.mjs"
       },
       "require": {
-        "types": "./dist/provider.d.cts",
-        "default": "./dist/provider.cjs"
+        "types": "./dist/hooks.d.cts",
+        "default": "./dist/hooks.cjs"
       },
-      "default": "./dist/provider.cjs"
+      "default": "./dist/hooks.cjs"
     }
   },
   "files": [

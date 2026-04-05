@@ -23,7 +23,7 @@ export default defineConfig({
     index: "src/index.tsx",
     client: "src/client/index.tsx",
     issuer: "src/issuer/index.ts",
-    provider: "src/client/provider.tsx",
+    hooks: "src/client/hooks.tsx",
   },
   format: ["cjs", "esm"],
   clean: true,

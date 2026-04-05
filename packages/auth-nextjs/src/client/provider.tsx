@@ -27,9 +27,7 @@ export const AuthClientProvider = ({
 export const useUser = () => {
   const context = useContext(AuthContext);
 
-  if (!context) {
-    throw new Error("useUser must be used within an AuthClientProvider");
-  }
+  if (context) return context;
 
-  return context;
+  throw new Error("useUser must be used within an AuthClientProvider");
 };
