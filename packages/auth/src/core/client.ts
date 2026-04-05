@@ -1,20 +1,31 @@
-import { importJWK, jwtVerify, type CryptoKey } from "jose";
-
+import { type CryptoKey, importJWK, jwtVerify } from "jose";
+import { MayRLabsAuthError } from "../errors";
 import type {
   ClientConfig,
-  MayRLabsAuthUserPayload,
+  ClientConfigInput,
   MayRLabsAuthErrorPayload,
+  MayRLabsAuthUserPayload,
 } from "../types";
-import { MayRLabsAuthError } from "../errors";
+
+const DEFAULTS = {
+  redirects: {
+    error: "/login",
+    success: "/dashboard",
+  },
+  session: {
+    key: "mayrlabs_session",
+  },
+};
 
 export class ClientAuthSetup {
   private _key: CryptoKey | null = null;
   public readonly config: ClientConfig;
 
-  constructor(config: ClientConfig) {
+  constructor(input: ClientConfigInput) {
     this.config = {
-      ...config,
-      accountUrl: config.accountUrl || "https://myaccount.mayrlabs.com",
+      ...input,
+      redirects: { ...DEFAULTS.redirects, ...input.redirects },
+      session: { ...DEFAULTS.session, ...input.session },
     };
   }
 

@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { IssuerAuthSetup } from "./issuer";
+import { exportJWK, generateKeyPair } from "jose";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ClientAuthSetup } from "./client";
-
-import { generateKeyPair, exportJWK } from "jose";
+import { IssuerAuthSetup } from "./issuer";
 
 describe("Identity SDK", () => {
   let privateJWK: string;

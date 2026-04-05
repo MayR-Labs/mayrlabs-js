@@ -1,41 +1,49 @@
 export interface MayRLabsAuthUserPayload {
-  userId: string;
+  aud: string;
   email: string;
+  exp: number;
   firstName?: string;
+  iat: number;
+  iss: "auth.mayrlabs.com";
   lastName?: string;
   roles: string[];
-  iat: number;
-  exp: number;
-  iss: "auth.mayrlabs.com";
-  aud: string;
+  userId: string;
 }
 
 export interface MayRLabsAuthMachinePayload {
+  aud: "mayrlabs-internal";
+  exp: number;
+  iat: number;
+  iss: "auth.mayrlabs.com";
   sub: string;
   type: "machine";
-  iat: number;
-  exp: number;
-  iss: "auth.mayrlabs.com";
-  aud: "mayrlabs-internal";
 }
 
 export interface MayRLabsAuthErrorPayload {
-  message: string;
   code: string;
   iat: number;
   iss: "auth.mayrlabs.com";
+  message: string;
 }
 
 export interface IssuerConfig {
-  privateKey: string;
   issuer?: string;
+  privateKey: string;
 }
 
 export interface ClientConfig {
-  publicKey: string;
+  accountUrl: string;
   clientId: string;
   clientSecret: string;
-  accountUrl: string;
-  redirects?: { error: string; success: string };
-  session?: { key: string };
+  publicKey: string;
+  redirects: { error: string; success: string };
+  session: { key: string };
+}
+
+export interface ClientConfigInput extends Omit<
+  ClientConfig,
+  "redirects" | "session"
+> {
+  redirects?: Partial<ClientConfig["redirects"]>;
+  session?: Partial<ClientConfig["session"]>;
 }

@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createNextAuth } from "./index";
-import { NextRequest, NextResponse } from "next/server";
+/** biome-ignore-all lint/suspicious/noExplicitAny: No energy to fix test */
+
 import { ClientAuthSetup, UnauthenticatedError } from "@mayrlabs/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createNextAuth } from "./index";
 
 const {
   mockCookiesGet,
@@ -9,7 +11,7 @@ const {
   MockNextRequest,
   mockNextResponse,
 } = vi.hoisted(() => {
-  let _mockCookiesGetImpl = (name?: string) => undefined as any;
+  let _mockCookiesGetImpl = (_name?: string) => undefined as any;
 
   class MockNextRequest {
     public url: string;

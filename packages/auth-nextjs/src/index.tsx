@@ -1,15 +1,15 @@
-import React from "react";
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import {
   ClientAuthSetup,
   type MayRLabsAuthUserPayload,
-  type NextAuthOptions,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { type NextRequest, NextResponse } from "next/server";
+import type React from "react";
 import { redirectTo } from "./_utils";
 import { AuthClientProvider } from "./client";
+import type { NextAuthOptions } from "./types";
 
 /**
  * Creates Next.js specific auth utilities.
@@ -33,11 +33,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     clientId,
     clientSecret,
     accountUrl,
-    redirects: {
-      error: options.redirects?.error || "/login",
-      success: options.redirects?.success || "/dashboard",
-    },
-    session: { key: options.session?.key || "mayrlabs-session" },
+    redirects: options.redirects,
+    session: options.session,
   });
 
   /**
@@ -48,7 +45,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     const { searchParams } = new URL(request.url);
 
     const redirectToError = (code: string, message: string) => {
-      const errorUrl = new URL(setup.config.redirects!.error, request.url);
+      const errorUrl = new URL(setup.config.redirects.error, request.url);
 
       errorUrl.searchParams.set("errorCode", code);
       errorUrl.searchParams.set("errorMessage", message);
@@ -85,9 +82,9 @@ export function createNextAuth(options: NextAuthOptions = {}) {
       );
     }
 
-    const response = redirectTo(setup.config.redirects!.success, request.url);
+    const response = redirectTo(setup.config.redirects.success, request.url);
 
-    response.cookies.set(setup.config.session!.key, token, {
+    response.cookies.set(setup.config.session.key, token, {
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -104,7 +101,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
   const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
     const cookieStore = await cookies();
 
-    const token = cookieStore.get(setup.config.session!.key)?.value;
+    const token = cookieStore.get(setup.config.session.key)?.value;
 
     if (!token) return null;
 
@@ -141,7 +138,7 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Returns NextResponse.next() if authenticated.
    */
   const authProxy = async (request: NextRequest) => {
-    const token = request.cookies.get(setup.config.session!.key)?.value;
+    const token = request.cookies.get(setup.config.session.key)?.value;
 
     let user: MayRLabsAuthUserPayload | null = null;
 
@@ -160,9 +157,9 @@ export function createNextAuth(options: NextAuthOptions = {}) {
    * Specialized logout handler for Route Handlers (API /api/auth/logout).
    */
   const logoutHandler = async (request: NextRequest) => {
-    const response = redirectTo(setup.config.redirects!.error, request.url);
+    const response = redirectTo(setup.config.redirects.error, request.url);
 
-    response.cookies.delete(setup.config.session!.key);
+    response.cookies.delete(setup.config.session.key);
 
     return response;
   };
