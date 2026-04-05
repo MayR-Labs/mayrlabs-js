@@ -35,7 +35,7 @@ import { IssuerAuthSetup } from "@mayrlabs/auth";
 
 const issuer = new IssuerAuthSetup({
   privateKey: process.env.MAYRLABS_AUTH_PRIVATE_JWK!, // The full JSON private JWK string
-  issuer: "auth.mayrlabs.com",
+  issuer: "auth.mayrlabs.com", // Optional, defaults to auth.mayrlabs.com
 });
 ```
 
@@ -61,6 +61,8 @@ const auth = new ClientAuthSetup({
   clientId: process.env.MAYRLABS_CLIENT_ID!,
   clientSecret: process.env.MAYRLABS_CLIENT_SECRET!,
   accountUrl: process.env.MAYRLABS_ACCOUNT_URL!, // e.g., "https://myaccount.mayrlabs.com"
+  audience: process.env.MAYRLABS_CLIENT_ID!, // Required: The expected audience (client ID)
+  issuer: "auth.mayrlabs.com", // Optional, defaults to auth.mayrlabs.com
 });
 ```
 

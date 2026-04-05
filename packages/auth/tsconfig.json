@@ -4,18 +4,14 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

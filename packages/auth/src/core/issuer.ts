@@ -11,9 +11,11 @@ import { ISSUER } from "./constants";
 export class IssuerAuthSetup {
   private _key: CryptoKey | null = null;
   private readonly privateKey: string;
+  private readonly issuer: string;
 
   constructor(config: IssuerConfig) {
     this.privateKey = config.privateKey;
+    this.issuer = config.issuer || ISSUER;
   }
 
   private async getKey(): Promise<CryptoKey> {
@@ -42,7 +44,7 @@ export class IssuerAuthSetup {
 
     return new SignJWT(payload)
       .setProtectedHeader({ alg: "PS256" })
-      .setIssuer(ISSUER)
+      .setIssuer(this.issuer)
       .setAudience(options.audience)
       .setIssuedAt()
       .setExpirationTime(options.expiresIn)
@@ -58,13 +60,13 @@ export class IssuerAuthSetup {
     const machinePayload: MayRLabsAuthMachinePayload = {
       ...payload,
       type: "machine",
-      iss: ISSUER,
+      iss: this.issuer,
       aud: "mayrlabs-internal",
     };
 
     return new SignJWT(machinePayload as unknown as Record<string, unknown>)
       .setProtectedHeader({ alg: "PS256" })
-      .setIssuer(ISSUER)
+      .setIssuer(this.issuer)
       .setAudience("mayrlabs-internal")
       .setIssuedAt()
       .setExpirationTime(options.expiresIn)
@@ -79,12 +81,12 @@ export class IssuerAuthSetup {
 
     const errorPayload: MayRLabsAuthErrorPayload = {
       ...payload,
-      iss: ISSUER,
+      iss: this.issuer,
     };
 
     return new SignJWT(errorPayload as unknown as Record<string, unknown>)
       .setProtectedHeader({ alg: "PS256" })
-      .setIssuer(ISSUER)
+      .setIssuer(this.issuer)
       .setAudience(options.audience)
       .setIssuedAt()
       .setExpirationTime(options.expiresIn)

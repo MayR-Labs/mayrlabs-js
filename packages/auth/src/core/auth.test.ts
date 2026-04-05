@@ -1,5 +1,5 @@
 import { exportJWK, generateKeyPair } from "jose";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ClientAuthSetup } from "./client";
 import { IssuerAuthSetup } from "./issuer";
 
@@ -13,6 +13,11 @@ describe("Identity SDK", () => {
     });
     privateJWK = JSON.stringify(await exportJWK(privateKey));
     publicJWK = JSON.stringify(await exportJWK(publicKey));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   describe("IssuerAuthSetup", () => {
@@ -37,10 +42,13 @@ describe("Identity SDK", () => {
 
     it("should sign an error token correctly", async () => {
       const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
-      const token = await issuer.signErrorToken({
-        message: "Error",
-        code: "ERR_1",
-      });
+      const token = await issuer.signErrorToken(
+        {
+          message: "Error",
+          code: "ERR_1",
+        },
+        { audience: "app1", expiresIn: "1h" }
+      );
       expect(token).toBeDefined();
     });
   });
@@ -51,6 +59,7 @@ describe("Identity SDK", () => {
       clientId: "client1",
       clientSecret: "secret1",
       accountUrl: "https://auth.mayrlabs.com",
+      audience: "app1",
     };
 
     it("should verify a valid user token", async () => {
@@ -81,10 +90,13 @@ describe("Identity SDK", () => {
 
     it("should verify a valid error token", async () => {
       const issuer = new IssuerAuthSetup({ privateKey: privateJWK });
-      const token = await issuer.signErrorToken({
-        message: "Forbidden",
-        code: "FORBIDDEN",
-      });
+      const token = await issuer.signErrorToken(
+        {
+          message: "Forbidden",
+          code: "FORBIDDEN",
+        },
+        { audience: "app1", expiresIn: "1h" }
+      );
 
       const client = new ClientAuthSetup({
         ...clientConfig,
@@ -112,14 +124,15 @@ describe("Identity SDK", () => {
         });
         const mockToken = "mock-machine-token";
 
-        global.fetch = vi.fn().mockResolvedValue({
+        const mockFetch = vi.fn().mockResolvedValue({
           ok: true,
           json: async () => ({ token: mockToken }),
         });
+        vi.stubGlobal("fetch", mockFetch);
 
         const token = await client.authenticateMachine();
         expect(token).toBe(mockToken);
-        expect(global.fetch).toHaveBeenCalledWith(
+        expect(mockFetch).toHaveBeenCalledWith(
           "https://auth.mayrlabs.com/api/auth/service",
           expect.objectContaining({
             method: "POST",
@@ -137,13 +150,14 @@ describe("Identity SDK", () => {
           publicKey: publicJWK,
         });
 
-        global.fetch = vi.fn().mockResolvedValue({
+        const mockFetch = vi.fn().mockResolvedValue({
           ok: false,
           json: async () => ({
             message: "Invalid secret",
             code: "INVALID_SECRET",
           }),
         });
+        vi.stubGlobal("fetch", mockFetch);
 
         await expect(client.authenticateMachine()).rejects.toThrow(
           "Invalid secret"

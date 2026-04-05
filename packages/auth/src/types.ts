@@ -6,24 +6,25 @@ export interface MayRLabsAuthUserPayload extends JWTPayload {
   roles: string[];
   firstName?: string;
   lastName?: string;
-  iss: "auth.mayrlabs.com";
+  iss: string;
 }
 
 export interface MayRLabsAuthMachinePayload extends JWTPayload {
   sub: string;
   type: "machine";
   aud: "mayrlabs-internal";
-  iss: "auth.mayrlabs.com";
+  iss: string;
 }
 
 export interface MayRLabsAuthErrorPayload extends JWTPayload {
   code: string;
   message: string;
-  iss: "auth.mayrlabs.com";
+  iss: string;
 }
 
 export interface IssuerConfig {
   privateKey: string;
+  issuer?: string;
 }
 
 export interface ClientConfig {
@@ -32,14 +33,16 @@ export interface ClientConfig {
   clientSecret: string;
   publicKey: string;
   audience: string;
+  issuer: string;
   redirects: { error: string; success: string };
   session: { key: string };
 }
 
 export interface ClientConfigInput extends Omit<
   ClientConfig,
-  "redirects" | "session"
+  "redirects" | "session" | "issuer"
 > {
+  issuer?: string;
   redirects?: Partial<ClientConfig["redirects"]>;
   session?: Partial<ClientConfig["session"]>;
 }

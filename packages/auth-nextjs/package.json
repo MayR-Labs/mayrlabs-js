@@ -74,6 +74,7 @@
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
+    "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

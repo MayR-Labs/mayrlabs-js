@@ -1,4 +1,6 @@
 export interface NextAuthOptions {
-  redirects?: { error: string; success: string };
-  session?: { key: string };
+  issuer?: string;
+  audience?: string;
+  redirects?: Partial<{ error: string; success: string }>;
+  session?: Partial<{ key: string }>;
 }

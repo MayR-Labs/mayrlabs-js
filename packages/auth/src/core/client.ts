@@ -25,6 +25,7 @@ export class ClientAuthSetup {
   constructor(input: ClientConfigInput) {
     this.config = {
       ...input,
+      issuer: input.issuer || ISSUER,
       redirects: { ...DEFAULTS.redirects, ...input.redirects },
       session: { ...DEFAULTS.session, ...input.session },
     };
@@ -63,12 +64,13 @@ export class ClientAuthSetup {
 
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["PS256"],
-        issuer: ISSUER,
+        issuer: this.config.issuer,
         audience: this.config.audience,
       });
 
       return payload as unknown as MayRLabsAuthUserPayload;
-    } catch {
+    } catch (error) {
+      if (error instanceof MayRLabsAuthError) throw error;
       return null;
     }
   }
@@ -81,12 +83,13 @@ export class ClientAuthSetup {
 
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["PS256"],
-        issuer: ISSUER,
+        issuer: this.config.issuer,
         audience: this.config.audience,
       });
 
       return payload as unknown as MayRLabsAuthErrorPayload;
-    } catch {
+    } catch (error) {
+      if (error instanceof MayRLabsAuthError) throw error;
       return null;
     }
   }

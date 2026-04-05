@@ -33,6 +33,8 @@ export function createNextAuth(options: NextAuthOptions = {}) {
     clientId,
     clientSecret,
     accountUrl,
+    audience: options.audience || clientId,
+    issuer: options.issuer || process.env.MAYRLABS_AUTH_ISSUER,
     redirects: options.redirects,
     session: options.session,
   });

@@ -25,7 +25,7 @@ interface MayRLabsAuthUserPayload {
   roles: string[];
   iat: number; // Issued-at (auto-set by issuer)
   exp: number; // Expiry (auto-set by issuer)
-  iss: "auth.mayrlabs.com"; // Issuer (auto-set by issuer)
+  iss: string; // Issuer (auto-set by issuer)
   aud: string; // Receiving app's base URL OR "mayrlabs-internal"
 }
 ```
@@ -38,7 +38,7 @@ interface MayRLabsAuthMachinePayload {
   type: "machine";
   iat: number;
   exp: number;
-  iss: "auth.mayrlabs.com";
+  iss: string;
   aud: "mayrlabs-internal";
 }
 ```
@@ -50,7 +50,7 @@ interface MayRLabsAuthErrorPayload {
   message: string;
   code: string;
   iat: number;
-  iss: "auth.mayrlabs.com";
+  iss: string;
 }
 ```
 
@@ -63,14 +63,14 @@ Designed exclusively for the **Account App**. It holds the Private Key and is th
 ### Internal Logic
 
 - Accepts the Private JWK string and calls `importJWK(JSON.parse(privateKey), "PS256")` once, then caches the resulting `KeyLike`.
-- All signing methods use `new SignJWT(payload).setProtectedHeader({ alg: "PS256" }).setIssuer(issuer).setIssuedAt()...sign(privateKey)`.
+- All signing methods use `new SignJWT(payload).setProtectedHeader({ alg: "PS256" }).setIssuer(this.issuer).setIssuedAt()...sign(privateKey)`.
 
 ### Constructor
 
 ```typescript
 const issuer = new IssuerAuthSetup({
   privateKey: process.env.MAYRLABS_AUTH_PRIVATE_JWK!, // The full JSON private JWK string
-  issuer: "auth.mayrlabs.com",
+  issuer: "auth.mayrlabs.com", // Optional, defaults to "auth.mayrlabs.com"
 });
 ```
 
@@ -103,10 +103,13 @@ const token = await issuer.signMachineToken(
 Signs a JWT that wraps an error, issued when an SSO login fails. Used to pass structured error details back to the client app via the redirect URL.
 
 ```typescript
-const token = await issuer.signErrorToken({
-  message: "User is restricted from this application.",
-  code: "AUTH_RESTRICTED",
-});
+const token = await issuer.signErrorToken(
+  {
+    message: "User is restricted from this application.",
+    code: "AUTH_RESTRICTED",
+  },
+  { audience: "contentforge.mayrlabs.com", expiresIn: "10m" }
+);
 ```
 
 ---
@@ -118,7 +121,7 @@ Designed for consumer apps like **ContentForge** or **Vault**. Holds the Public 
 ### Internal Logic
 
 - Accepts the Public JWK string and calls `importJWK(JSON.parse(publicKey), "PS256")` once, then caches the result.
-- All verification methods use `jwtVerify(token, publicKey, { issuer })`.
+- All verification methods use `jwtVerify(token, publicKey, { issuer: this.config.issuer, audience: this.config.audience, algorithms: ["PS256"] })`.
 
 ### Constructor
 
@@ -128,6 +131,8 @@ const auth = new ClientAuthSetup({
   clientId: process.env.MAYRLABS_CLIENT_ID!,
   clientSecret: process.env.MAYRLABS_CLIENT_SECRET!,
   accountUrl: process.env.MAYRLABS_ACCOUNT_URL!, // e.g., "https://myaccount.mayrlabs.com"
+  audience: process.env.MAYRLABS_CLIENT_ID!, // Required
+  issuer: "auth.mayrlabs.com", // Optional
 });
 ```
 
