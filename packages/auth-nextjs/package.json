@@ -41,6 +41,9 @@
       ],
       "issuer": [
         "dist/issuer.d.cts"
+      ],
+      "provider": [
+        "dist/provider.d.cts"
       ]
     }
   },
@@ -77,6 +80,17 @@
         "default": "./dist/issuer.cjs"
       },
       "default": "./dist/issuer.cjs"
+    },
+    "./provider": {
+      "import": {
+        "types": "./dist/provider.d.mts",
+        "default": "./dist/provider.mjs"
+      },
+      "require": {
+        "types": "./dist/provider.d.cts",
+        "default": "./dist/provider.cjs"
+      },
+      "default": "./dist/provider.cjs"
     }
   },
   "files": [

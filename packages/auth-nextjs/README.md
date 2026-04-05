@@ -74,7 +74,7 @@ Use the `useUser` hook in any Client Component:
 
 ```tsx
 "use client";
-import { useUser } from "@mayrlabs/auth-nextjs";
+import { useUser } from "@mayrlabs/auth-nextjs/provider";
 
 export function UserProfile() {
   const { user } = useUser();
