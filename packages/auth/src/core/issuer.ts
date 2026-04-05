@@ -41,7 +41,7 @@ export class IssuerAuthSetup {
   ): Promise<string> {
     const key = await this.getKey();
 
-    return new SignJWT(payload as unknown as Record<string, unknown>)
+    return new SignJWT(payload)
       .setProtectedHeader({ alg: "PS256" })
       .setIssuer(this.issuer)
       .setAudience(options.audience)
