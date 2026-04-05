@@ -1,5 +1,17 @@
 # @mayrlabs/auth-nextjs
 
+## 0.3.0
+
+### Major Changes
+
+- **SDK Restructuring**: Refactored the package into dedicated `client` and `issuer` modules for better separation of concerns.
+- **Breaking Change: Renamed `createNextAuth`**: The primary client setup utility is now `createNextClientAuth`.
+- **New Issuer Support**: Introduced `createNextIssuerAuth` for Next.js applications acting as identity providers or needing standalone token verification/signing.
+- **Modular Exports**:
+  - Client utilities (Provider, hooks) moved to `@mayrlabs/auth-nextjs/client`.
+  - Issuer utilities moved to `@mayrlabs/auth-nextjs/issuer`.
+- **Dependency Update**: Bumped `@mayrlabs/auth` dependency to `^0.3.0`.
+
 ## 0.2.0
 
 ### Major Changes

@@ -1,5 +1,16 @@
 # @mayrlabs/auth
 
+## 0.3.0
+
+### Major Changes
+
+- **Shared Verification Logic**: Introduced `BaseAuthSetup` as a common parent for `ClientAuthSetup` and `IssuerAuthSetup`, centralizing token verification logic.
+- **Improved Issuer Capabilities**: `IssuerAuthSetup` now supports `verifyAuthToken` and `verifyErrorToken` methods by inheriting from `BaseAuthSetup`.
+- **Refactored Key Management**:
+  - Renamed internal key fields to `_publicKey` and `_privateKey` for clarity.
+  - Standardized key retrieval with `getPublicKey()` (on base) and `getPrivateKey()` (on issuer).
+- **Type Safety**: Updated `IssuerConfig` and introduced `IssuerConfigInput` to support public key verification within the issuer context.
+
 ## 0.2.0
 
 ### Major Changes

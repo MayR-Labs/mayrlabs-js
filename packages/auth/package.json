@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A strictly typed, universal JWT and M2M authentication core library powering the MayR Labs ecosystem.",
   "keywords": [
     "auth",
@@ -8,8 +8,7 @@
     "sso",
     "mayrlabs",
     "jwt",
-    "encryption",
-    "m2m"
+    "encryption"
   ],
   "homepage": "https://github.com/MayR-Labs/mayrlabs-js/tree/main/packages/auth#readme",
   "bugs": {

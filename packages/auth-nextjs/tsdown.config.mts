@@ -21,7 +21,9 @@ const FOOTER = {
 export default defineConfig({
   entry: {
     index: "src/index.tsx",
-    client: "src/client.tsx",
+    client: "src/client/index.tsx",
+    issuer: "src/issuer/index.ts",
+    provider: "src/client/provider.tsx",
   },
   format: ["cjs", "esm"],
   clean: true,
