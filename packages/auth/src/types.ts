@@ -1,33 +1,28 @@
-export interface MayRLabsAuthUserPayload {
-  aud: string;
-  email: string;
-  exp: number;
-  firstName?: string;
-  iat: number;
-  iss: "auth.mayrlabs.com";
-  lastName?: string;
-  roles: string[];
+import type { JWTPayload } from "jose";
+
+export interface MayRLabsAuthUserPayload extends JWTPayload {
   userId: string;
+  email: string;
+  roles: string[];
+  firstName?: string;
+  lastName?: string;
+  iss: "auth.mayrlabs.com";
 }
 
-export interface MayRLabsAuthMachinePayload {
-  aud: "mayrlabs-internal";
-  exp: number;
-  iat: number;
-  iss: "auth.mayrlabs.com";
+export interface MayRLabsAuthMachinePayload extends JWTPayload {
   sub: string;
   type: "machine";
+  aud: "mayrlabs-internal";
+  iss: "auth.mayrlabs.com";
 }
 
-export interface MayRLabsAuthErrorPayload {
+export interface MayRLabsAuthErrorPayload extends JWTPayload {
   code: string;
-  iat: number;
-  iss: "auth.mayrlabs.com";
   message: string;
+  iss: "auth.mayrlabs.com";
 }
 
 export interface IssuerConfig {
-  issuer?: string;
   privateKey: string;
 }
 
@@ -36,6 +31,7 @@ export interface ClientConfig {
   clientId: string;
   clientSecret: string;
   publicKey: string;
+  audience: string;
   redirects: { error: string; success: string };
   session: { key: string };
 }

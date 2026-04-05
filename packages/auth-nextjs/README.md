@@ -70,11 +70,11 @@ export const GET = handleCallback;
 ### 🛡️ Proxy Protection (Middleware)
 
 ```typescript
-// middleware.ts (Next.js Middleware)
+// proxy.ts (Next.js proxy)
 import { authProxy } from "@/lib/auth";
 import { type NextRequest, NextResponse } from "next/server";
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   // Protect specific routes
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
     return authProxy(request);

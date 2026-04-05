@@ -6,6 +6,7 @@ import type {
   MayRLabsAuthErrorPayload,
   MayRLabsAuthUserPayload,
 } from "../types";
+import { ISSUER } from "./constants";
 
 const DEFAULTS = {
   redirects: {
@@ -62,6 +63,8 @@ export class ClientAuthSetup {
 
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["PS256"],
+        issuer: ISSUER,
+        audience: this.config.audience,
       });
 
       return payload as unknown as MayRLabsAuthUserPayload;
@@ -78,6 +81,8 @@ export class ClientAuthSetup {
 
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["PS256"],
+        issuer: ISSUER,
+        audience: this.config.audience,
       });
 
       return payload as unknown as MayRLabsAuthErrorPayload;
