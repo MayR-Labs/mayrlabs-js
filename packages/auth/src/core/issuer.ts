@@ -71,10 +71,10 @@ export class IssuerAuthSetup {
       .sign(key);
   }
 
-  async signErrorToken(payload: {
-    message: string;
-    code: string;
-  }): Promise<string> {
+  async signErrorToken(
+    payload: { message: string; code: string },
+    options: { audience: string; expiresIn: string | number }
+  ): Promise<string> {
     const key = await this.getKey();
 
     const errorPayload: MayRLabsAuthErrorPayload = {
@@ -85,7 +85,9 @@ export class IssuerAuthSetup {
     return new SignJWT(errorPayload as unknown as Record<string, unknown>)
       .setProtectedHeader({ alg: "PS256" })
       .setIssuer(ISSUER)
+      .setAudience(options.audience)
       .setIssuedAt()
+      .setExpirationTime(options.expiresIn)
       .sign(key);
   }
 }

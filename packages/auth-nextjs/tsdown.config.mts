@@ -32,6 +32,7 @@ export default defineConfig({
   deps: {
     neverBundle: [/^next($|(\/.*))/, "react", "react-dom", "@mayrlabs/auth"],
   },
+  logLevel: "warn",
   banner: BANNER,
   footer: FOOTER,
 });
