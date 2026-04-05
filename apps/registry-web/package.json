@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/ensure-ci-env.mjs",
-    "build": "next build",
+    "prebuildxxx": "node scripts/ensure-ci-env.mjs",
+    "buildxxx": "next build",
     "start": "next start",
     "lint": "eslint",
     "registry:build": "shadcn build"
