@@ -1,4 +1,4 @@
-import { Terminal, Code2, Copy } from "lucide-react";
+import { Code2, Copy, Terminal } from "lucide-react";
 
 export function Features() {
   return (
@@ -22,9 +22,9 @@ export function Features() {
           description:
             "Components available for React and Vue. Use what works for you and your team.",
         },
-      ].map((feature, index) => (
+      ].map((feature) => (
         <div
-          key={index}
+          key={feature.title}
           className="group relative p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 transition-all duration-300 hover:bg-zinc-900/60 hover:border-zinc-700 hover:shadow-2xl hover:shadow-blue-500/10"
         >
           <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />

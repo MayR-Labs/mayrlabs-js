@@ -1,13 +1,13 @@
-import { spinner } from "@/utils/spinner";
-import { Config } from "@/core/config";
-import { installHusky } from "@/features/husky";
-import { installFormatter } from "@/features/formatter";
-import { installLinter } from "@/features/linter";
-import { installLintStaged } from "@/features/lint-staged";
-import { installEnv } from "@/features/env";
-import { installTest } from "@/features/test";
+import type { Config } from "@/core/config";
 import { installEditorConfig } from "@/features/editor-config";
+import { installEnv } from "@/features/env";
+import { installFormatter } from "@/features/formatter";
+import { installHusky } from "@/features/husky";
 import { installLicense } from "@/features/license";
+import { installLintStaged } from "@/features/lint-staged";
+import { installLinter } from "@/features/linter";
+import { installTest } from "@/features/test";
+import { spinner } from "@/utils/spinner";
 
 export async function execution(config: Config) {
   const s = spinner();

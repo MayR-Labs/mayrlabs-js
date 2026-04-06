@@ -1,16 +1,16 @@
 import {
-  intro,
-  outro,
-  text,
+  cancel,
   confirm,
-  select,
+  intro,
+  isCancel,
+  log,
   multiselect,
   note,
-  isCancel,
-  cancel,
-  log,
+  outro,
+  select,
+  text,
 } from "@clack/prompts";
-import { PromptOption, PromptProvider } from "./types";
+import type { PromptOption, PromptProvider } from "./types";
 
 type Primitive = Readonly<string | boolean | number>;
 
@@ -32,7 +32,7 @@ export class ClackProvider implements PromptProvider {
     placeholder?: string;
     initialValue?: string;
     defaultValue?: string;
-    validate?: (value: string) => string | void;
+    validate?: (value: string) => string | undefined;
   }): Promise<string | symbol> {
     return text(opts) as Promise<string | symbol>;
   }

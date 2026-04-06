@@ -39,7 +39,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 `;
 
 export const getTsdownConfig = (
-  entries: string[]
+  entries: string[],
 ) => `import { defineConfig } from "tsdown";
 
 const YEAR_FOUNDED = 2025;

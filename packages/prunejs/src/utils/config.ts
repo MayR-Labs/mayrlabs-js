@@ -1,7 +1,7 @@
-import fs from "fs-extra";
-import path from "path";
-import inquirer from "inquirer";
+import path from "node:path";
 import chalk from "chalk";
+import fs from "fs-extra";
+import inquirer from "inquirer";
 
 export const CONFIG_FILE = ".prunejs.config.js";
 
@@ -38,7 +38,7 @@ export async function loadConfig(): Promise<PruneConfig> {
     } catch (error) {
       console.error(
         "Error loading configuration file:",
-        error instanceof Error ? error.message : String(error)
+        error instanceof Error ? error.message : String(error),
       );
     }
   }
@@ -84,16 +84,16 @@ export function getDefaultConfig(): PruneConfig {
 
 export async function validateConfig(config: PruneConfig) {
   const riskyInclusions = (config.includeDirs || []).filter((dir) =>
-    DEFAULT_EXCLUDE_DIRS.some((excluded) => dir.includes(excluded))
+    DEFAULT_EXCLUDE_DIRS.some((excluded) => dir.includes(excluded)),
   );
 
   if (riskyInclusions.length > 0) {
     console.log(
       chalk.yellow(
         `\n⚠️  Warning: You have included directories that are typically excluded: ${riskyInclusions.join(
-          ", "
-        )}`
-      )
+          ", ",
+        )}`,
+      ),
     );
 
     const { confirm } = await inquirer.prompt([

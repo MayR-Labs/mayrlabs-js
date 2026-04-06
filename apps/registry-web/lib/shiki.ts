@@ -1,6 +1,6 @@
 import { createHighlighter } from "shiki";
 
-let highlighter: any;
+let highlighter: Awaited<ReturnType<typeof createHighlighter>>;
 
 export async function highlight(code: string, lang: string = "tsx") {
   if (!highlighter) {

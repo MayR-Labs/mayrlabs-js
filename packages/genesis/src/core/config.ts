@@ -1,5 +1,5 @@
-import { ProjectConfig, Tool } from "./types";
 import pc from "picocolors";
+import type { ProjectConfig, Tool } from "./types";
 
 export class Config {
   public data: ProjectConfig;

@@ -1,11 +1,11 @@
-import * as p from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
+import * as p from "@clack/prompts";
 
 export function deletePackages(
   rootDir: string,
   packagesDir: string,
-  packages: string[]
+  packages: string[],
 ) {
   const s = p.spinner();
   s.start("Deleting packages...");

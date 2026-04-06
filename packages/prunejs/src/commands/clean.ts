@@ -1,8 +1,8 @@
-import fs from "fs-extra";
-import path from "path";
-import ora from "ora";
-import inquirer from "inquirer";
+import path from "node:path";
 import chalk from "chalk";
+import fs from "fs-extra";
+import inquirer from "inquirer";
+import ora from "ora";
 import { PRUNE_DIR, REPORT_DIR } from "@/utils/constants";
 
 export default async function cleanCommand(subcommand?: string) {
@@ -10,7 +10,7 @@ export default async function cleanCommand(subcommand?: string) {
 
   if (!fs.existsSync(pruneDir)) {
     console.log(
-      chalk.yellow("Reports directory does not exist. Nothing to clean.")
+      chalk.yellow("Reports directory does not exist. Nothing to clean."),
     );
     return;
   }
@@ -95,7 +95,7 @@ function cleanReport(action: string, pruneDir: string) {
 
   if (deletedCount > 0) {
     spinner.succeed(
-      chalk.green(`Successfully deleted ${deletedCount} ${action} reports.`)
+      chalk.green(`Successfully deleted ${deletedCount} ${action} reports.`),
     );
   } else {
     spinner.info(chalk.yellow(`No ${action} reports found.`));

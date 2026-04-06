@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { Generator } from "../generator";
 
 interface IconProps {
@@ -14,7 +14,7 @@ interface SpecificIconProps extends Omit<IconProps, "icon"> {}
 // Shared wrapper style
 const getWrapperStyle = (
   size: number | string,
-  style?: CSSProperties
+  style?: CSSProperties,
 ): CSSProperties => ({
   display: "inline-block",
   width: size,
@@ -42,6 +42,7 @@ function BaseIconWrapper({
       style={getWrapperStyle(size ?? 24, style)}
       {...props}
     >
+      {/* biome-ignore lint/performance/noImgElement: icons are rendered via external URLs */}
       <img src={src} alt={alt} style={imageStyle} />
     </div>
   );

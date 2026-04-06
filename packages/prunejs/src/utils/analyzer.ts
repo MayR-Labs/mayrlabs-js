@@ -1,16 +1,16 @@
+import path from "node:path";
 import fs from "fs-extra";
-import path from "path";
 import ignore from "ignore";
-import { PruneConfig } from "./config";
-import type { ExportInfo, NonExportedInfo, ReportData } from "./types";
-import { getAllFiles, findBlockEnd } from "./file-system";
+import type { PruneConfig } from "./config";
+import { findBlockEnd, getAllFiles } from "./file-system";
 import {
   extractExports,
-  extractNonExportedDeclarations,
   extractImports,
+  extractNonExportedDeclarations,
 } from "./parser";
+import type { ExportInfo, NonExportedInfo, ReportData } from "./types";
 
-export { ExportInfo, NonExportedInfo, ReportData };
+export type { ExportInfo, NonExportedInfo, ReportData };
 
 export class UnusedCodeFinder {
   projectRoot: string;
@@ -48,7 +48,7 @@ export class UnusedCodeFinder {
       } catch (error) {
         console.warn(
           "Failed to load .gitignore:",
-          error instanceof Error ? error.message : String(error)
+          error instanceof Error ? error.message : String(error),
         );
       }
     }
@@ -66,8 +66,8 @@ export class UnusedCodeFinder {
               this.projectRoot,
               this.ig,
               this.excludeDirs,
-              this.includeExtensions
-            )
+              this.includeExtensions,
+            ),
           );
         } else if (fs.statSync(fullPath).isFile()) {
           const ext = path.extname(fullPath);
@@ -86,12 +86,12 @@ export class UnusedCodeFinder {
         if (!this.exports.has(info.name)) {
           this.exports.set(info.name, []);
         }
-        this.exports.get(info.name)!.push(info);
+        this.exports.get(info.name)?.push(info);
       }
 
       const fileDeclarations = extractNonExportedDeclarations(
         file,
-        this.projectRoot
+        this.projectRoot,
       );
       for (const info of fileDeclarations) {
         const key = `${info.file}:${info.name}`;
@@ -105,7 +105,7 @@ export class UnusedCodeFinder {
         if (!this.imports.has(name)) {
           this.imports.set(name, new Set());
         }
-        this.imports.get(name)!.add(file);
+        this.imports.get(name)?.add(file);
       }
     }
 
@@ -160,7 +160,7 @@ export class UnusedCodeFinder {
       const otherLines = lines.filter((_, idx) => idx + 1 !== declaration.line);
       const otherContent = otherLines.join("\n");
       const usagePattern = new RegExp(
-        `\\b${this.escapeRegex(declaration.name)}\\b`
+        `\\b${this.escapeRegex(declaration.name)}\\b`,
       );
 
       if (usagePattern.test(otherContent)) {

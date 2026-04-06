@@ -42,7 +42,7 @@ const BaseIconWrapper = defineComponent({
           src: props.src,
           alt: props.alt,
           style: imgStyle,
-        })
+        }),
       );
   },
 });
@@ -136,14 +136,17 @@ const FallbackIcon = defineComponent({
                 typeof sizeVal === "number" ? `${sizeVal * 0.5}px` : "12px",
             },
           },
-          "?"
-        )
+          "?",
+        ),
       );
     };
   },
 });
 
-export default function CustomIcon(props: any, { attrs }: any) {
+export default function CustomIcon(
+  props: Record<string, unknown>,
+  { attrs }: { attrs: Record<string, unknown> },
+) {
   const icon = props.icon;
   if (!icon) return h(FallbackIcon, { ...props, ...attrs });
 

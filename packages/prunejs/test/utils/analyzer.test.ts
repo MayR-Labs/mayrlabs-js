@@ -1,7 +1,7 @@
-import { describe, it, expect, afterEach } from "vitest";
-import { UnusedCodeFinder } from "@/utils/analyzer";
-import { PruneConfig } from "@/utils/config";
 import mockfs from "mock-fs";
+import { afterEach, describe, expect, it } from "vitest";
+import { UnusedCodeFinder } from "@/utils/analyzer";
+import type { PruneConfig } from "@/utils/config";
 
 describe("UnusedCodeFinder", () => {
   const projectRoot = "/test-project";

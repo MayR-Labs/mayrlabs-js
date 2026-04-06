@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { loadConfig, validateConfig } from "@/utils/config";
+/* biome-ignore-all lint/suspicious/noExplicitAny: tests use any for mocking process.exit */
 import fs from "fs-extra";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { loadConfig, validateConfig } from "@/utils/config";
 
 vi.mock("fs-extra");
 vi.mock("inquirer", () => ({
@@ -49,7 +50,7 @@ describe("config", () => {
     it("should warn for risky inclusions", async () => {
       const consoleSpy = vi.spyOn(console, "log");
       const inquirer = await import("inquirer");
-      // @ts-ignore
+      // @ts-expect-error
       inquirer.default.prompt.mockResolvedValue({ confirm: true });
 
       await validateConfig({
@@ -57,7 +58,7 @@ describe("config", () => {
       });
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Warning: You have included directories")
+        expect.stringContaining("Warning: You have included directories"),
       );
     });
 
@@ -66,7 +67,7 @@ describe("config", () => {
         .spyOn(process, "exit")
         .mockImplementation((() => {}) as any);
       const inquirer = await import("inquirer");
-      // @ts-ignore
+      // @ts-expect-error
       inquirer.default.prompt.mockResolvedValue({ confirm: false });
 
       await validateConfig({

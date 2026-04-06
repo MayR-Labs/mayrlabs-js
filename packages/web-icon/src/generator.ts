@@ -1,6 +1,7 @@
 /**
  * Helper class for generating icon URLs and slugs.
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: Helper class for icon URL generation
 export class Generator {
   /**
    * Generates the URL and slug for a Simple Icon.
@@ -52,9 +53,10 @@ export class Generator {
     switch (type) {
       case "simple":
         return Generator.simpleIcon.url(value);
-      case "dev":
+      case "dev": {
         const [iconName, iconType] = value.split(":");
         return Generator.devIcon.url(iconName, iconType);
+      }
       case "local":
         return value.startsWith("/") ? value : `/${value}`;
       case "remote":

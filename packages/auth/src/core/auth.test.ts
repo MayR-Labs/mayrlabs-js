@@ -29,7 +29,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signUserToken(
         { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
-        { audience: "app1", expiresIn: "1h" }
+        { audience: "app1", expiresIn: "1h" },
       );
       expect(token).toBeDefined();
       expect(typeof token).toBe("string");
@@ -43,7 +43,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signMachineToken(
         { sub: "service1" },
-        { expiresIn: "1h" }
+        { expiresIn: "1h" },
       );
       expect(token).toBeDefined();
     });
@@ -56,7 +56,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signErrorToken(
         { message: "Error", code: "ERR_1" },
-        { audience: "app1", expiresIn: "1h" }
+        { audience: "app1", expiresIn: "1h" },
       );
 
       expect(token).toBeDefined();
@@ -71,7 +71,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signUserToken(
         { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
-        { audience: "app1", expiresIn: "1h" }
+        { audience: "app1", expiresIn: "1h" },
       );
 
       const payload = await issuer.verifyAuthToken(token, "app1");
@@ -96,7 +96,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signUserToken(
         { userId: "u123", email: "test@mayrlabs.com", roles: ["user"] },
-        { audience: "client1", expiresIn: "1h" }
+        { audience: "client1", expiresIn: "1h" },
       );
 
       const client = new ClientAuthSetup({
@@ -130,7 +130,7 @@ describe("Identity SDK", () => {
 
       const token = await issuer.signErrorToken(
         { message: "Forbidden", code: "FORBIDDEN" },
-        { audience: "client1", expiresIn: "1h" }
+        { audience: "client1", expiresIn: "1h" },
       );
 
       const client = new ClientAuthSetup({
@@ -182,7 +182,7 @@ describe("Identity SDK", () => {
               clientId: "client1",
               clientSecret: "secret1",
             }),
-          })
+          }),
         );
       });
 
@@ -203,7 +203,7 @@ describe("Identity SDK", () => {
         vi.stubGlobal("fetch", mockFetch);
 
         await expect(client.authenticateMachine()).rejects.toThrow(
-          "Invalid secret"
+          "Invalid secret",
         );
       });
     });

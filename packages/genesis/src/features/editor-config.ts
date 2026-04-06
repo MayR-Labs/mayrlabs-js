@@ -1,9 +1,12 @@
-import { prompts } from "@/utils/prompts";
 import fs from "fs-extra";
 import pc from "picocolors";
-import { Config } from "@/core/config";
-import { EDITOR_CONFIG_OPTIONS, EditorConfigValue } from "@/constants/options";
+import {
+  EDITOR_CONFIG_OPTIONS,
+  type EditorConfigValue,
+} from "@/constants/options";
+import type { Config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
+import { prompts } from "@/utils/prompts";
 
 export async function promptEditorConfig(config: Config) {
   prompts.log.message(pc.bgWhite(pc.black(" EditorConfig Configuration ")));
@@ -15,7 +18,7 @@ export async function promptEditorConfig(config: Config) {
       message: "Select EditorConfig preset:",
       options: EDITOR_CONFIG_OPTIONS,
       initialValue: currentPreset,
-    })
+    }),
   )) as EditorConfigValue;
 
   config.get("editorConfig").options = { preset };

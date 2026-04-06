@@ -41,7 +41,7 @@ describe("BaseAuthSetup", () => {
         expect(error).toBeInstanceOf(MayRLabsAuthError);
         expect((error as MayRLabsAuthError).code).toBe("INVALID_PUBLIC_KEY");
         expect((error as MayRLabsAuthError).message).toContain(
-          "Failed to import Public JWK"
+          "Failed to import Public JWK",
         );
       }
     });
@@ -49,7 +49,7 @@ describe("BaseAuthSetup", () => {
     it("should fail with invalid key format", async () => {
       const setup = new MockAuthSetup({ publicKey: publicJWK, issuer: ISSUER });
       await expect(
-        setup.testGetKey(JSON.stringify({ kty: "oct", k: "..." }), "Public")
+        setup.testGetKey(JSON.stringify({ kty: "oct", k: "..." }), "Public"),
       ).rejects.toThrow(MayRLabsAuthError);
     });
   });
@@ -139,7 +139,7 @@ describe("BaseAuthSetup", () => {
       const parts = token.split(".");
       // Tamper with payload
       const tamperedPayload = Buffer.from(
-        JSON.stringify({ userId: "456", iss: ISSUER, aud: AUDIENCE })
+        JSON.stringify({ userId: "456", iss: ISSUER, aud: AUDIENCE }),
       ).toString("base64url");
       const tamperedToken = `${parts[0]}.${tamperedPayload}.${parts[2]}`;
 

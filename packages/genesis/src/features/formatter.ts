@@ -1,10 +1,10 @@
-import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
-import { Config } from "@/core/config";
-import { FORMATTER_OPTIONS, FormatterValue } from "@/constants/options";
+import { FORMATTER_OPTIONS, type FormatterValue } from "@/constants/options";
+import type { Config } from "@/core/config";
 import { withCancelHandling } from "@/utils/handle-cancel";
-import { installPrettier } from "./formatter/prettier";
+import { prompts } from "@/utils/prompts";
 import { installOxfmt } from "./formatter/oxfmt";
+import { installPrettier } from "./formatter/prettier";
 
 export async function promptFormatter(config: Config) {
   const formatterConfig = config.get("formatter");
@@ -16,7 +16,7 @@ export async function promptFormatter(config: Config) {
       message: "Select a formatter:",
       options: FORMATTER_OPTIONS,
       initialValue: formatterConfig.options.choice,
-    })
+    }),
   )) as FormatterValue;
 
   formatterConfig.options = { choice: formatter };

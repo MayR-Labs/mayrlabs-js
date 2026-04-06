@@ -1,6 +1,6 @@
-import { confirm, question, select, multiselect } from "@topcli/prompts";
+import { confirm, multiselect, question, select } from "@topcli/prompts";
 import pc from "picocolors";
-import { PromptOption, PromptProvider } from "./types";
+import type { PromptOption, PromptProvider } from "./types";
 
 const CANCEL_SYMBOL = Symbol("cancel");
 
@@ -18,7 +18,7 @@ export class TopCliProvider implements PromptProvider {
     placeholder?: string;
     initialValue?: string;
     defaultValue?: string;
-    validate?: (value: string) => string | void;
+    validate?: (value: string) => string | undefined;
   }): Promise<string | symbol> {
     try {
       return await question(opts.message, {
@@ -131,16 +131,16 @@ export class TopCliProvider implements PromptProvider {
   }
 
   cancel(message?: string): void {
-    if (message) console.log(pc.red(pc.bold("×")) + " " + message);
-    else console.log(pc.red(pc.bold("×")) + " Operation cancelled.");
+    if (message) console.log(`${pc.red(pc.bold("×"))} ${message}`);
+    else console.log(`${pc.red(pc.bold("×"))} Operation cancelled.`);
   }
 
   log = {
     message: (msg: string) => console.log(msg),
-    info: (msg: string) => console.log(pc.blue(pc.bold("INFO")) + " " + msg),
+    info: (msg: string) => console.log(`${pc.blue(pc.bold("INFO"))} ${msg}`),
     success: (msg: string) =>
-      console.log(pc.green(pc.bold("SUCCESS")) + " " + msg),
-    warn: (msg: string) => console.log(pc.yellow(pc.bold("WARN")) + " " + msg),
-    error: (msg: string) => console.log(pc.red(pc.bold("ERROR")) + " " + msg),
+      console.log(`${pc.green(pc.bold("SUCCESS"))} ${msg}`),
+    warn: (msg: string) => console.log(`${pc.yellow(pc.bold("WARN"))} ${msg}`),
+    error: (msg: string) => console.log(`${pc.red(pc.bold("ERROR"))} ${msg}`),
   };
 }

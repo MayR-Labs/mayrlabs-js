@@ -78,7 +78,7 @@ describe("createNextClientAuth", () => {
     it("should throw if environment variables are missing", () => {
       delete process.env.MAYRLABS_CLIENT_ID;
       expect(() => createNextClientAuth()).toThrow(
-        /MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required/
+        /MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required/,
       );
     });
 
@@ -98,7 +98,7 @@ describe("createNextClientAuth", () => {
       });
 
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?error=mocked-token"
+        "http://localhost/api/auth/callback?error=mocked-token",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -115,7 +115,7 @@ describe("createNextClientAuth", () => {
       } as any);
 
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?token=valid-token"
+        "http://localhost/api/auth/callback?token=valid-token",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -127,7 +127,7 @@ describe("createNextClientAuth", () => {
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue(null);
 
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?token=bad-token"
+        "http://localhost/api/auth/callback?token=bad-token",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -146,7 +146,7 @@ describe("createNextClientAuth", () => {
       const verifyAuthSpy = vi.spyOn(auth.setup, "verifyAuthToken");
 
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?token=some-token&error=error-token"
+        "http://localhost/api/auth/callback?token=some-token&error=error-token",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -241,7 +241,7 @@ describe("createNextClientAuth", () => {
     it("should use custom redirect error path", async () => {
       const auth = createNextClientAuth({ redirects: { error: "/my-error" } });
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?error=err-token"
+        "http://localhost/api/auth/callback?error=err-token",
       ) as any;
       vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
         code: "ERR",
@@ -274,7 +274,7 @@ describe("createNextIssuerAuth", () => {
   it("should throw if environment variables are missing", () => {
     delete process.env.MAYRLABS_AUTH_PRIVATE_JWK;
     expect(() => createNextIssuerAuth()).toThrow(
-      /MAYRLABS_AUTH_PRIVATE_JWK, MAYRLABS_AUTH_PUBLIC_JWK, and MAYRLABS_AUTH_ISSUER are required/
+      /MAYRLABS_AUTH_PRIVATE_JWK, MAYRLABS_AUTH_PUBLIC_JWK, and MAYRLABS_AUTH_ISSUER are required/,
     );
   });
 

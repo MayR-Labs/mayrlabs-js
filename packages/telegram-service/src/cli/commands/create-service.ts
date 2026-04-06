@@ -1,6 +1,6 @@
-import { text, isCancel, note } from "@clack/prompts";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { isCancel, note, text } from "@clack/prompts";
 
 export async function createServiceClass() {
   const className = await text({

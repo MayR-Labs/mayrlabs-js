@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { debug, Debugger } from "./index.js";
+/* biome-ignore-all lint/suspicious/noExplicitAny: console spy object requires any for easy property access */
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Debugger, debug } from "./index.js";
 
 describe("Debugger", () => {
   let consoleSpy: any;
@@ -28,7 +29,7 @@ describe("Debugger", () => {
     new Debugger("MyNamespace").log("test message");
     expect(consoleSpy.log).toHaveBeenCalledWith(
       expect.stringContaining("[MyNamespace]"),
-      "test message"
+      "test message",
     );
   });
 
@@ -58,7 +59,7 @@ describe("Debugger", () => {
     expect(result).toBe("success");
     expect(consoleSpy.log).toHaveBeenCalledWith(
       expect.stringContaining("LOG"),
-      expect.stringContaining("Test Operation took")
+      expect.stringContaining("Test Operation took"),
     );
   });
 
@@ -66,13 +67,13 @@ describe("Debugger", () => {
     await expect(
       debug().timeBox("Failed Operation", async () => {
         throw new Error("fail");
-      })
+      }),
     ).rejects.toThrow("fail");
 
     expect(consoleSpy.error).toHaveBeenCalledWith(
       expect.stringContaining("ERROR"),
       expect.stringContaining("Failed Operation failed after"),
-      expect.any(Error)
+      expect.any(Error),
     );
   });
 });

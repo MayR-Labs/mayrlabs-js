@@ -1,5 +1,5 @@
+import path from "node:path";
 import fs from "fs-extra";
-import path from "path";
 
 const LOG_DIR = ".mayrlabs/genesis";
 const ERRORS_DIR = path.join(LOG_DIR, "errors");

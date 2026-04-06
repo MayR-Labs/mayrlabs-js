@@ -1,22 +1,22 @@
-import { prompts } from "@/utils/prompts";
 import pc from "picocolors";
-import { config } from "@/core/config";
-import { Tool } from "@/core/types";
 import { TOOL_OPTIONS } from "@/constants/options";
-import { promptHusky, installHusky } from "@/features/husky";
-import { promptFormatter, installFormatter } from "@/features/formatter";
-import { promptLinter, installLinter } from "@/features/linter";
-import { promptLintStaged, installLintStaged } from "@/features/lint-staged";
-import { promptEnv, installEnv } from "@/features/env";
-import { promptTest, installTest } from "@/features/test";
+import { config } from "@/core/config";
+import type { Tool } from "@/core/types";
 import {
-  promptEditorConfig,
   installEditorConfig,
+  promptEditorConfig,
 } from "@/features/editor-config";
-import { promptLicense, installLicense } from "@/features/license";
-import { withCancelHandling } from "@/utils/handle-cancel";
-import { introScreen } from "@/utils/display";
+import { installEnv, promptEnv } from "@/features/env";
+import { installFormatter, promptFormatter } from "@/features/formatter";
+import { installHusky, promptHusky } from "@/features/husky";
+import { installLicense, promptLicense } from "@/features/license";
+import { installLintStaged, promptLintStaged } from "@/features/lint-staged";
+import { installLinter, promptLinter } from "@/features/linter";
+import { installTest, promptTest } from "@/features/test";
 import gitCheck from "@/steps/git-check";
+import { introScreen } from "@/utils/display";
+import { withCancelHandling } from "@/utils/handle-cancel";
+import { prompts } from "@/utils/prompts";
 
 export async function configure(toolName?: string) {
   introScreen();
@@ -34,7 +34,7 @@ export async function configure(toolName?: string) {
       selectedTool = tool.value as Tool;
     } else {
       console.log(
-        pc.yellow(`Tool '${toolName}' not found or not configurable.`)
+        pc.yellow(`Tool '${toolName}' not found or not configurable.`),
       );
     }
   }
@@ -44,7 +44,7 @@ export async function configure(toolName?: string) {
       prompts.select({
         message: "Select a tool to configure:",
         options: TOOL_OPTIONS,
-      })
+      }),
     )) as string as Tool;
 
     selectedTool = selection;

@@ -1,21 +1,21 @@
-import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import chalk from "chalk";
+import fs from "fs-extra";
 import ora from "ora";
-import { loadConfig, validateConfig } from "@/utils/config";
-import { findBlockEndFromLines } from "@/utils/file-system";
 import {
+  type ExportInfo,
+  type NonExportedInfo,
+  type ReportData,
   UnusedCodeFinder,
-  ReportData,
-  ExportInfo,
-  NonExportedInfo,
 } from "@/utils/analyzer";
-import { PRUNE_DIR, REPORT_DIR, GITIGNORE_CONTENT } from "@/utils/constants";
+import { loadConfig, validateConfig } from "@/utils/config";
+import { GITIGNORE_CONTENT, PRUNE_DIR, REPORT_DIR } from "@/utils/constants";
+import { findBlockEndFromLines } from "@/utils/file-system";
 
 type UnusedItem = (ExportInfo | NonExportedInfo) & { action?: string };
 
 export default async function fixCommand() {
-  let spinner;
+  let spinner = null;
   try {
     const config = await loadConfig();
     await validateConfig(config);

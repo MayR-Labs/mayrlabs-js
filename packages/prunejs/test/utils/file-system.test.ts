@@ -1,12 +1,12 @@
-import { describe, it, expect, afterEach } from "vitest";
+import path from "node:path";
+import ignore from "ignore";
+import mockfs from "mock-fs";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   findBlockEnd,
   findBlockEndFromLines,
   getAllFiles,
 } from "@/utils/file-system";
-import mockfs from "mock-fs";
-import path from "path";
-import ignore from "ignore";
 
 describe("file-system", () => {
   afterEach(() => {
@@ -95,7 +95,7 @@ describe("file-system", () => {
         "/test-project",
         ig,
         ["ignored"],
-        [".ts", ".tsx", ".js"]
+        [".ts", ".tsx", ".js"],
       );
 
       expect(files).toHaveLength(3);
@@ -104,7 +104,7 @@ describe("file-system", () => {
           path.normalize("/test-project/file1.ts"),
           path.normalize("/test-project/src/file2.tsx"),
           path.normalize("/test-project/src/utils/file3.js"),
-        ])
+        ]),
       );
     });
 
@@ -122,7 +122,7 @@ describe("file-system", () => {
         "/test-project",
         ig,
         [],
-        [".ts"]
+        [".ts"],
       );
 
       expect(files).toHaveLength(1);

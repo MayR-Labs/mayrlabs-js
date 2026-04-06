@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { RegistryItem } from "@/lib/registry";
+import Link from "next/link";
+import type { RegistryItem } from "@/lib/registry";
 
 interface BlockCardProps {
   block: RegistryItem;

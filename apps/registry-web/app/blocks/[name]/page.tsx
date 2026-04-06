@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
+import { ChevronLeft, FileCode, Package, Terminal } from "lucide-react";
 import Link from "next/link";
-import { ChevronLeft, Terminal, FileCode, Package } from "lucide-react";
-import { getAllBlocks, getBlock } from "@/lib/registry";
+import { notFound } from "next/navigation";
 import { CodeBlock } from "@/components/code-block";
 import { clientEnv } from "@/lib/env/client";
+import { getAllBlocks, getBlock } from "@/lib/registry";
 
 export async function generateStaticParams() {
   const items = await getAllBlocks();

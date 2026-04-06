@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { Check, Copy } from "lucide-react";
+import * as React from "react";
 import { highlight } from "@/lib/shiki";
 
 interface CodeBlockProps {
@@ -38,6 +38,7 @@ export function CodeBlock({
         <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3 bg-zinc-900/50 rounded-t-lg">
           <span className="text-sm font-medium text-zinc-400">{filename}</span>
           <button
+            type="button"
             onClick={onCopy}
             className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors"
           >
@@ -52,6 +53,7 @@ export function CodeBlock({
       )}
       {!filename && (
         <button
+          type="button"
           onClick={onCopy}
           className="absolute right-4 top-4 p-2 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-white"
         >
@@ -64,6 +66,7 @@ export function CodeBlock({
       )}
       <div
         className="overflow-x-auto p-4 text-sm font-mono leading-relaxed"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Shiki provides safe HTML for highlighting.
         dangerouslySetInnerHTML={{
           __html:
             highlightedCode || `<pre class="shiki"><code>${code}</code></pre>`,

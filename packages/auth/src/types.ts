@@ -38,10 +38,8 @@ export interface ClientConfig {
   session: { key: string };
 }
 
-export interface ClientConfigInput extends Omit<
-  ClientConfig,
-  "redirects" | "session" | "issuer"
-> {
+export interface ClientConfigInput
+  extends Omit<ClientConfig, "redirects" | "session" | "issuer"> {
   issuer?: string;
   redirects?: Partial<ClientConfig["redirects"]>;
   session?: Partial<ClientConfig["session"]>;

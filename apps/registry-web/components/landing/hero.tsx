@@ -4,10 +4,10 @@ import registry from "@/registry.json";
 
 export function Hero() {
   const componentCount = registry.items.filter(
-    (item) => item.type === "registry:component"
+    (item) => item.type === "registry:component",
   ).length;
   const blockCount = registry.items.filter(
-    (item) => item.type === "registry:block"
+    (item) => item.type === "registry:block",
   ).length;
 
   return (
