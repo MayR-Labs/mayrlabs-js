@@ -1,5 +1,9 @@
 # @mayrlabs/auth-nextjs
 
+## 0.3.2
+
+Resolved typing issues where the `setup` object was being inferred as `any`.
+
 ## 0.3.1
 
 Exported more types from the base `@mayrlabs/auth` package in an attempt to resolve any type on issuer and client setup.

@@ -1,5 +1,9 @@
 # @mayrlabs/auth
 
+## 0.3.2
+
+Exported `BaseAuthSetup` to resolve typing issues in consuming packages.
+
 ## 0.3.1
 
 Minor bump to ensure version sync
