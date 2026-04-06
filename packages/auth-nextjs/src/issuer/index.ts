@@ -25,7 +25,11 @@ export function createNextIssuerAuth(options: NextIssuerAuthOptions = {}) {
     );
   }
 
-  const setup = new IssuerAuthSetup({ privateKey, publicKey, issuer });
+  const setup: IssuerAuthSetup = new IssuerAuthSetup({
+    privateKey,
+    publicKey,
+    issuer,
+  });
 
   /**
    * Gets the current user from the session cookie.

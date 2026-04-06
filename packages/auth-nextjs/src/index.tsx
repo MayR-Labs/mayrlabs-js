@@ -1,4 +1,10 @@
 export {
+  ClientAuthSetup,
+  ClientConfig,
+  ClientConfigInput,
+  IssuerAuthSetup,
+  IssuerConfig,
+  IssuerConfigInput,
   MayRLabsAuthError,
   type MayRLabsAuthErrorPayload,
   type MayRLabsAuthMachinePayload,

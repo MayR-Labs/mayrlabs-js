@@ -28,7 +28,7 @@ export function createNextClientAuth(options: NextAuthOptions = {}) {
     );
   }
 
-  const setup = new ClientAuthSetup({
+  const setup: ClientAuthSetup = new ClientAuthSetup({
     publicKey,
     clientId,
     clientSecret,
