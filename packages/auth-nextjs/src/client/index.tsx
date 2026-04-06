@@ -8,14 +8,16 @@ import { redirect } from "next/navigation";
 import { type NextRequest, NextResponse } from "next/server";
 import type React from "react";
 import { redirectTo } from "../_utils";
-import type { NextAuthOptions } from "../types";
+import type { NextAuthOptions, NextClientAuth } from "../types";
 import { AuthClientProvider } from "./provider";
 
 /**
  * Creates Next.js specific client auth utilities.
  * Automatically handles environment variables and validation.
  */
-export function createNextClientAuth(options: NextAuthOptions = {}) {
+export function createNextClientAuth(
+  options: NextAuthOptions = {},
+): NextClientAuth {
   const publicKey = process.env.MAYRLABS_AUTH_PUBLIC_JWK;
   const clientId = process.env.MAYRLABS_CLIENT_ID;
   const clientSecret = process.env.MAYRLABS_CLIENT_SECRET;

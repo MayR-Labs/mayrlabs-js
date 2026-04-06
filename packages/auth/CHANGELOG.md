@@ -1,5 +1,9 @@
 # @mayrlabs/auth
 
+## 0.3.3
+
+Minor bump for version synchronization with nextjs package.
+
 ## 0.3.2
 
 Exported `BaseAuthSetup` to resolve typing issues in consuming packages.

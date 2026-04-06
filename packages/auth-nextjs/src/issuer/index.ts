@@ -6,13 +6,15 @@ import {
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { redirectTo } from "../_utils";
-import type { NextIssuerAuthOptions } from "../types";
+import type { NextIssuerAuth, NextIssuerAuthOptions } from "../types";
 
 /**
  * Creates Next.js specific issuer auth utilities.
  * Automatically handles environment variables and validation.
  */
-export function createNextIssuerAuth(options: NextIssuerAuthOptions = {}) {
+export function createNextIssuerAuth(
+  options: NextIssuerAuthOptions = {},
+): NextIssuerAuth {
   const privateKey = process.env.MAYRLABS_AUTH_PRIVATE_JWK;
   const publicKey = process.env.MAYRLABS_AUTH_PUBLIC_JWK;
   const issuer = process.env.MAYRLABS_AUTH_ISSUER;

@@ -1,5 +1,9 @@
 # @mayrlabs/auth-nextjs
 
+## 0.3.3
+
+Resolved typing issues where the `setup` object was being inferred as `any` by defining explicit return interfaces.
+
 ## 0.3.2
 
 Resolved typing issues where the `setup` object was being inferred as `any`.
