@@ -23,10 +23,11 @@ export function createNextClientAuth(
   const clientSecret = process.env.MAYRLABS_CLIENT_SECRET;
   const accountUrl =
     process.env.MAYRLABS_ACCOUNT_URL || "https://myaccount.mayrlabs.com";
+  const audience = process.env.MAYRLABS_CLIENT_AUDIENCE;
 
-  if (!publicKey || !clientId || !clientSecret) {
+  if (!publicKey || !clientId || !clientSecret || !audience) {
     throw new Error(
-      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required environment variables.",
+      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, MAYRLABS_CLIENT_AUDIENCE, and MAYRLABS_CLIENT_SECRET are required environment variables.",
     );
   }
 
@@ -59,7 +60,7 @@ export function createNextClientAuth(
     const errorToken = searchParams.get("error");
 
     if (errorToken) {
-      const errorData = await setup.verifyErrorToken(errorToken);
+      const errorData = await setup.verifyErrorToken(errorToken, audience);
 
       return redirectToError(
         errorData?.code || "CLIENT_UNEXPECTED_ERROR",
@@ -76,7 +77,7 @@ export function createNextClientAuth(
       );
     }
 
-    const user = await setup.verifyAuthToken(token);
+    const user = await setup.verifyAuthToken(token, audience);
 
     if (!user) {
       return redirectToError(
