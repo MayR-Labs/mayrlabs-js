@@ -66,7 +66,7 @@ export interface ClientConfig {
 export interface ClientConfigInput
   extends Omit<ClientConfig, "redirects" | "session" | "issuer"> {
   /**
-   * The issuer string representing the IDP token issuer length.
+   * The issuer string representing the expected token issuer.
    */
   issuer?: string;
   /**

@@ -19,7 +19,7 @@ npm install @mayrlabs/auth-nextjs
 
 ### Environment Variables
 
-The SDK now strictly validates environment variables using Zilch. Ensure the following are set in your `.env`:
+The SDK now strictly validates environment variables using Zod. Ensure the following are set in your `.env`:
 
 #### Client Auth Variables (`createNextClientAuth`)
 - `MAYRLABS_CLIENT_ID`: (Required) Your application's unique ID.

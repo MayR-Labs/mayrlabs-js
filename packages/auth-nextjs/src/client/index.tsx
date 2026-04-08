@@ -11,13 +11,13 @@ import { redirect } from "next/navigation";
 import { type NextRequest, NextResponse } from "next/server";
 import type React from "react";
 import { z } from "zod";
-import { redirectTo } from "../_utils";
+import { jwkSchema, redirectTo } from "../_utils";
 import type { NextAuthOptions, NextClientAuth } from "../types";
 import { AuthClientProvider } from "./provider";
 
 export const clientEnv = createEnv({
   server: {
-    MAYRLABS_AUTH_PUBLIC_JWK: z.string().optional(),
+    MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema.optional(),
     MAYRLABS_CLIENT_ID: z.string().min(1),
     MAYRLABS_CLIENT_SECRET: z.string().min(1),
     MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
@@ -65,6 +65,12 @@ export function createNextClientAuth(
     MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
     MAYRLABS_AUTH_SUCCESS_REDIRECT: successRedirect,
   } = clientEnv;
+
+  if (!options.remotePublicKey && !publicKey) {
+    throw new UnauthenticatedError(
+      "Either 'remotePublicKey: true' must be specified or 'MAYRLABS_AUTH_PUBLIC_JWK' must be provided in the environment.",
+    );
+  }
 
   const redirects = {
     error: options.redirects?.error || errorRedirect,
@@ -149,27 +155,32 @@ export function createNextClientAuth(
   };
 
   /**
-   * Gets the current user from the session cookie.
-   * Works in Server Components, Actions, and Route Handlers.
+   * Retrieves the current user from the session cookie.
+   *
+   * @returns User payload or null if no session.
    */
   const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
     const cookieStore = await cookies();
-
-    const token = cookieStore.get(setup.config.session.key)?.value;
+    const token = cookieStore.get(session.key)?.value;
 
     if (!token) return null;
 
-    return setup.verifyAuthToken(token);
+    return setup.verifyAuthToken(token, audience);
   };
 
   /**
-   * Gets the current user or throws an UnauthenticatedError if not logged in.
-   * Useful for Server Actions and protected Route Handlers.
+   * Retrieves the current user or throws an UnauthenticatedError if no session exists.
+   *
+   * @returns User payload.
    */
   const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
     const user = await getUser();
 
-    if (!user) throw new UnauthenticatedError();
+    if (!user) {
+      throw new UnauthenticatedError(
+        "User is not authenticated via session cookie",
+      );
+    }
 
     return user;
   };
@@ -192,11 +203,11 @@ export function createNextClientAuth(
    * Returns NextResponse.next() if authenticated.
    */
   const authProxy = async (request: NextRequest) => {
-    const token = request.cookies.get(setup.config.session.key)?.value;
+    const token = request.cookies.get(session.key)?.value;
 
     let user: MayRLabsAuthUserPayload | null = null;
 
-    if (token) user = await setup.verifyAuthToken(token);
+    if (token) user = await setup.verifyAuthToken(token, audience);
 
     if (!user) {
       const loginUrl = setup.getLoginUrl();
@@ -211,9 +222,9 @@ export function createNextClientAuth(
    * Specialized logout handler for Route Handlers (API /api/auth/logout).
    */
   const logoutHandler = async (request: NextRequest) => {
-    const response = redirectTo(setup.config.redirects.error, request.url);
+    const response = redirectTo(redirects.error, request.url);
 
-    response.cookies.delete(setup.config.session.key);
+    response.cookies.delete(session.key);
 
     return response;
   };

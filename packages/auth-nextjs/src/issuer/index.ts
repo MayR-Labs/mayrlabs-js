@@ -8,13 +8,13 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
-import { redirectTo } from "../_utils";
+import { jwkSchema, redirectTo } from "../_utils";
 import type { NextIssuerAuth } from "../types";
 
 export const issuerEnv = createEnv({
   server: {
-    MAYRLABS_AUTH_PUBLIC_JWK: z.string().min(1),
-    MAYRLABS_AUTH_PRIVATE_JWK: z.string().min(1),
+    MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema,
+    MAYRLABS_AUTH_PRIVATE_JWK: jwkSchema,
     MAYRLABS_AUTH_ISSUER: z.string().min(1).default("auth.mayrlabs.com"),
     MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
     MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
