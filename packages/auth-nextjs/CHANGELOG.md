@@ -1,5 +1,15 @@
 # @mayrlabs/auth-nextjs
 
+## 0.4.0
+
+### Major Changes
+
+- **Strict Environment Validation**: Integrated `@t3-oss/env-nextjs` and `zod` for strict runtime validation of authentication environment variables. The application now fails fast if configuration is missing or malformed.
+- **Remote JWK Fetching**: Added support for the `remotePublicKey` option. When enabled, public keys are automatically fetched from the account identity provider via `${accountUrl}/.well-known/jwks.json`.
+- **Breaking Change: Issuer Configuration**: `createNextIssuerAuth()` no longer accepts options in favor of strict environment variable configuration.
+- **Standardized Session Keys**: The default session cookie key has been updated to `mayrlabs-auth-session` for better ecosystem consistency.
+- **TSDoc Documentation**: Added comprehensive documentation for all exported methods, including detailed guides for required environment variables.
+
 ## 0.3.3
 
 Resolved typing issues where the `setup` object was being inferred as `any` by defining explicit return interfaces.

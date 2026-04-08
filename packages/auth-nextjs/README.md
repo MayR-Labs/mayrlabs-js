@@ -19,19 +19,28 @@ npm install @mayrlabs/auth-nextjs
 
 ### Environment Variables
 
-Ensure the following are set in your `.env`:
+The SDK now strictly validates environment variables using Zilch. Ensure the following are set in your `.env`:
 
-- `MAYRLABS_AUTH_PUBLIC_JWK`: Your application's Public JWK (JSON string).
-- `MAYRLABS_AUTH_ISSUER`: The expected issuer for your tokens (e.g., `auth.mayrlabs.com`).
-- `MAYRLABS_CLIENT_ID`: Your application's unique ID.
-- `MAYRLABS_CLIENT_SECRET`: Your application's secret key (keep this server-side only).
-- `MAYRLABS_ACCOUNT_URL`: (Optional) The URL of the central account system center.
+#### Client Auth Variables (`createNextClientAuth`)
+- `MAYRLABS_CLIENT_ID`: (Required) Your application's unique ID.
+- `MAYRLABS_CLIENT_SECRET`: (Required) Your application's secret key.
+- `MAYRLABS_CLIENT_AUDIENCE`: (Required) The audience validation for tokens.
+- `MAYRLABS_AUTH_PUBLIC_JWK`: (Optional) Your application's Public JWK. Not required if `remotePublicKey: true` is set.
+- `MAYRLABS_ACCOUNT_URL`: (Default: `https://myaccount.mayrlabs.com`) The URL of the central account center.
+- `MAYRLABS_AUTH_SESSION_KEY`: (Default: `mayrlabs-auth-session`) Local session cookie key.
+- `MAYRLABS_AUTH_ERROR_REDIRECT`: (Default: `/login`) Path to redirect on error.
+- `MAYRLABS_AUTH_SUCCESS_REDIRECT`: (Default: `/dashboard`) Path to redirect on success.
+
+#### Issuer Auth Variables (`createNextIssuerAuth`)
+- `MAYRLABS_AUTH_PRIVATE_JWK`: (Required) The private JWK for signing tokens.
+- `MAYRLABS_AUTH_PUBLIC_JWK`: (Required) The public JWK for verifying session tokens.
+- `MAYRLABS_AUTH_ISSUER`: (Default: `auth.mayrlabs.com`) The token issuer string.
 
 ---
 
 ## 🏢 Client SDK Usage (`createNextClientAuth`)
 
-Initialize your client auth utilities in a shared file (e.g., `lib/auth.ts`).
+Initialize your client auth utilities. All configuration is primarily handled via environment variables.
 
 ```typescript
 // lib/auth.ts
@@ -44,10 +53,9 @@ export const {
   getUserOrRedirect,
   authProxy,
   logoutHandler,
-  AuthProvider, // Server Component Provider
+  AuthProvider,
 } = createNextClientAuth({
-  redirects: { error: "/login", success: "/dashboard" },
-  session: { key: "mayrlabs-auth-session" },
+  remotePublicKey: true, // Automatically fetches JWKS from {ACCOUNT_URL}/.well-known/jwks.json
 });
 ```
 
@@ -94,13 +102,11 @@ For applications acting as identity providers (e.g., the Account App).
 import { createNextIssuerAuth } from "@mayrlabs/auth-nextjs/issuer";
 
 export const {
-  setup, // The core IssuerAuthSetup instance
+  setup,
   getUser,
   getUserOrThrow,
   logoutHandler,
-} = createNextIssuerAuth({
-  session: { key: "issuer-session" },
-});
+} = createNextIssuerAuth();
 ```
 
 ### Methods

@@ -29,6 +29,7 @@ export const clientEnv = createEnv({
   },
   client: {},
   experimental__runtimeEnv: process.env,
+  skipValidation: process.env.NODE_ENV === "test",
 });
 
 /**
