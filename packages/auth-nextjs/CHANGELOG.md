@@ -1,5 +1,11 @@
 # @mayrlabs/auth-nextjs
 
+## 0.4.1
+
+### Hotfix
+
+Delay env validation until right function is called
+
 ## 0.4.0
 
 ### Major Changes

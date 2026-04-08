@@ -1,5 +1,9 @@
 # @mayrlabs/auth
 
+## 0.4.1
+
+Bump to sync
+
 ## 0.4.0
 
 ### Major Changes

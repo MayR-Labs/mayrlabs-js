@@ -11,19 +11,6 @@ import { z } from "zod";
 import { jwkSchema, redirectTo } from "../_utils";
 import type { NextIssuerAuth } from "../types";
 
-export const issuerEnv = createEnv({
-  server: {
-    MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema,
-    MAYRLABS_AUTH_PRIVATE_JWK: jwkSchema,
-    MAYRLABS_AUTH_ISSUER: z.string().min(1).default("auth.mayrlabs.com"),
-    MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
-    MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
-  },
-  client: {},
-  experimental__runtimeEnv: process.env,
-  skipValidation: process.env.NODE_ENV === "test",
-});
-
 /**
  * Creates Next.js specific issuer auth utilities.
  * Automatically handles environment variables and validation securely using @t3-oss/env-nextjs and zod.
@@ -40,6 +27,19 @@ export const issuerEnv = createEnv({
  * @returns The Next.js NextIssuerAuth utility objects including `setup`, `getUser`, `getUserOrThrow`, and `logoutHandler`.
  */
 export function createNextIssuerAuth(): NextIssuerAuth {
+  const issuerEnv = createEnv({
+    server: {
+      MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema,
+      MAYRLABS_AUTH_PRIVATE_JWK: jwkSchema,
+      MAYRLABS_AUTH_ISSUER: z.string().min(1).default("auth.mayrlabs.com"),
+      MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+      MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
+    },
+    client: {},
+    experimental__runtimeEnv: process.env,
+    skipValidation: process.env.NODE_ENV === "test",
+  });
+
   const {
     MAYRLABS_AUTH_PRIVATE_JWK: privateKey,
     MAYRLABS_AUTH_PUBLIC_JWK: publicKey,

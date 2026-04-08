@@ -15,23 +15,6 @@ import { jwkSchema, redirectTo } from "../_utils";
 import type { NextAuthOptions, NextClientAuth } from "../types";
 import { AuthClientProvider } from "./provider";
 
-export const clientEnv = createEnv({
-  server: {
-    MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema.optional(),
-    MAYRLABS_CLIENT_ID: z.string().min(1),
-    MAYRLABS_CLIENT_SECRET: z.string().min(1),
-    MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
-    MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
-    MAYRLABS_AUTH_ISSUER: z.string().optional(),
-    MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
-    MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
-    MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
-  },
-  client: {},
-  experimental__runtimeEnv: process.env,
-  skipValidation: process.env.NODE_ENV === "test",
-});
-
 /**
  * Creates Next.js specific client auth utilities.
  * Automatically handles environment variables and validation securely using @t3-oss/env-nextjs.
@@ -54,6 +37,23 @@ export const clientEnv = createEnv({
 export function createNextClientAuth(
   options: NextAuthOptions = {},
 ): NextClientAuth {
+  const clientEnv = createEnv({
+    server: {
+      MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema.optional(),
+      MAYRLABS_CLIENT_ID: z.string().min(1),
+      MAYRLABS_CLIENT_SECRET: z.string().min(1),
+      MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
+      MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
+      MAYRLABS_AUTH_ISSUER: z.string().optional(),
+      MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+      MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
+      MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
+    },
+    client: {},
+    experimental__runtimeEnv: process.env,
+    skipValidation: process.env.NODE_ENV === "test",
+  });
+
   const {
     MAYRLABS_AUTH_PUBLIC_JWK: publicKey,
     MAYRLABS_CLIENT_ID: clientId,
