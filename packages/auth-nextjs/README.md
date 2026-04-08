@@ -47,7 +47,7 @@ export const {
   AuthProvider, // Server Component Provider
 } = createNextClientAuth({
   redirects: { error: "/login", success: "/dashboard" },
-  session: { key: "mayrlabs-session" },
+  session: { key: "mayrlabs-auth-session" },
 });
 ```
 

@@ -1,49 +1,98 @@
 import {
+  ACCOUNT_URL,
   ClientAuthSetup,
   type MayRLabsAuthUserPayload,
+  SESSION_KEY,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
+import { createEnv } from "@t3-oss/env-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { type NextRequest, NextResponse } from "next/server";
 import type React from "react";
+import { z } from "zod";
 import { redirectTo } from "../_utils";
 import type { NextAuthOptions, NextClientAuth } from "../types";
 import { AuthClientProvider } from "./provider";
 
+export const clientEnv = createEnv({
+  server: {
+    MAYRLABS_AUTH_PUBLIC_JWK: z.string().optional(),
+    MAYRLABS_CLIENT_ID: z.string().min(1),
+    MAYRLABS_CLIENT_SECRET: z.string().min(1),
+    MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
+    MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
+    MAYRLABS_AUTH_ISSUER: z.string().optional(),
+    MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+    MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
+    MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
+  },
+  client: {},
+  experimental__runtimeEnv: process.env,
+});
+
 /**
  * Creates Next.js specific client auth utilities.
- * Automatically handles environment variables and validation.
+ * Automatically handles environment variables and validation securely using @t3-oss/env-nextjs.
+ *
+ * Configured via Environment Variables:
+ * - MAYRLABS_CLIENT_ID: Your application Client ID
+ * - MAYRLABS_CLIENT_SECRET: Your application Client Secret
+ * - MAYRLABS_CLIENT_AUDIENCE: The audience validation for tokens
+ * - MAYRLABS_ACCOUNT_URL: The centralized IdP Account URL (default: "https://myaccount.mayrlabs.com")
+ * - MAYRLABS_AUTH_PUBLIC_JWK: The public JWK for token verification (Not required if remotePublicKey is true)
+ * - MAYRLABS_AUTH_ISSUER: The expected Token Issuer string
+ * - MAYRLABS_AUTH_SESSION_KEY: Local session cookie key (default: "mayrlabs-auth-session")
+ * - MAYRLABS_AUTH_ERROR_REDIRECT: Redirect path on error (default: "/login")
+ * - MAYRLABS_AUTH_SUCCESS_REDIRECT: Redirect path on success (default: "/dashboard")
+ *
+ * @param options Client authentication options, including remote public key JWKS fetching and redirect overlays
+ *
+ * @returns An object containing the NextClientAuth utilities and setup context.
  */
 export function createNextClientAuth(
   options: NextAuthOptions = {},
 ): NextClientAuth {
-  const publicKey = process.env.MAYRLABS_AUTH_PUBLIC_JWK;
-  const clientId = process.env.MAYRLABS_CLIENT_ID;
-  const clientSecret = process.env.MAYRLABS_CLIENT_SECRET;
-  const accountUrl =
-    process.env.MAYRLABS_ACCOUNT_URL || "https://myaccount.mayrlabs.com";
-  const audience = process.env.MAYRLABS_CLIENT_AUDIENCE;
+  const {
+    MAYRLABS_AUTH_PUBLIC_JWK: publicKey,
+    MAYRLABS_CLIENT_ID: clientId,
+    MAYRLABS_CLIENT_SECRET: clientSecret,
+    MAYRLABS_ACCOUNT_URL: accountUrl,
+    MAYRLABS_CLIENT_AUDIENCE: audience,
+    MAYRLABS_AUTH_ISSUER: issuerEnv,
+    MAYRLABS_AUTH_SESSION_KEY: sessionKey,
+    MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
+    MAYRLABS_AUTH_SUCCESS_REDIRECT: successRedirect,
+  } = clientEnv;
 
-  if (!publicKey || !clientId || !clientSecret || !audience) {
-    throw new Error(
-      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, MAYRLABS_CLIENT_AUDIENCE, and MAYRLABS_CLIENT_SECRET are required environment variables.",
-    );
-  }
+  const redirects = {
+    error: options.redirects?.error || errorRedirect,
+    success: options.redirects?.success || successRedirect,
+  };
+
+  const session = {
+    key: options.session?.key || sessionKey,
+  };
 
   const setup: ClientAuthSetup = new ClientAuthSetup({
     publicKey,
+    remotePublicKey: options.remotePublicKey,
     clientId,
     clientSecret,
     accountUrl,
-    issuer: process.env.MAYRLABS_AUTH_ISSUER,
-    redirects: options.redirects,
-    session: options.session,
+    issuer: issuerEnv,
+    redirects,
+    session,
   });
 
   /**
-   * Handles the SSO callback.
-   * Sets the session cookie and redirects to the success page.
+   * Handles the SSO callback from the central authentication server.
+   * Securely sets up the session cookie upon successful verification.
+   * Uses audience validation provided by MAYRLABS_CLIENT_AUDIENCE.
+   *
+   * @param request The original Next.js request.
+   *
+   * @returns Automatically redirects to success/error locations defined in configuration.
    */
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);

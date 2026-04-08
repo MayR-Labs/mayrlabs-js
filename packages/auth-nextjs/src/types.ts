@@ -7,13 +7,20 @@ import type { NextRequest, NextResponse } from "next/server";
 import type React from "react";
 
 export interface NextAuthOptions {
+  /**
+   * Redirects for successful authentication or errors.
+   * Provide if you want to override env variables.
+   */
   redirects?: Partial<{ error: string; success: string }>;
+  /**
+   * Session cookie configurations.
+   */
   session?: Partial<{ key: string }>;
-}
-
-export interface NextIssuerAuthOptions {
-  session?: Partial<{ key: string }>;
-  redirects?: Partial<{ error: string }>;
+  /**
+   * If true, securely fetches the public JWK directly from the IdP account URL (`/.well-known/jwks.json`).
+   * No `MAYRLABS_AUTH_PUBLIC_JWK` needed.
+   */
+  remotePublicKey?: boolean;
 }
 
 export interface NextIssuerAuth {

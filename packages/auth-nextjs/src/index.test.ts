@@ -3,6 +3,7 @@
 import {
   ClientAuthSetup,
   IssuerAuthSetup,
+  SESSION_KEY,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -299,7 +300,7 @@ describe("createNextIssuerAuth", () => {
     const req = new NextRequest("http://localhost/api/auth/logout") as any;
     const res = (await auth.logoutHandler(req)) as any;
 
-    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-session");
+    expect(res.cookies.delete).toHaveBeenCalledWith(SESSION_KEY);
   });
 
   it("should use custom session key and redirect in createNextIssuerAuth", async () => {

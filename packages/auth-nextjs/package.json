@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth-nextjs",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "The official Next.js App Router integration for @mayrlabs/auth featuring Middleware guards, Server Actions utilities, and React Context bindings.",
   "keywords": [
     "nextjs",
@@ -116,7 +116,9 @@
     "react-dom": "^18.0.0 || ^19.0.0 || ^20.0.0"
   },
   "dependencies": {
-    "@mayrlabs/auth": "^0.3.3"
+    "@mayrlabs/auth": "^0.3.3",
+    "@t3-oss/env-nextjs": "^0.12.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/react-dom": "^19.0.0",
