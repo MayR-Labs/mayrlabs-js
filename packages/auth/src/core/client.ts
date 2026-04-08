@@ -6,11 +6,11 @@ import type {
   MayRLabsAuthUserPayload,
 } from "../types";
 import { BaseAuthSetup } from "./base";
-import { ISSUER, SESSION_KEY } from "./constants";
+import { CLIENT_SESSION_KEY, ISSUER } from "./constants";
 
 const DEFAULTS = {
   redirects: { error: "/login", success: "/dashboard" },
-  session: { key: SESSION_KEY },
+  session: { key: CLIENT_SESSION_KEY },
 };
 
 export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {

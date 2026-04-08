@@ -1,7 +1,7 @@
 import {
+  ISSUER_SESSION_KEY,
   IssuerAuthSetup,
   type MayRLabsAuthUserPayload,
-  SESSION_KEY,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -32,7 +32,7 @@ export function createNextIssuerAuth(): NextIssuerAuth {
       MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema,
       MAYRLABS_AUTH_PRIVATE_JWK: jwkSchema,
       MAYRLABS_AUTH_ISSUER: z.string().min(1).default("auth.mayrlabs.com"),
-      MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+      MAYRLABS_AUTH_SESSION_KEY: z.string().default(ISSUER_SESSION_KEY),
       MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
     },
     client: {},

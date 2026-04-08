@@ -266,6 +266,6 @@ describe("createNextIssuerAuth", () => {
     const req = new NextRequest("http://localhost/api/auth/logout") as any;
     const res = (await auth.logoutHandler(req)) as any;
 
-    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-auth-session");
+    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-issuer-session");
   });
 });

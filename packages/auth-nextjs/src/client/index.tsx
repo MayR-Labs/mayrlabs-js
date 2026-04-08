@@ -1,8 +1,8 @@
 import {
   ACCOUNT_URL,
+  CLIENT_SESSION_KEY,
   ClientAuthSetup,
   type MayRLabsAuthUserPayload,
-  SESSION_KEY,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -45,7 +45,7 @@ export function createNextClientAuth(
       MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
       MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
       MAYRLABS_AUTH_ISSUER: z.string().optional(),
-      MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+      MAYRLABS_AUTH_SESSION_KEY: z.string().default(CLIENT_SESSION_KEY),
       MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
       MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
     },
