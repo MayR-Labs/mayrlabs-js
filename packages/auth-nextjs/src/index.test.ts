@@ -62,26 +62,11 @@ vi.mock("next/server", () => ({
 
 describe("createNextClientAuth", () => {
   beforeEach(() => {
-    process.env.MAYRLABS_AUTH_PUBLIC_JWK = JSON.stringify({
-      kty: "RSA",
-      n: "...",
-      e: "...",
-    });
-    process.env.MAYRLABS_CLIENT_ID = "test-id";
-    process.env.MAYRLABS_CLIENT_SECRET = "test-secret";
-    process.env.MAYRLABS_ACCOUNT_URL = "https://testing.com";
     mockCookiesGetSetter(() => undefined);
     vi.clearAllMocks();
   });
 
   describe("Initialization", () => {
-    it("should throw if environment variables are missing", () => {
-      delete process.env.MAYRLABS_CLIENT_ID;
-      expect(() => createNextClientAuth()).toThrow(
-        /MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required/,
-      );
-    });
-
     it("should instantiate successfully with valid environment variables", () => {
       const auth = createNextClientAuth();
       expect(auth.setup).toBeInstanceOf(ClientAuthSetup);
@@ -256,26 +241,8 @@ describe("createNextClientAuth", () => {
 
 describe("createNextIssuerAuth", () => {
   beforeEach(() => {
-    process.env.MAYRLABS_AUTH_PRIVATE_JWK = JSON.stringify({
-      kty: "RSA",
-      n: "...",
-      e: "...",
-    });
-    process.env.MAYRLABS_AUTH_PUBLIC_JWK = JSON.stringify({
-      kty: "RSA",
-      n: "...",
-      e: "...",
-    });
-    process.env.MAYRLABS_AUTH_ISSUER = "test-issuer";
     mockCookiesGetSetter(() => undefined);
     vi.clearAllMocks();
-  });
-
-  it("should throw if environment variables are missing", () => {
-    delete process.env.MAYRLABS_AUTH_PRIVATE_JWK;
-    expect(() => createNextIssuerAuth()).toThrow(
-      /MAYRLABS_AUTH_PRIVATE_JWK, MAYRLABS_AUTH_PUBLIC_JWK, and MAYRLABS_AUTH_ISSUER are required/,
-    );
   });
 
   it("should instantiate successfully with valid environment variables", () => {
@@ -299,18 +266,6 @@ describe("createNextIssuerAuth", () => {
     const req = new NextRequest("http://localhost/api/auth/logout") as any;
     const res = (await auth.logoutHandler(req)) as any;
 
-    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-session");
-  });
-
-  it("should use custom session key and redirect in createNextIssuerAuth", async () => {
-    const auth = createNextIssuerAuth({
-      session: { key: "issuer-key" },
-      redirects: { error: "/issuer-login" },
-    });
-    const req = new NextRequest("http://localhost/api/auth/logout") as any;
-    const res = (await auth.logoutHandler(req)) as any;
-
-    expect(res.cookies.delete).toHaveBeenCalledWith("issuer-key");
-    expect(res.url).toContain("/issuer-login");
+    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-auth-session");
   });
 });

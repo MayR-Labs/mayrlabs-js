@@ -9,6 +9,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
     },
+    setupFiles: ["./vitest.setup.ts"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },

@@ -1,5 +1,15 @@
 # @mayrlabs/auth
 
+## 0.4.0
+
+### Major Changes
+
+- **Remote JWK Support**: Added support for fetching public keys from remote JWKS endpoints. If `remotePublicKey` is enabled, the SDK will automatically fetch and cache keys from `${accountUrl}/.well-known/jwks.json`.
+- **Architectural Improvements**:
+  - Renamed `getPublicKey` to `getVerifyKey` on `BaseAuthSetup` to accommodate both local `CryptoKey` and remote `JWTVerifyGetKey` sets.
+  - Centralized core constants like `SESSION_KEY` and `ACCOUNT_URL`.
+- **Documentation**: Added comprehensive TSDoc blocks to all public methods and types.
+
 ## 0.3.3
 
 Minor bump for version synchronization with nextjs package.

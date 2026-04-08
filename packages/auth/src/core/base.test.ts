@@ -1,19 +1,33 @@
 import { Buffer } from "node:buffer";
 import { exportJWK, generateKeyPair, importJWK, SignJWT } from "jose";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("jose", async (importOriginal) => {
+  // biome-ignore lint/suspicious/noExplicitAny: Test
+  const actual = await importOriginal<any>();
+  return {
+    ...actual,
+    createRemoteJWKSet: vi
+      .fn()
+      .mockReturnValue(() => Promise.resolve("mocked-jwks")),
+  };
+});
+
 import { MayRLabsAuthError } from "../errors";
 import { BaseAuthSetup } from "./base";
 
 class MockAuthSetup extends BaseAuthSetup<{
-  publicKey: string;
+  publicKey?: string;
   issuer: string;
+  remotePublicKey?: boolean;
+  accountUrl?: string;
 }> {
   public async testGetKey(keyString: string, type: "Public" | "Private") {
     return this._getKey(keyString, type);
   }
 
-  public async testGetPublicKey() {
-    return this.getPublicKey();
+  public async testGetVerifyKey() {
+    return this.getVerifyKey();
   }
 }
 
@@ -54,11 +68,29 @@ describe("BaseAuthSetup", () => {
     });
   });
 
-  describe("getPublicKey", () => {
+  describe("getVerifyKey", () => {
+    it("should return and cache the remote JWKS set", async () => {
+      const { createRemoteJWKSet } = await import("jose");
+      const setup = new MockAuthSetup({
+        remotePublicKey: true,
+        accountUrl: "https://auth.test.com",
+        issuer: ISSUER,
+      });
+
+      const firstKey = await setup.testGetVerifyKey();
+      const secondKey = await setup.testGetVerifyKey();
+
+      expect(createRemoteJWKSet).toHaveBeenCalledWith(
+        new URL("https://auth.test.com/.well-known/jwks.json"),
+      );
+      expect(firstKey).toBe(secondKey);
+      expect(typeof firstKey).toBe("function");
+    });
+
     it("should cache the imported key", async () => {
       const setup = new MockAuthSetup({ publicKey: publicJWK, issuer: ISSUER });
-      const firstKey = await setup.testGetPublicKey();
-      const secondKey = await setup.testGetPublicKey();
+      const firstKey = await setup.testGetVerifyKey();
+      const secondKey = await setup.testGetVerifyKey();
       expect(firstKey).toBe(secondKey);
     });
   });

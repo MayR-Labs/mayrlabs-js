@@ -1,48 +1,105 @@
 import {
+  ACCOUNT_URL,
   ClientAuthSetup,
   type MayRLabsAuthUserPayload,
+  SESSION_KEY,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
+import { createEnv } from "@t3-oss/env-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { type NextRequest, NextResponse } from "next/server";
 import type React from "react";
-import { redirectTo } from "../_utils";
+import { z } from "zod";
+import { jwkSchema, redirectTo } from "../_utils";
 import type { NextAuthOptions, NextClientAuth } from "../types";
 import { AuthClientProvider } from "./provider";
 
+export const clientEnv = createEnv({
+  server: {
+    MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema.optional(),
+    MAYRLABS_CLIENT_ID: z.string().min(1),
+    MAYRLABS_CLIENT_SECRET: z.string().min(1),
+    MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
+    MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
+    MAYRLABS_AUTH_ISSUER: z.string().optional(),
+    MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+    MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
+    MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
+  },
+  client: {},
+  experimental__runtimeEnv: process.env,
+  skipValidation: process.env.NODE_ENV === "test",
+});
+
 /**
  * Creates Next.js specific client auth utilities.
- * Automatically handles environment variables and validation.
+ * Automatically handles environment variables and validation securely using @t3-oss/env-nextjs.
+ *
+ * Configured via Environment Variables:
+ * - MAYRLABS_CLIENT_ID: Your application Client ID
+ * - MAYRLABS_CLIENT_SECRET: Your application Client Secret
+ * - MAYRLABS_CLIENT_AUDIENCE: The audience validation for tokens
+ * - MAYRLABS_ACCOUNT_URL: The centralized IdP Account URL (default: "https://myaccount.mayrlabs.com")
+ * - MAYRLABS_AUTH_PUBLIC_JWK: The public JWK for token verification (Not required if remotePublicKey is true)
+ * - MAYRLABS_AUTH_ISSUER: The expected Token Issuer string
+ * - MAYRLABS_AUTH_SESSION_KEY: Local session cookie key (default: "mayrlabs-auth-session")
+ * - MAYRLABS_AUTH_ERROR_REDIRECT: Redirect path on error (default: "/login")
+ * - MAYRLABS_AUTH_SUCCESS_REDIRECT: Redirect path on success (default: "/dashboard")
+ *
+ * @param options Client authentication options, including remote public key JWKS fetching and redirect overlays
+ *
+ * @returns An object containing the NextClientAuth utilities and setup context.
  */
 export function createNextClientAuth(
   options: NextAuthOptions = {},
 ): NextClientAuth {
-  const publicKey = process.env.MAYRLABS_AUTH_PUBLIC_JWK;
-  const clientId = process.env.MAYRLABS_CLIENT_ID;
-  const clientSecret = process.env.MAYRLABS_CLIENT_SECRET;
-  const accountUrl =
-    process.env.MAYRLABS_ACCOUNT_URL || "https://myaccount.mayrlabs.com";
+  const {
+    MAYRLABS_AUTH_PUBLIC_JWK: publicKey,
+    MAYRLABS_CLIENT_ID: clientId,
+    MAYRLABS_CLIENT_SECRET: clientSecret,
+    MAYRLABS_ACCOUNT_URL: accountUrl,
+    MAYRLABS_CLIENT_AUDIENCE: audience,
+    MAYRLABS_AUTH_ISSUER: issuerEnv,
+    MAYRLABS_AUTH_SESSION_KEY: sessionKey,
+    MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
+    MAYRLABS_AUTH_SUCCESS_REDIRECT: successRedirect,
+  } = clientEnv;
 
-  if (!publicKey || !clientId || !clientSecret) {
-    throw new Error(
-      "MayRLabs Auth: MAYRLABS_AUTH_PUBLIC_JWK, MAYRLABS_CLIENT_ID, and MAYRLABS_CLIENT_SECRET are required environment variables.",
+  if (!options.remotePublicKey && !publicKey) {
+    throw new UnauthenticatedError(
+      "Either 'remotePublicKey: true' must be specified or 'MAYRLABS_AUTH_PUBLIC_JWK' must be provided in the environment.",
     );
   }
 
+  const redirects = {
+    error: options.redirects?.error || errorRedirect,
+    success: options.redirects?.success || successRedirect,
+  };
+
+  const session = {
+    key: options.session?.key || sessionKey,
+  };
+
   const setup: ClientAuthSetup = new ClientAuthSetup({
     publicKey,
+    remotePublicKey: options.remotePublicKey,
     clientId,
     clientSecret,
     accountUrl,
-    issuer: process.env.MAYRLABS_AUTH_ISSUER,
-    redirects: options.redirects,
-    session: options.session,
+    issuer: issuerEnv,
+    redirects,
+    session,
   });
 
   /**
-   * Handles the SSO callback.
-   * Sets the session cookie and redirects to the success page.
+   * Handles the SSO callback from the central authentication server.
+   * Securely sets up the session cookie upon successful verification.
+   * Uses audience validation provided by MAYRLABS_CLIENT_AUDIENCE.
+   *
+   * @param request The original Next.js request.
+   *
+   * @returns Automatically redirects to success/error locations defined in configuration.
    */
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
@@ -59,7 +116,7 @@ export function createNextClientAuth(
     const errorToken = searchParams.get("error");
 
     if (errorToken) {
-      const errorData = await setup.verifyErrorToken(errorToken);
+      const errorData = await setup.verifyErrorToken(errorToken, audience);
 
       return redirectToError(
         errorData?.code || "CLIENT_UNEXPECTED_ERROR",
@@ -76,7 +133,7 @@ export function createNextClientAuth(
       );
     }
 
-    const user = await setup.verifyAuthToken(token);
+    const user = await setup.verifyAuthToken(token, audience);
 
     if (!user) {
       return redirectToError(
@@ -98,27 +155,32 @@ export function createNextClientAuth(
   };
 
   /**
-   * Gets the current user from the session cookie.
-   * Works in Server Components, Actions, and Route Handlers.
+   * Retrieves the current user from the session cookie.
+   *
+   * @returns User payload or null if no session.
    */
   const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
     const cookieStore = await cookies();
-
-    const token = cookieStore.get(setup.config.session.key)?.value;
+    const token = cookieStore.get(session.key)?.value;
 
     if (!token) return null;
 
-    return setup.verifyAuthToken(token);
+    return setup.verifyAuthToken(token, audience);
   };
 
   /**
-   * Gets the current user or throws an UnauthenticatedError if not logged in.
-   * Useful for Server Actions and protected Route Handlers.
+   * Retrieves the current user or throws an UnauthenticatedError if no session exists.
+   *
+   * @returns User payload.
    */
   const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
     const user = await getUser();
 
-    if (!user) throw new UnauthenticatedError();
+    if (!user) {
+      throw new UnauthenticatedError(
+        "User is not authenticated via session cookie",
+      );
+    }
 
     return user;
   };
@@ -141,11 +203,11 @@ export function createNextClientAuth(
    * Returns NextResponse.next() if authenticated.
    */
   const authProxy = async (request: NextRequest) => {
-    const token = request.cookies.get(setup.config.session.key)?.value;
+    const token = request.cookies.get(session.key)?.value;
 
     let user: MayRLabsAuthUserPayload | null = null;
 
-    if (token) user = await setup.verifyAuthToken(token);
+    if (token) user = await setup.verifyAuthToken(token, audience);
 
     if (!user) {
       const loginUrl = setup.getLoginUrl();
@@ -160,9 +222,9 @@ export function createNextClientAuth(
    * Specialized logout handler for Route Handlers (API /api/auth/logout).
    */
   const logoutHandler = async (request: NextRequest) => {
-    const response = redirectTo(setup.config.redirects.error, request.url);
+    const response = redirectTo(redirects.error, request.url);
 
-    response.cookies.delete(setup.config.session.key);
+    response.cookies.delete(session.key);
 
     return response;
   };

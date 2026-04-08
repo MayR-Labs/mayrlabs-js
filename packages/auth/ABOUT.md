@@ -62,7 +62,7 @@ export interface AuthConfig {
     success?: string; // Default: /dashboard
   };
   session?: {
-    key?: string; // Default: mayrlabs-session
+    key?: string; // Default: mayrlabs-auth-session
     cookieOptions?: any;
   };
 }
