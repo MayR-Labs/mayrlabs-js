@@ -1,8 +1,8 @@
 import type {
+  AuthErrorPayload,
+  AuthUserPayload,
   ClientAuthSetup,
   IssuerAuthSetup,
-  MayRLabsAuthErrorPayload,
-  MayRLabsAuthUserPayload,
 } from "@mayrlabs/auth";
 import type { NextRequest, NextResponse } from "next/server";
 import type React from "react";
@@ -26,8 +26,8 @@ export interface NextAuthOptions {
    * Event hooks for authentication lifecycle.
    */
   events?: {
-    onAuthSuccess?: (user: MayRLabsAuthUserPayload) => Promise<void> | void;
-    onAuthFailure?: (error: MayRLabsAuthErrorPayload) => Promise<void> | void;
+    onAuthSuccess?: (user: AuthUserPayload) => Promise<void> | void;
+    onAuthFailure?: (error: AuthErrorPayload) => Promise<void> | void;
   };
   /**
    * Automatically refreshes the session cookie if more than half its life has passed.
@@ -39,17 +39,17 @@ export interface NextAuthOptions {
 
 export interface NextIssuerAuth {
   setup: IssuerAuthSetup;
-  getUser: () => Promise<MayRLabsAuthUserPayload | null>;
-  getUserOrThrow: () => Promise<MayRLabsAuthUserPayload>;
+  getUser: () => Promise<AuthUserPayload | null>;
+  getUserOrThrow: () => Promise<AuthUserPayload>;
   logoutHandler: (request: NextRequest) => Promise<NextResponse>;
 }
 
 export interface NextClientAuth {
   setup: ClientAuthSetup;
   handleCallback: (request: NextRequest) => Promise<NextResponse>;
-  getUser: () => Promise<MayRLabsAuthUserPayload | null>;
-  getUserOrThrow: () => Promise<MayRLabsAuthUserPayload>;
-  getUserOrRedirect: () => Promise<MayRLabsAuthUserPayload>;
+  getUser: () => Promise<AuthUserPayload | null>;
+  getUserOrThrow: () => Promise<AuthUserPayload>;
+  getUserOrRedirect: () => Promise<AuthUserPayload>;
   authProxy: (request: NextRequest) => Promise<NextResponse>;
   logoutHandler: (request: NextRequest) => Promise<NextResponse>;
   redirectToLogin: (request: NextRequest) => NextResponse;

@@ -1,9 +1,9 @@
 import { MayRLabsAuthError } from "../errors";
 import type {
+  AuthErrorPayload,
+  AuthUserPayload,
   ClientConfig,
   ClientConfigInput,
-  MayRLabsAuthErrorPayload,
-  MayRLabsAuthUserPayload,
 } from "../types";
 import { BaseAuthSetup } from "./base";
 import { CLIENT_SESSION_KEY, ISSUER } from "./constants";
@@ -95,7 +95,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
   async verifyAuthToken(
     token: string,
     audience?: string,
-  ): Promise<MayRLabsAuthUserPayload | null> {
+  ): Promise<AuthUserPayload | null> {
     return super.verifyAuthToken(token, audience || this.config.clientId);
   }
 
@@ -111,7 +111,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
   async verifyErrorToken(
     token: string,
     audience?: string,
-  ): Promise<MayRLabsAuthErrorPayload | null> {
+  ): Promise<AuthErrorPayload | null> {
     return super.verifyErrorToken(token, audience || this.config.clientId);
   }
 }

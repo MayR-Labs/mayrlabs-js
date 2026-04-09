@@ -1,7 +1,7 @@
 import {
+  type AuthUserPayload,
   ISSUER_SESSION_KEY,
   IssuerAuthSetup,
-  type MayRLabsAuthUserPayload,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -60,7 +60,7 @@ export function createNextIssuerAuth(): NextIssuerAuth {
    *
    * @returns A promise resolving to the user payload or null if unauthenticated.
    */
-  const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
+  const getUser = async (): Promise<AuthUserPayload | null> => {
     const cookieStore = await cookies();
 
     const token = cookieStore.get(sessionKey)?.value;
@@ -78,7 +78,7 @@ export function createNextIssuerAuth(): NextIssuerAuth {
    *
    * @throws {UnauthenticatedError} If the user session token is missing or invalid.
    */
-  const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
+  const getUserOrThrow = async (): Promise<AuthUserPayload> => {
     const user = await getUser();
 
     if (!user) throw new UnauthenticatedError();

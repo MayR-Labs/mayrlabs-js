@@ -3,9 +3,10 @@
 ## 0.5.0 (2026-04-09)
 
 ### Features
-- **User Model**: Introduced `MayRLabsUser` class with utility methods (`hasRole`, `hasAnyRole`, etc).
+- **User Model**: Renamed `MayRLabsUser` to `AuthUser` and aligned interface with the Account Center (`id`, `username`, nullable name fields).
+- **PKCE Support**: Added `generateCodeVerifier` and `generateCodeChallenge` utilities for secure public client authentication.
 - **Hooks**: Added `onAuthSuccess` and `onAuthFailure` event hooks to `ClientConfig`.
-- **Schema**: Added `avatarUrl` to `MayRLabsAuthUserPayload`.
+- **Breaking Changes**: Renamed `MayRLabsAuth*Payload` to `Auth*Payload` across the entire SDK.
 
 ## 0.4.2 (2026-04-08)
 

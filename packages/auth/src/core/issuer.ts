@@ -1,9 +1,9 @@
 import { type CryptoKey, SignJWT } from "jose";
 import type {
+  AuthMachinePayload,
+  AuthUserPayload,
   IssuerConfig,
   IssuerConfigInput,
-  MayRLabsAuthMachinePayload,
-  MayRLabsAuthUserPayload,
 } from "../types";
 import { BaseAuthSetup } from "./base";
 import { ISSUER, MACHINE_AUDIENCE } from "./constants";
@@ -31,7 +31,7 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
    * @returns A promise that resolves to the signed JWT string.
    */
   async signUserToken(
-    payload: Omit<MayRLabsAuthUserPayload, "iat" | "exp" | "iss" | "aud">,
+    payload: Omit<AuthUserPayload, "iat" | "exp" | "iss" | "aud">,
     options: { audience: string; expiresIn?: string | number },
   ): Promise<string> {
     const key = await this.getPrivateKey();
@@ -60,7 +60,7 @@ export class IssuerAuthSetup extends BaseAuthSetup<IssuerConfig> {
   ): Promise<string> {
     const key = await this.getPrivateKey();
 
-    const machinePayload: MayRLabsAuthMachinePayload = {
+    const machinePayload: AuthMachinePayload = {
       ...payload,
       type: "machine",
     };

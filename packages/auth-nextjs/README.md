@@ -86,7 +86,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-Use the `useUser` hook in any Client Component. The `user` object is an instance of `MayRLabsUser` with utility methods:
+Use the `useUser` hook in any Client Component. The `user` object is an instance of `AuthUser` with utility methods:
 
 ```tsx
 "use client";

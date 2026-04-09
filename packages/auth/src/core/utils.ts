@@ -1,17 +1,17 @@
-import type { MayRLabsAuthUserPayload } from "../types";
+import type { AuthUserPayload } from "../types";
 
 /**
- * A utility class that wraps the MayRLabs user payload.
+ * A utility class that wraps the AuthUserPayload.
  * Provides helper methods for checking roles and permissions.
  */
-export class MayRLabsUser {
-  constructor(private readonly payload: MayRLabsAuthUserPayload) {}
+export class AuthUser {
+  constructor(private readonly payload: AuthUserPayload) {}
 
   /**
    * The unique identifier for the user.
    */
   get id(): string {
-    return this.payload.userId;
+    return this.payload.id;
   }
 
   /**
@@ -22,6 +22,34 @@ export class MayRLabsUser {
   }
 
   /**
+   * The user's custom username.
+   */
+  get username(): string | null {
+    return this.payload.username;
+  }
+
+  /**
+   * The user's first name.
+   */
+  get firstName(): string | null {
+    return this.payload.firstName;
+  }
+
+  /**
+   * The user's last name.
+   */
+  get lastName(): string | null {
+    return this.payload.lastName;
+  }
+
+  /**
+   * The user's full name (firstName + lastName).
+   */
+  get fullName(): string {
+    return `${this.firstName || ""} ${this.lastName || ""}`.trim();
+  }
+
+  /**
    * The user's list of roles.
    */
   get roles(): string[] {
@@ -29,9 +57,9 @@ export class MayRLabsUser {
   }
 
   /**
-   * The user's avatar image URL if provided.
+   * The user's avatar image URL.
    */
-  get avatarUrl(): string | undefined {
+  get avatarUrl(): string {
     return this.payload.avatarUrl;
   }
 
@@ -62,7 +90,54 @@ export class MayRLabsUser {
   /**
    * Returns the raw payload object.
    */
-  toJSON(): MayRLabsAuthUserPayload {
+  toJSON(): AuthUserPayload {
     return this.payload;
   }
+}
+
+/**
+ * Generates a high-entropy cryptographically strong random string
+ * to be used as a PKCE code verifier.
+ *
+ * @param length The length of the string (default: 64).
+ * @returns The generated verifier string.
+ */
+export function generateCodeVerifier(length = 64): string {
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+
+  let result = "";
+
+  const values = new Uint8Array(length);
+
+  crypto.getRandomValues(values);
+
+  for (let i = 0; i < length; i++) {
+    result += charset[values[i] % charset.length];
+  }
+
+  return result;
+}
+
+/**
+ * Generates a PKCE code challenge from a code verifier using S256 (SHA-256).
+ *
+ * @param verifier The code verifier string.
+ * @returns A promise that resolves to the base64url encoded challenge string.
+ */
+export async function generateCodeChallenge(verifier: string): Promise<string> {
+  const data = new TextEncoder().encode(verifier);
+  const buffer = await crypto.subtle.digest("SHA-256", data);
+
+  return b64url(new Uint8Array(buffer));
+}
+
+/**
+ * Helper to encode an array buffer into a base64url string.
+ */
+function b64url(buffer: Uint8Array): string {
+  const binary = String.fromCharCode(...buffer);
+  const base64 = btoa(binary);
+
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }

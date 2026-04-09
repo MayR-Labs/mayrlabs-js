@@ -1,12 +1,14 @@
-import { type MayRLabsAuthUserPayload, MayRLabsUser } from "@mayrlabs/auth";
+"use client";
+
+import { AuthUser, type AuthUserPayload } from "@mayrlabs/auth";
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 
 /**
  * Context for holding the authenticated user state on the client.
  */
-const AuthContext = createContext<
-  { user: MayRLabsAuthUserPayload | null } | undefined
->(undefined);
+const AuthContext = createContext<{ user: AuthUserPayload | null } | undefined>(
+  undefined,
+);
 
 /**
  * Client-side provider for auth context.
@@ -15,13 +17,13 @@ export const AuthClientProvider = ({
   user,
   children,
 }: {
-  user: MayRLabsAuthUserPayload | null;
+  user: AuthUserPayload | null;
   children: ReactNode;
 }) => <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
 
 /**
  * Hook to access the current user on the client.
- * Returns a MayRLabsUser model instance for utility methods.
+ * Returns an AuthUser model instance for utility methods.
  */
 export const useUser = () => {
   const context = useContext(AuthContext);
@@ -32,7 +34,7 @@ export const useUser = () => {
 
   return useMemo(() => {
     return {
-      user: context.user ? new MayRLabsUser(context.user) : null,
+      user: context.user ? new AuthUser(context.user) : null,
       raw: context.user,
     };
   }, [context.user]);

@@ -1,8 +1,8 @@
 import {
   ACCOUNT_URL,
+  type AuthUserPayload,
   CLIENT_SESSION_KEY,
   ClientAuthSetup,
-  type MayRLabsAuthUserPayload,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -26,7 +26,7 @@ import { AuthClientProvider } from "./provider";
  * - MAYRLABS_ACCOUNT_URL: The centralized IdP Account URL (default: "https://myaccount.mayrlabs.com")
  * - MAYRLABS_AUTH_PUBLIC_JWK: The public JWK for token verification (Not required if remotePublicKey is true)
  * - MAYRLABS_AUTH_ISSUER: The expected Token Issuer string
- * - MAYRLABS_AUTH_SESSION_KEY: Local session cookie key (default: "mayrlabs-auth-session")
+ * - MAYRLABS_AUTH_SESSION_KEY: Local session cookie key (default: "mayrlabs-client-session")
  * - MAYRLABS_AUTH_ERROR_REDIRECT: Redirect path on error (default: "/login")
  * - MAYRLABS_AUTH_SUCCESS_REDIRECT: Redirect path on success (default: "/dashboard")
  *
@@ -163,7 +163,7 @@ export function createNextClientAuth(
    * Retrieves the current user from the session cookie.
    * If autoRotateCookie is enabled, it periodically refreshes the session token.
    */
-  const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
+  const getUser = async (): Promise<AuthUserPayload | null> => {
     const cookieStore = await cookies();
 
     const token = cookieStore.get(setup.config.session.key)?.value;
@@ -220,7 +220,7 @@ export function createNextClientAuth(
    *
    * @returns User payload.
    */
-  const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
+  const getUserOrThrow = async (): Promise<AuthUserPayload> => {
     const user = await getUser();
 
     if (!user) {
@@ -236,7 +236,7 @@ export function createNextClientAuth(
    * Gets the current user or redirects to the login page if not logged in.
    * Useful for Server Components.
    */
-  const getUserOrRedirect = async (): Promise<MayRLabsAuthUserPayload> => {
+  const getUserOrRedirect = async (): Promise<AuthUserPayload> => {
     const user = await getUser();
 
     if (!user) return redirect(setup.getLoginUrl());
@@ -252,7 +252,7 @@ export function createNextClientAuth(
   const authProxy = async (request: NextRequest) => {
     const token = request.cookies.get(session.key)?.value;
 
-    let user: MayRLabsAuthUserPayload | null = null;
+    let user: AuthUserPayload | null = null;
 
     if (token) user = await setup.verifyAuthToken(token, audience);
 
