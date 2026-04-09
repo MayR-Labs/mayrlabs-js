@@ -161,16 +161,58 @@ export function createNextClientAuth(
 
   /**
    * Retrieves the current user from the session cookie.
-   *
-   * @returns User payload or null if no session.
+   * If autoRotateCookie is enabled, it periodically refreshes the session token.
    */
   const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
     const cookieStore = await cookies();
-    const token = cookieStore.get(session.key)?.value;
+
+    const token = cookieStore.get(setup.config.session.key)?.value;
 
     if (!token) return null;
 
-    return setup.verifyAuthToken(token, audience);
+    const user = await setup.verifyAuthToken(token, audience);
+
+    if (!user) return null;
+
+    // Session Sliding Logic
+    if (options.autoRotateCookie && user.iat && user.exp) {
+      const totalLife = user.exp - user.iat;
+
+      const elapsed = Math.floor(Date.now() / 1000) - user.iat;
+
+      // If past half-life, attempt refresh
+      if (elapsed > totalLife / 2) {
+        try {
+          const refreshResponse = await fetch(
+            `${accountUrl}/api/auth/token-refresh`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token, clientId, clientSecret }),
+            },
+          );
+
+          if (refreshResponse.ok) {
+            const { token: newToken } = await refreshResponse.json();
+
+            try {
+              cookieStore.set(setup.config.session.key, newToken, {
+                path: "/",
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+              });
+            } catch (error) {
+              console.error("[MayRLabs Auth] Session rotation failed:", error);
+            }
+          }
+        } catch (error) {
+          console.error("[MayRLabs Auth] Session rotation failed:", error);
+        }
+      }
+    }
+
+    return user;
   };
 
   /**

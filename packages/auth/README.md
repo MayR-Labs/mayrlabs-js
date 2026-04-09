@@ -11,6 +11,8 @@ The premium authentication and identity provider core package for the MayR Labs 
   - **`IssuerAuthSetup`**: For identity providers (e.g., the Account App) to sign tokens.
   - **`ClientAuthSetup`**: For consumer apps to verify tokens and initiate SSO.
 - 📦 **Type Safe**: Fully written in TypeScript with comprehensive exported interfaces.
+- 👤 **User Model**: Built-in `MayRLabsUser` class with helper methods for roles (`hasRole`, `hasAnyRole`).
+- 🔄 **Lifecycle Hooks**: Hook into auth events with `onAuthSuccess` and `onAuthFailure`.
 
 ---
 

@@ -7,7 +7,8 @@ The Next.js integration wrapper for the MayR Labs authentication ecosystem (`@ma
 - ⚡ **Modular SDK**: Dedicated `client` and `issuer` exports for optimized bundling.
 - ⚡ **Next.js Integration**: Optimized handlers for Callback, Server Components, and Actions.
 - ⚛️ **React Providers**: Out-of-the-box Context Providers and hooks for client-side user access.
-- 🚀 **Zero Config**: Inherits all secure logic (PS256, JWK, JWT decoding) from `@mayrlabs/auth` seamlessly.
+- 🛡️ **Role Gating**: Built-in authorization gating in the `AuthProvider`.
+- 🔄 **Session Sliding**: Automatic token rotation to keep active users logged in.
 
 ## 🚀 Getting Started
 
@@ -27,7 +28,7 @@ The SDK now strictly validates environment variables using Zod. Ensure the follo
 - `MAYRLABS_CLIENT_AUDIENCE`: (Required) The audience validation for tokens.
 - `MAYRLABS_AUTH_PUBLIC_JWK`: (Optional) Your application's Public JWK. Not required if `remotePublicKey: true` is set.
 - `MAYRLABS_ACCOUNT_URL`: (Default: `https://myaccount.mayrlabs.com`) The URL of the central account center.
-- `MAYRLABS_AUTH_SESSION_KEY`: (Default: `mayrlabs-auth-session`) Local session cookie key.
+- `MAYRLABS_AUTH_SESSION_KEY`: (Default: `mayrlabs-client-session`) Local session cookie key.
 - `MAYRLABS_AUTH_ERROR_REDIRECT`: (Default: `/login`) Path to redirect on error.
 - `MAYRLABS_AUTH_SUCCESS_REDIRECT`: (Default: `/dashboard`) Path to redirect on success.
 
@@ -40,7 +41,7 @@ The SDK now strictly validates environment variables using Zod. Ensure the follo
 
 ## 🏢 Client SDK Usage (`createNextClientAuth`)
 
-Initialize your client auth utilities. All configuration is primarily handled via environment variables.
+Initialize your client auth utilities.
 
 ```typescript
 // lib/auth.ts
@@ -53,15 +54,20 @@ export const {
   getUserOrRedirect,
   authProxy,
   logoutHandler,
+  redirectToLogin,
   AuthProvider,
 } = createNextClientAuth({
-  remotePublicKey: true, // Automatically fetches JWKS from {ACCOUNT_URL}/.well-known/jwks.json
+  remotePublicKey: true, 
+  autoRotateCookie: true, // Automatically refreshes the session past half-life
+  events: {
+    onAuthSuccess: (user) => console.log(`User ${user.email} logged in`),
+  }
 });
 ```
 
 ### ⚛️ React Setup
 
-The `AuthProvider` is a Server Component that should be wrapped around your layout. It automatically handles the session and provides the context to client components.
+The `AuthProvider` now supports **Role Gating**:
 
 ```tsx
 // app/layout.tsx
@@ -71,14 +77,16 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider allowedRoles={['admin', 'editor']} fallback={<Forbidden />}>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
 }
 ```
 
-Use the `useUser` hook in any Client Component:
+Use the `useUser` hook in any Client Component. The `user` object is an instance of `MayRLabsUser` with utility methods:
 
 ```tsx
 "use client";
@@ -86,8 +94,15 @@ import { useUser } from "@mayrlabs/auth-nextjs/provider";
 
 export function UserProfile() {
   const { user } = useUser();
+  
   if (!user) return <p>Not logged in</p>;
-  return <p>Hello, {user.email}!</p>;
+  
+  return (
+    <div>
+      <p>Hello, {user.email}!</p>
+      {user.hasRole('admin') && <button>Delete Everything</button>}
+    </div>
+  );
 }
 ```
 
@@ -108,11 +123,6 @@ export const {
   logoutHandler,
 } = createNextIssuerAuth();
 ```
-
-### Methods
-
-- `getUser()`: (Async) Retrieves the user payload from the session cookie.
-- `logoutHandler(request)`: A Route Handler compatible function to clear the session.
 
 ---
 

@@ -1,5 +1,18 @@
 # @mayrlabs/auth
 
+## 0.5.0 (2026-04-09)
+
+### Features
+- **User Model**: Introduced `MayRLabsUser` class with utility methods (`hasRole`, `hasAnyRole`, etc).
+- **Hooks**: Added `onAuthSuccess` and `onAuthFailure` event hooks to `ClientConfig`.
+- **Schema**: Added `avatarUrl` to `MayRLabsAuthUserPayload`.
+
+## 0.4.2 (2026-04-08)
+
+### Breaking Changes
+- Separated session cookie keys for client and issuer applications.
+- Updated default session key to `mayrlabs-client-session` (Client) and `mayrlabs-issuer-session` (Issuer).
+
 ## 0.4.1
 
 Bump to sync

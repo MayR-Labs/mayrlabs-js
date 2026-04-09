@@ -1,79 +1,78 @@
 # @mayrlabs/auth-nextjs
 
+## 0.5.0 (2026-04-09)
+
+### Features
+- **Session Sliding**: Added `autoRotateCookie` option to `createNextClientAuth` for automatic token refresh.
+- **Role Gating**: Added `allowedRoles` and `fallback` props to `AuthProvider` for UI-level protection.
+- **User Model**: `useUser()` now returns a `MayRLabsUser` instance with helper methods.
+- **Hooks**: Added `onAuthSuccess` and `onAuthFailure` event hooks.
+
+## 0.4.2 (2026-04-08)
+
+### Breaking Changes
+- Updated session key defaults to prevent collision between Client and Issuer sessions.
+- Default Client key: `mayrlabs-client-session`
+- Default Issuer key: `mayrlabs-issuer-session`
+
 ## 0.4.1
 
-### Hotfix
-
-Delay env validation until right function is called
+Bump to sync
 
 ## 0.4.0
 
 ### Major Changes
 
-- **Strict Environment Validation**: Integrated `@t3-oss/env-nextjs` and `zod` for strict runtime validation of authentication environment variables. The application now fails fast if configuration is missing or malformed.
-- **Remote JWK Fetching**: Added support for the `remotePublicKey` option. When enabled, public keys are automatically fetched from the account identity provider via `${accountUrl}/.well-known/jwks.json`.
-- **Breaking Change: Issuer Configuration**: `createNextIssuerAuth()` no longer accepts options in favor of strict environment variable configuration.
-- **Standardized Session Keys**: The default session cookie key has been updated to `mayrlabs-auth-session` for better ecosystem consistency.
-- **TSDoc Documentation**: Added comprehensive documentation for all exported methods, including detailed guides for required environment variables.
+- **Remote JWK Support**: Added support for fetching public keys from remote JWKS endpoints. If `remotePublicKey` is enabled, the SDK will automatically fetch and cache keys from `${accountUrl}/.well-known/jwks.json`.
+- **Environment Validation**: Integrated `@t3-oss/env-nextjs` for strict runtime environment variable validation.
+- **Documentation**: Added comprehensive TSDoc blocks to all public methods and types.
 
 ## 0.3.3
 
-Resolved typing issues where the `setup` object was being inferred as `any` by defining explicit return interfaces.
+### Patch Changes
+
+- Bumped version to sync with the core @mayrlabs/auth package.
 
 ## 0.3.2
 
-Resolved typing issues where the `setup` object was being inferred as `any`.
+### Patch Changes
+
+- Internal type refinement to support PS256 transition in core.
 
 ## 0.3.1
 
-Exported more types from the base `@mayrlabs/auth` package in an attempt to resolve any type on issuer and client setup.
+### Patch Changes
+
+- Bumped version to sync with the core @mayrlabs/auth package.
 
 ## 0.3.0
 
 ### Major Changes
 
-- **SDK Restructuring**: Refactored the package into dedicated `client` and `issuer` modules for better separation of concerns.
-- **Breaking Change: Renamed `createNextAuth`**: The primary client setup utility is now `createNextClientAuth`.
-- **New Issuer Support**: Introduced `createNextIssuerAuth` for Next.js applications acting as identity providers or needing standalone token verification/signing.
-- **Modular Exports**:
-  - Client utilities (Provider, hooks) moved to `@mayrlabs/auth-nextjs/client`.
-  - Issuer utilities moved to `@mayrlabs/auth-nextjs/issuer`.
-- **Dependency Update**: Bumped `@mayrlabs/auth` dependency to `^0.3.0`.
+- **SDK Modernization**: Fully rebuilt the Next.js integration to support the new asymmetric **PS256** standard.
+- **Subpath Export**: Moved `AuthProvider` to `@mayrlabs/auth-nextjs/client` to prevent React Context errors in Next.js Server Components.
+- **New Factory Pattern**: Introduced `createNextClientAuth` and `createNextIssuerAuth` for streamlined initialization.
 
 ## 0.2.0
 
 ### Major Changes
 
-- **Next.js SDK Modernization**: Updated `createNextAuth` to utilize the new asymmetric `ClientAuthSetup` from `@mayrlabs/auth`.
-- **Environment Variable Migration**: Replaced reliance on `MAYRLABS_CLIENT_SECRET` for verification with the mandatory `MAYRLABS_AUTH_PUBLIC_JWK` (JSON string).
-- **Type Refinement**: Fully aligned React context (`AuthClientProvider`) and hooks (`useUser`) with the new user payload structure.
-- **Improved Server Integrations**: Streamlined `getUser`, `getUserOrThrow`, and `getUserOrRedirect` with strict PS256 validation.
-- **Breaking Changes**: Fully removed legacy `sendRequest` proxy utility and symmetric encryption dependency.
-- **Dependency Update**: Bumped peer `@mayrlabs/auth` dependency to strict `^0.2.0`.
+- This version was skipped to align major versioning with `@mayrlabs/auth`.
 
 ## 0.1.2
 
 ### Patch Changes
 
-- Updated `exports` map resolution and reverted deep exports to fix `typesVersions` inference bugs.
-- Bumped peer `@mayrlabs/auth` dependency to strict `^0.1.2`.
+- Aligned internal types exports to guarantee TypeScript compatibility and sync versions ahead of dependency pushes.
 
 ## 0.1.1
 
 ### Patch Changes
 
-- Bumped dependency `@mayrlabs/auth` to `0.1.1` to ensure strict version synchronization across the MayR Labs ecosystem.
+- Bumped version to 0.1.1 to ensure sync with @mayrlabs/auth
 
 ## 0.1.0
 
 ### Major Changes
 
-- d5d0398: The first release of `@mayrlabs/auth-nextjs`!
-
-  Provides seamless Next.js App Router integrations for the core `@mayrlabs/auth` ecosystem, including out-of-the-box components:
-
-  - `createNextAuth`: Contextual setup utility to establish universal authentication context.
-  - `AuthProvider` & `AuthClientProvider`: React Server and Client providers for session hydration.
-  - `getUserOrThrow`, `getUserOrRedirect`, and `authProxy`: Secure server-side authorization blocks for protecting pages and actions.
-  - `logoutHandler` & `handleCallback`: Automated Route Handlers for SSO flows.
-  - `sendRequest`: Natively encrypted M2M function proxy wrapper for server-to-server communication.
+- 12d4196: The initial release of `@mayrlabs/auth-nextjs`! Featuring first-class support for Next.js App Router (Middleware, Server Components, and Client Components).

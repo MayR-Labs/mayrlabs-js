@@ -29,6 +29,12 @@ export interface NextAuthOptions {
     onAuthSuccess?: (user: MayRLabsAuthUserPayload) => Promise<void> | void;
     onAuthFailure?: (error: MayRLabsAuthErrorPayload) => Promise<void> | void;
   };
+  /**
+   * Automatically refreshes the session cookie if more than half its life has passed.
+   * Only works in contexts where cookies are writable (Middleware, Server Actions, Route Handlers).
+   * @default false
+   */
+  autoRotateCookie?: boolean;
 }
 
 export interface NextIssuerAuth {

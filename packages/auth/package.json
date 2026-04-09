@@ -1,6 +1,6 @@
 {
   "name": "@mayrlabs/auth",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "A strictly typed, universal JWT and M2M authentication core library powering the MayR Labs ecosystem.",
   "keywords": [
     "auth",
