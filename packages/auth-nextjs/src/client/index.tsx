@@ -90,6 +90,7 @@ export function createNextClientAuth(
     issuer: issuerEnv,
     redirects,
     session,
+    events: options.events,
   });
 
   /**
@@ -118,6 +119,8 @@ export function createNextClientAuth(
     if (errorToken) {
       const errorData = await setup.verifyErrorToken(errorToken, audience);
 
+      if (errorData) await setup.config.events?.onAuthFailure?.(errorData);
+
       return redirectToError(
         errorData?.code || "CLIENT_UNEXPECTED_ERROR",
         errorData?.message || "An unexpected error occurred.",
@@ -141,6 +144,8 @@ export function createNextClientAuth(
         "Invalid auth token.",
       );
     }
+
+    await setup.config.events?.onAuthSuccess?.(user);
 
     const response = redirectTo(setup.config.redirects.success, request.url);
 
@@ -244,12 +249,23 @@ export function createNextClientAuth(
    */
   async function AuthProvider({
     children,
+    allowedRoles,
+    fallback,
   }: {
     children: React.ReactNode;
+    allowedRoles?: string[];
+    fallback?: React.ReactNode;
   }): Promise<React.JSX.Element | null> {
     const user = await getUser();
 
     if (!user) return redirect(setup.getLoginUrl());
+
+    if (
+      allowedRoles &&
+      !allowedRoles.some((role) => user.roles.includes(role))
+    ) {
+      return (fallback as React.JSX.Element) || null;
+    }
 
     return <AuthClientProvider user={user}>{children}</AuthClientProvider>;
   }

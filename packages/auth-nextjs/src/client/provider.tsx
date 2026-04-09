@@ -1,7 +1,5 @@
-"use client";
-
-import type { MayRLabsAuthUserPayload } from "@mayrlabs/auth";
-import { createContext, type ReactNode, useContext } from "react";
+import { type MayRLabsAuthUserPayload, MayRLabsUser } from "@mayrlabs/auth";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
 
 /**
  * Context for holding the authenticated user state on the client.
@@ -23,11 +21,19 @@ export const AuthClientProvider = ({
 
 /**
  * Hook to access the current user on the client.
+ * Returns a MayRLabsUser model instance for utility methods.
  */
 export const useUser = () => {
   const context = useContext(AuthContext);
 
-  if (context) return context;
+  if (!context) {
+    throw new Error("useUser must be used within an AuthClientProvider");
+  }
 
-  throw new Error("useUser must be used within an AuthClientProvider");
+  return useMemo(() => {
+    return {
+      user: context.user ? new MayRLabsUser(context.user) : null,
+      raw: context.user,
+    };
+  }, [context.user]);
 };

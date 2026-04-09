@@ -9,6 +9,7 @@ export interface MayRLabsAuthUserPayload extends JWTPayload {
   roles: string[];
   firstName?: string;
   lastName?: string;
+  avatarUrl?: string;
 }
 
 /**
@@ -58,6 +59,10 @@ export interface ClientConfig {
   issuer: string;
   redirects: { error: string; success: string };
   session: { key: string };
+  events?: {
+    onAuthSuccess?: (user: MayRLabsAuthUserPayload) => Promise<void> | void;
+    onAuthFailure?: (error: MayRLabsAuthErrorPayload) => Promise<void> | void;
+  };
 }
 
 /**

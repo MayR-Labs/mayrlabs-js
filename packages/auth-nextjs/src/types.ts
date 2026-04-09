@@ -1,6 +1,7 @@
 import type {
   ClientAuthSetup,
   IssuerAuthSetup,
+  MayRLabsAuthErrorPayload,
   MayRLabsAuthUserPayload,
 } from "@mayrlabs/auth";
 import type { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,13 @@ export interface NextAuthOptions {
    * No `MAYRLABS_AUTH_PUBLIC_JWK` needed.
    */
   remotePublicKey?: boolean;
+  /**
+   * Event hooks for authentication lifecycle.
+   */
+  events?: {
+    onAuthSuccess?: (user: MayRLabsAuthUserPayload) => Promise<void> | void;
+    onAuthFailure?: (error: MayRLabsAuthErrorPayload) => Promise<void> | void;
+  };
 }
 
 export interface NextIssuerAuth {
@@ -41,5 +49,7 @@ export interface NextClientAuth {
   redirectToLogin: (request: NextRequest) => NextResponse;
   AuthProvider: (props: {
     children: React.ReactNode;
+    allowedRoles?: string[];
+    fallback?: React.ReactNode;
   }) => Promise<React.JSX.Element | null>;
 }
