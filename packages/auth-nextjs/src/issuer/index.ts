@@ -1,7 +1,7 @@
 import {
+  AuthUser,
+  ISSUER_SESSION_KEY,
   IssuerAuthSetup,
-  type MayRLabsAuthUserPayload,
-  SESSION_KEY,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -32,10 +32,9 @@ export function createNextIssuerAuth(): NextIssuerAuth {
       MAYRLABS_AUTH_PUBLIC_JWK: jwkSchema,
       MAYRLABS_AUTH_PRIVATE_JWK: jwkSchema,
       MAYRLABS_AUTH_ISSUER: z.string().min(1).default("auth.mayrlabs.com"),
-      MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+      MAYRLABS_AUTH_SESSION_KEY: z.string().default(ISSUER_SESSION_KEY),
       MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
     },
-    client: {},
     experimental__runtimeEnv: process.env,
     skipValidation: process.env.NODE_ENV === "test",
   });
@@ -58,27 +57,29 @@ export function createNextIssuerAuth(): NextIssuerAuth {
    * Gets the current user from the session cookie.
    * Works securely in Server Components, Server Actions, and Route Handlers.
    *
-   * @returns A promise resolving to the user payload or null if unauthenticated.
+   * @returns A promise resolving to the user model or null if unauthenticated.
    */
-  const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
+  const getUser = async (): Promise<AuthUser | null> => {
     const cookieStore = await cookies();
 
     const token = cookieStore.get(sessionKey)?.value;
 
     if (!token) return null;
 
-    return setup.verifyAuthToken(token);
+    const payload = await setup.verifyAuthToken(token);
+
+    return payload ? new AuthUser(payload) : null;
   };
 
   /**
    * Gets the current user or throws an UnauthenticatedError if not logged in.
    * Useful for quickly securing Server Actions or strictly protected Route Handlers.
    *
-   * @returns A promise resolving to the user payload.
+   * @returns A promise resolving to the user model.
    *
    * @throws {UnauthenticatedError} If the user session token is missing or invalid.
    */
-  const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
+  const getUserOrThrow = async (): Promise<AuthUser> => {
     const user = await getUser();
 
     if (!user) throw new UnauthenticatedError();

@@ -11,16 +11,22 @@ import { createNextClientAuth, createNextIssuerAuth } from "./index";
 
 const {
   mockCookiesGet,
+  mockCookiesSet,
+  mockCookiesDelete,
   mockCookiesGetSetter,
   MockNextRequest,
   mockNextResponse,
 } = vi.hoisted(() => {
   let _mockCookiesGetImpl = (_name?: string) => undefined as any;
 
+  const mockCookiesGet = vi.fn((n: string) => _mockCookiesGetImpl(n));
+  const mockCookiesSet = vi.fn();
+  const mockCookiesDelete = vi.fn();
+
   class MockNextRequest {
     public url: string;
     public nextUrl: URL;
-    public cookies = { get: (n: string) => _mockCookiesGetImpl(n) };
+    public cookies = { get: mockCookiesGet };
     constructor(url: string) {
       this.url = url;
       this.nextUrl = new URL(url);
@@ -30,13 +36,15 @@ const {
   const mockNextResponse = {
     redirect: (url: string | URL) => ({
       url: url.toString(),
-      cookies: { set: vi.fn(), delete: vi.fn() },
+      cookies: { set: mockCookiesSet, delete: mockCookiesDelete },
     }),
     next: vi.fn(() => ({ type: "next" })),
   };
 
   return {
-    mockCookiesGet: (n: string) => _mockCookiesGetImpl(n),
+    mockCookiesGet,
+    mockCookiesSet,
+    mockCookiesDelete,
     mockCookiesGetSetter: (fn: any) => {
       _mockCookiesGetImpl = fn;
     },
@@ -48,6 +56,8 @@ const {
 vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: mockCookiesGet,
+    set: mockCookiesSet,
+    delete: mockCookiesDelete,
   }),
 }));
 
@@ -76,14 +86,20 @@ describe("createNextClientAuth", () => {
   describe("handleCallback", () => {
     it("should redirect to error URL when error query param is present", async () => {
       const auth = createNextClientAuth();
+      mockCookiesGetSetter((name: string) => {
+        if (name === "mayrlabs-auth-state")
+          return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
       vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
         code: "MOCK_ERR",
         message: "Mock error msg",
         iat: Date.now(),
-      });
+      } as any);
 
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?error=mocked-token",
+        "http://localhost/api/auth/callback?error=mocked-token&state=mock-state",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -95,24 +111,39 @@ describe("createNextClientAuth", () => {
     it("should redirect to success and set cookie when valid token is present", async () => {
       const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
-        userId: "123",
+        id: "123",
         email: "test@mayrlabs.com",
       } as any);
 
+      mockCookiesGetSetter((name: string) => {
+        if (name === "mayrlabs-auth-state")
+          return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?token=valid-token",
+        "http://localhost/api/auth/callback?token=valid-token&state=mock-state",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
       expect(res.url).toContain("/dashboard");
+
+      const cookieStore = await (await import("next/headers")).cookies();
+      expect(cookieStore.delete).toHaveBeenCalledWith("mayrlabs-auth-state");
     });
 
     it("should reject token when it fails verification", async () => {
       const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue(null);
 
+      mockCookiesGetSetter((name: string) => {
+        if (name === "mayrlabs-auth-state")
+          return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?token=bad-token",
+        "http://localhost/api/auth/callback?token=bad-token&state=mock-state",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -130,8 +161,14 @@ describe("createNextClientAuth", () => {
         });
       const verifyAuthSpy = vi.spyOn(auth.setup, "verifyAuthToken");
 
+      mockCookiesGetSetter((name: string) => {
+        if (name === "mayrlabs-auth-state")
+          return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
       const req = new NextRequest(
-        "http://localhost/api/auth/callback?token=some-token&error=error-token",
+        "http://localhost/api/auth/callback?token=some-token&error=error-token&state=mock-state",
       ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
@@ -142,10 +179,20 @@ describe("createNextClientAuth", () => {
 
     it("should redirect to error if both token and error are missing in handleCallback", async () => {
       const auth = createNextClientAuth();
-      const req = new NextRequest("http://localhost/api/auth/callback") as any;
+      mockCookiesGetSetter((name: string) => {
+        if (name === "mayrlabs-auth-state")
+          return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+      const req = new NextRequest(
+        "http://localhost/api/auth/callback?state=mock-state",
+      ) as any;
       const res = (await auth.handleCallback(req)) as any;
 
       expect(res.url).toContain("errorCode=CLIENT_MISSING_AUTH_TOKEN");
+
+      const cookieStore = await (await import("next/headers")).cookies();
+      expect(cookieStore.delete).toHaveBeenCalledWith("mayrlabs-auth-state");
     });
   });
 
@@ -164,11 +211,11 @@ describe("createNextClientAuth", () => {
         return undefined as any;
       });
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
-        userId: "123",
+        id: "123",
       } as any);
 
       const user = await auth.getUser();
-      expect(user?.userId).toBe("123");
+      expect(user?.id).toBe("123");
     });
 
     it("getUserOrThrow should throw UnauthenticatedError if no user", async () => {
@@ -182,7 +229,7 @@ describe("createNextClientAuth", () => {
       const { redirect } = await import("next/navigation");
       const auth = createNextClientAuth();
       await auth.getUserOrRedirect();
-      expect(redirect).toHaveBeenCalledWith(auth.setup.getLoginUrl());
+      expect(redirect).toHaveBeenCalledWith("/login");
     });
   });
 
@@ -191,7 +238,7 @@ describe("createNextClientAuth", () => {
       mockCookiesGetSetter(() => ({ value: "valid-token" }) as any);
       const auth = createNextClientAuth();
       vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
-        userId: "123",
+        id: "123",
       } as any);
 
       const req = new NextRequest("http://localhost/dashboard") as any;
@@ -225,16 +272,44 @@ describe("createNextClientAuth", () => {
 
     it("should use custom redirect error path", async () => {
       const auth = createNextClientAuth({ redirects: { error: "/my-error" } });
-      const req = new NextRequest(
-        "http://localhost/api/auth/callback?error=err-token",
-      ) as any;
+      mockCookiesGetSetter((name: string) => {
+        if (name === "mayrlabs-auth-state")
+          return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
       vi.spyOn(auth.setup, "verifyErrorToken").mockResolvedValue({
         code: "ERR",
         message: "msg",
-      });
+      } as any);
+
+      const req = new NextRequest(
+        "http://localhost/api/auth/callback?error=err-token&state=mock-state",
+      ) as any;
 
       const res = (await auth.handleCallback(req)) as any;
       expect(res.url).toContain("/my-error");
+    });
+
+    it("should use custom state cookie key if provided", async () => {
+      const auth = createNextClientAuth({
+        cookie: { stateKey: "custom-state-key" },
+      });
+
+      mockCookiesGetSetter((name: string) => {
+        if (name === "custom-state-key") return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
+      const req = new NextRequest(
+        "http://localhost/api/auth/callback?token=valid-token&state=mock-state",
+      ) as any;
+
+      await auth.handleCallback(req);
+
+      const cookieStore = await (await import("next/headers")).cookies();
+      expect(cookieStore.get).toHaveBeenCalledWith("custom-state-key");
+      expect(cookieStore.delete).toHaveBeenCalledWith("custom-state-key");
     });
   });
 });
@@ -254,11 +329,11 @@ describe("createNextIssuerAuth", () => {
     mockCookiesGetSetter(() => ({ value: "issuer-session-token" }) as any);
     const auth = createNextIssuerAuth();
     vi.spyOn(auth.setup, "verifyAuthToken").mockResolvedValue({
-      userId: "issuer-user",
+      id: "issuer-user",
     } as any);
 
     const user = await auth.getUser();
-    expect(user?.userId).toBe("issuer-user");
+    expect(user?.id).toBe("issuer-user");
   });
 
   it("logoutHandler should clear session cookie", async () => {
@@ -266,6 +341,6 @@ describe("createNextIssuerAuth", () => {
     const req = new NextRequest("http://localhost/api/auth/logout") as any;
     const res = (await auth.logoutHandler(req)) as any;
 
-    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-auth-session");
+    expect(res.cookies.delete).toHaveBeenCalledWith("mayrlabs-issuer-session");
   });
 });

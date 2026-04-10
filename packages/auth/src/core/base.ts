@@ -7,9 +7,9 @@ import {
 } from "jose";
 import { MayRLabsAuthError } from "../errors";
 import type {
-  MayRLabsAuthErrorPayload,
-  MayRLabsAuthMachinePayload,
-  MayRLabsAuthUserPayload,
+  AuthErrorPayload,
+  AuthMachinePayload,
+  AuthUserPayload,
 } from "../types";
 import { MACHINE_AUDIENCE } from "./constants";
 
@@ -101,8 +101,8 @@ export abstract class BaseAuthSetup<
   async verifyAuthToken(
     token: string,
     audience?: string,
-  ): Promise<MayRLabsAuthUserPayload | null> {
-    return this.#verifyToken<MayRLabsAuthUserPayload>(token, audience);
+  ): Promise<AuthUserPayload | null> {
+    return this.#verifyToken<AuthUserPayload>(token, audience);
   }
 
   /**
@@ -116,8 +116,8 @@ export abstract class BaseAuthSetup<
   async verifyErrorToken(
     token: string,
     audience?: string,
-  ): Promise<MayRLabsAuthErrorPayload | null> {
-    return this.#verifyToken<MayRLabsAuthErrorPayload>(token, audience);
+  ): Promise<AuthErrorPayload | null> {
+    return this.#verifyToken<AuthErrorPayload>(token, audience);
   }
 
   /**
@@ -127,12 +127,7 @@ export abstract class BaseAuthSetup<
    *
    * @returns The machine payload if valid, or null.
    */
-  async verifyMachineToken(
-    token: string,
-  ): Promise<MayRLabsAuthMachinePayload | null> {
-    return this.#verifyToken<MayRLabsAuthMachinePayload>(
-      token,
-      MACHINE_AUDIENCE,
-    );
+  async verifyMachineToken(token: string): Promise<AuthMachinePayload | null> {
+    return this.#verifyToken<AuthMachinePayload>(token, MACHINE_AUDIENCE);
   }
 }

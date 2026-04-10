@@ -14,6 +14,11 @@ export const ISSUER = "auth.mayrlabs.com";
 export const MACHINE_AUDIENCE = "mayrlabs-internal";
 
 /**
- * Standard session cookie key used across the MayR Labs ecosystem.
+ * Default session cookie key for client applications.
  */
-export const SESSION_KEY = "mayrlabs-auth-session";
+export const CLIENT_SESSION_KEY = "mayrlabs-client-session";
+
+/**
+ * Default session cookie key for issuer/identity providers.
+ */
+export const ISSUER_SESSION_KEY = "mayrlabs-issuer-session";

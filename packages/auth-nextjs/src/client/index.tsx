@@ -1,8 +1,10 @@
 import {
   ACCOUNT_URL,
+  AuthUser,
+  type AuthUserPayload,
+  CLIENT_SESSION_KEY,
   ClientAuthSetup,
-  type MayRLabsAuthUserPayload,
-  SESSION_KEY,
+  generateRandomString,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -26,7 +28,7 @@ import { AuthClientProvider } from "./provider";
  * - MAYRLABS_ACCOUNT_URL: The centralized IdP Account URL (default: "https://myaccount.mayrlabs.com")
  * - MAYRLABS_AUTH_PUBLIC_JWK: The public JWK for token verification (Not required if remotePublicKey is true)
  * - MAYRLABS_AUTH_ISSUER: The expected Token Issuer string
- * - MAYRLABS_AUTH_SESSION_KEY: Local session cookie key (default: "mayrlabs-auth-session")
+ * - MAYRLABS_AUTH_SESSION_KEY: Local session cookie key (default: "mayrlabs-client-session")
  * - MAYRLABS_AUTH_ERROR_REDIRECT: Redirect path on error (default: "/login")
  * - MAYRLABS_AUTH_SUCCESS_REDIRECT: Redirect path on success (default: "/dashboard")
  *
@@ -45,11 +47,11 @@ export function createNextClientAuth(
       MAYRLABS_ACCOUNT_URL: z.string().url().default(ACCOUNT_URL),
       MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
       MAYRLABS_AUTH_ISSUER: z.string().optional(),
-      MAYRLABS_AUTH_SESSION_KEY: z.string().default(SESSION_KEY),
+      MAYRLABS_AUTH_SESSION_KEY: z.string().default(CLIENT_SESSION_KEY),
+      MAYRLABS_AUTH_STATE_KEY: z.string().default("mayrlabs-auth-state"),
       MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
       MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
     },
-    client: {},
     experimental__runtimeEnv: process.env,
     skipValidation: process.env.NODE_ENV === "test",
   });
@@ -58,10 +60,11 @@ export function createNextClientAuth(
     MAYRLABS_AUTH_PUBLIC_JWK: publicKey,
     MAYRLABS_CLIENT_ID: clientId,
     MAYRLABS_CLIENT_SECRET: clientSecret,
-    MAYRLABS_ACCOUNT_URL: accountUrl,
+    MAYRLABS_ACCOUNT_URL: accountUrl = ACCOUNT_URL,
     MAYRLABS_CLIENT_AUDIENCE: audience,
     MAYRLABS_AUTH_ISSUER: issuerEnv,
     MAYRLABS_AUTH_SESSION_KEY: sessionKey,
+    MAYRLABS_AUTH_STATE_KEY: stateKey,
     MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
     MAYRLABS_AUTH_SUCCESS_REDIRECT: successRedirect,
   } = clientEnv;
@@ -81,6 +84,10 @@ export function createNextClientAuth(
     key: options.session?.key || sessionKey,
   };
 
+  const cookie = {
+    stateKey: options.cookie?.stateKey || stateKey,
+  };
+
   const setup: ClientAuthSetup = new ClientAuthSetup({
     publicKey,
     remotePublicKey: options.remotePublicKey,
@@ -90,6 +97,7 @@ export function createNextClientAuth(
     issuer: issuerEnv,
     redirects,
     session,
+    events: options.events,
   });
 
   /**
@@ -104,6 +112,8 @@ export function createNextClientAuth(
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
 
+    const cookieStore = await cookies();
+
     const redirectToError = (code: string, message: string) => {
       const errorUrl = new URL(setup.config.redirects.error, request.url);
 
@@ -113,10 +123,27 @@ export function createNextClientAuth(
       return NextResponse.redirect(errorUrl);
     };
 
+    // CSRF State Verification
+    const state = searchParams.get("state");
+
+    const cookieState = cookieStore.get(cookie.stateKey)?.value;
+
+    // Cleanup state cookie immediately after retrieval
+    cookieStore.delete(cookie.stateKey);
+
+    if (!state || !cookieState || state !== cookieState) {
+      return redirectToError(
+        "CLIENT_CSRF_MISMATCH",
+        "Security state mismatch. Please try logging in again.",
+      );
+    }
+
     const errorToken = searchParams.get("error");
 
     if (errorToken) {
       const errorData = await setup.verifyErrorToken(errorToken, audience);
+
+      if (errorData) await setup.config.events?.onAuthFailure?.(errorData);
 
       return redirectToError(
         errorData?.code || "CLIENT_UNEXPECTED_ERROR",
@@ -142,6 +169,8 @@ export function createNextClientAuth(
       );
     }
 
+    await setup.config.events?.onAuthSuccess?.(user);
+
     const response = redirectTo(setup.config.redirects.success, request.url);
 
     response.cookies.set(setup.config.session.key, token, {
@@ -156,24 +185,66 @@ export function createNextClientAuth(
 
   /**
    * Retrieves the current user from the session cookie.
-   *
-   * @returns User payload or null if no session.
+   * If autoRotateCookie is enabled, it periodically refreshes the session token.
    */
-  const getUser = async (): Promise<MayRLabsAuthUserPayload | null> => {
+  const getUser = async (): Promise<AuthUser | null> => {
     const cookieStore = await cookies();
-    const token = cookieStore.get(session.key)?.value;
+
+    const token = cookieStore.get(setup.config.session.key)?.value;
 
     if (!token) return null;
 
-    return setup.verifyAuthToken(token, audience);
+    const user = await setup.verifyAuthToken(token, audience);
+
+    if (!user) return null;
+
+    // Session Sliding Logic
+    if (options.autoRotateCookie && user.iat && user.exp) {
+      const totalLife = user.exp - user.iat;
+
+      const elapsed = Math.floor(Date.now() / 1000) - user.iat;
+
+      // If past half-life, attempt refresh
+      if (elapsed > totalLife / 2) {
+        try {
+          const refreshResponse = await fetch(
+            `${accountUrl}/api/auth/token-refresh`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token, clientId, clientSecret }),
+            },
+          );
+
+          if (refreshResponse.ok) {
+            const { token: newToken } = await refreshResponse.json();
+
+            try {
+              cookieStore.set(setup.config.session.key, newToken, {
+                path: "/",
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+              });
+            } catch (error) {
+              console.error("[MayRLabs Auth] Session rotation failed:", error);
+            }
+          }
+        } catch (error) {
+          console.error("[MayRLabs Auth] Session rotation failed:", error);
+        }
+      }
+    }
+
+    return user ? new AuthUser(user) : null;
   };
 
   /**
    * Retrieves the current user or throws an UnauthenticatedError if no session exists.
    *
-   * @returns User payload.
+   * @returns User model instance.
    */
-  const getUserOrThrow = async (): Promise<MayRLabsAuthUserPayload> => {
+  const getUserOrThrow = async (): Promise<AuthUser> => {
     const user = await getUser();
 
     if (!user) {
@@ -189,10 +260,10 @@ export function createNextClientAuth(
    * Gets the current user or redirects to the login page if not logged in.
    * Useful for Server Components.
    */
-  const getUserOrRedirect = async (): Promise<MayRLabsAuthUserPayload> => {
+  const getUserOrRedirect = async (): Promise<AuthUser> => {
     const user = await getUser();
 
-    if (!user) return redirect(setup.getLoginUrl());
+    if (!user) return redirect(redirects.error);
 
     return user;
   };
@@ -205,15 +276,11 @@ export function createNextClientAuth(
   const authProxy = async (request: NextRequest) => {
     const token = request.cookies.get(session.key)?.value;
 
-    let user: MayRLabsAuthUserPayload | null = null;
+    let user: AuthUserPayload | null = null;
 
     if (token) user = await setup.verifyAuthToken(token, audience);
 
-    if (!user) {
-      const loginUrl = setup.getLoginUrl();
-
-      return redirectTo(loginUrl, request.url);
-    }
+    if (!user) return redirectToLogin();
 
     return NextResponse.next();
   };
@@ -231,11 +298,24 @@ export function createNextClientAuth(
 
   /**
    * Returns a redirect to the central login URL.
+   * Generates and stores a CSRF state cookie valid for 5 minutes.
    */
-  const redirectToLogin = (request: NextRequest) => {
-    const loginUrl = setup.getLoginUrl();
+  const redirectToLogin = async (params: Record<string, string> = {}) => {
+    const state = generateRandomString(32);
 
-    return redirectTo(loginUrl, request.url);
+    const loginUrl = setup.getLoginUrl({ ...params, state });
+
+    const response = redirectTo(loginUrl);
+
+    response.cookies.set(cookie.stateKey, state, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 300, // 5 minutes
+    });
+
+    return response;
   };
 
   /**
@@ -244,14 +324,27 @@ export function createNextClientAuth(
    */
   async function AuthProvider({
     children,
+    allowedRoles,
+    fallback,
   }: {
     children: React.ReactNode;
+    allowedRoles?: string[];
+    fallback?: React.ReactNode;
   }): Promise<React.JSX.Element | null> {
     const user = await getUser();
 
-    if (!user) return redirect(setup.getLoginUrl());
+    if (!user) return redirect(redirects.error);
 
-    return <AuthClientProvider user={user}>{children}</AuthClientProvider>;
+    if (
+      allowedRoles &&
+      !allowedRoles.some((role) => user.roles.includes(role))
+    ) {
+      return (fallback as React.JSX.Element) || null;
+    }
+
+    return (
+      <AuthClientProvider user={user.toJSON()}>{children}</AuthClientProvider>
+    );
   }
 
   return {

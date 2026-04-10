@@ -1,16 +1,16 @@
 import { MayRLabsAuthError } from "../errors";
 import type {
+  AuthErrorPayload,
+  AuthUserPayload,
   ClientConfig,
   ClientConfigInput,
-  MayRLabsAuthErrorPayload,
-  MayRLabsAuthUserPayload,
 } from "../types";
 import { BaseAuthSetup } from "./base";
-import { ISSUER, SESSION_KEY } from "./constants";
+import { CLIENT_SESSION_KEY, ISSUER } from "./constants";
 
 const DEFAULTS = {
   redirects: { error: "/login", success: "/dashboard" },
-  session: { key: SESSION_KEY },
+  session: { key: CLIENT_SESSION_KEY },
 };
 
 export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
@@ -27,10 +27,16 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
    * Constructs the URL to the centralized login page.
    * Includes the `appId` search parameter with the configured clientId.
    *
+   * @param params Optional additional query parameters to append.
    * @returns The fully qualified login URL as a string.
    */
-  getLoginUrl(): string {
+  getLoginUrl(params: Record<string, string> = {}): string {
     const url = new URL(`${this.config.accountUrl}/login`);
+
+    for (const [key, value] of Object.entries(params)) {
+      url.searchParams.set(key, value);
+    }
+
     url.searchParams.set("appId", this.config.clientId);
 
     return url.toString();
@@ -95,7 +101,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
   async verifyAuthToken(
     token: string,
     audience?: string,
-  ): Promise<MayRLabsAuthUserPayload | null> {
+  ): Promise<AuthUserPayload | null> {
     return super.verifyAuthToken(token, audience || this.config.clientId);
   }
 
@@ -111,7 +117,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
   async verifyErrorToken(
     token: string,
     audience?: string,
-  ): Promise<MayRLabsAuthErrorPayload | null> {
+  ): Promise<AuthErrorPayload | null> {
     return super.verifyErrorToken(token, audience || this.config.clientId);
   }
 }

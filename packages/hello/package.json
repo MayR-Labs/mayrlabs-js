@@ -46,9 +46,6 @@
   "scripts": {
     "build": "tsdown",
     "pkg:dev": "tsdown --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
     "demo": "tsx src/hello.ts",
     "demo:dist": "node dist/hello.cjs",
     "prepublishOnly": "npm run build"
