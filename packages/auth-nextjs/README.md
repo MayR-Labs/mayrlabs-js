@@ -31,6 +31,7 @@ The SDK now strictly validates environment variables using Zod. Ensure the follo
 - `MAYRLABS_AUTH_SESSION_KEY`: (Default: `mayrlabs-client-session`) Local session cookie key.
 - `MAYRLABS_AUTH_ERROR_REDIRECT`: (Default: `/login`) Path to redirect on error.
 - `MAYRLABS_AUTH_SUCCESS_REDIRECT`: (Default: `/dashboard`) Path to redirect on success.
+- `MAYRLABS_AUTH_STATE_KEY`: (Default: `mayrlabs-auth-state`) The key name for the CSRF state cookie.
 
 #### Issuer Auth Variables (`createNextIssuerAuth`)
 - `MAYRLABS_AUTH_PRIVATE_JWK`: (Required) The private JWK for signing tokens.
@@ -61,6 +62,9 @@ export const {
   autoRotateCookie: true,
   events: {
     onAuthSuccess: (user) => console.log(`User ${user.email} logged in`),
+  },
+  cookie: {
+    stateKey: "custom-state-key", // Optional override
   }
 });
 ```
@@ -68,15 +72,18 @@ export const {
 ### 🛡️ CSRF Protection
 The SDK automatically implements **State-parameter verification**. When you call `redirectToLogin`, it:
 1. Generates a random `state`.
-2. Stores it in an `httpOnly` cookie (`mayrlabs-auth-state`) with a 5-minute expiry.
+2. Stores it in an `httpOnly` cookie (`mayrlabs-auth-state` or custom key) with a 5-minute expiry.
 3. Appends the `state` to the login URL.
-The `handleCallback` method then strictly verifies this state.
+
+The `handleCallback` method strictly verifies this state and **immediately deletes the cookie after consumption** to maximize security and prevent replay attempts.
 
 ### 🔄 Dynamic Redirects
 You can now pass custom parameters to the login page:
 ```typescript
-await redirectToLogin(request, { return_to: "/dashboard/settings" });
+await redirectToLogin({ return_to: "/dashboard/settings" });
 ```
+> [!IMPORTANT]
+> The `redirectToLogin` method no longer requires the `request` parameter. It utilizes absolute redirection to the central Account Center.
 
 ### ⚛️ React Setup
 

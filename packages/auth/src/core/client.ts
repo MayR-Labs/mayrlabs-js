@@ -33,11 +33,11 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
   getLoginUrl(params: Record<string, string> = {}): string {
     const url = new URL(`${this.config.accountUrl}/login`);
 
-    url.searchParams.set("appId", this.config.clientId);
-
     for (const [key, value] of Object.entries(params)) {
       url.searchParams.set(key, value);
     }
+
+    url.searchParams.set("appId", this.config.clientId);
 
     return url.toString();
   }

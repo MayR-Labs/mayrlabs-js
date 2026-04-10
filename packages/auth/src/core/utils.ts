@@ -136,10 +136,17 @@ export function generateRandomString(length = 32): string {
 
 /**
  * Helper to encode an array buffer into a base64url string.
+ * Compatible with both Node.js and Browser environments.
  */
 function b64url(buffer: Uint8Array): string {
-  const binary = String.fromCharCode(...buffer);
-  const base64 = btoa(binary);
+  let base64: string;
+
+  if (typeof Buffer !== "undefined") {
+    base64 = Buffer.from(buffer).toString("base64");
+  } else {
+    const binary = String.fromCharCode(...buffer);
+    base64 = btoa(binary);
+  }
 
   return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }

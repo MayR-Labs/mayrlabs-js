@@ -19,6 +19,10 @@ export interface NextAuthOptions {
    */
   session?: Partial<{ key: string }>;
   /**
+   * CSRF state cookie configurations.
+   */
+  cookie?: Partial<{ stateKey: string }>;
+  /**
    * If true, securely fetches the public JWK directly from the IdP account URL (`/.well-known/jwks.json`).
    * No `MAYRLABS_AUTH_PUBLIC_JWK` needed.
    */
@@ -53,10 +57,7 @@ export interface NextClientAuth {
   getUserOrRedirect: () => Promise<AuthUser>;
   authProxy: (request: NextRequest) => Promise<NextResponse>;
   logoutHandler: (request: NextRequest) => Promise<NextResponse>;
-  redirectToLogin: (
-    request: NextRequest,
-    params?: Record<string, string>,
-  ) => Promise<NextResponse>;
+  redirectToLogin: (params?: Record<string, string>) => Promise<NextResponse>;
   AuthProvider: (props: {
     children: React.ReactNode;
     allowedRoles?: string[];

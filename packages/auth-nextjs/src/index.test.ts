@@ -49,6 +49,7 @@ vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: mockCookiesGet,
     set: vi.fn(),
+    delete: vi.fn(),
   }),
 }));
 
@@ -118,6 +119,9 @@ describe("createNextClientAuth", () => {
       const res = (await auth.handleCallback(req)) as any;
 
       expect(res.url).toContain("/dashboard");
+
+      const cookieStore = await (await import("next/headers")).cookies();
+      expect(cookieStore.delete).toHaveBeenCalledWith("mayrlabs-auth-state");
     });
 
     it("should reject token when it fails verification", async () => {
@@ -178,6 +182,9 @@ describe("createNextClientAuth", () => {
       const res = (await auth.handleCallback(req)) as any;
 
       expect(res.url).toContain("errorCode=CLIENT_MISSING_AUTH_TOKEN");
+
+      const cookieStore = await (await import("next/headers")).cookies();
+      expect(cookieStore.delete).toHaveBeenCalledWith("mayrlabs-auth-state");
     });
   });
 
@@ -274,6 +281,27 @@ describe("createNextClientAuth", () => {
 
       const res = (await auth.handleCallback(req)) as any;
       expect(res.url).toContain("/my-error");
+    });
+
+    it("should use custom state cookie key if provided", async () => {
+      const auth = createNextClientAuth({
+        cookie: { stateKey: "custom-state-key" },
+      });
+
+      mockCookiesGetSetter((name: string) => {
+        if (name === "custom-state-key") return { value: "mock-state" } as any;
+        return undefined as any;
+      });
+
+      const req = new NextRequest(
+        "http://localhost/api/auth/callback?token=valid-token&state=mock-state",
+      ) as any;
+
+      await auth.handleCallback(req);
+
+      const cookieStore = await (await import("next/headers")).cookies();
+      expect(cookieStore.get).toHaveBeenCalledWith("custom-state-key");
+      expect(cookieStore.delete).toHaveBeenCalledWith("custom-state-key");
     });
   });
 });

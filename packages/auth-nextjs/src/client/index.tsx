@@ -48,6 +48,7 @@ export function createNextClientAuth(
       MAYRLABS_CLIENT_AUDIENCE: z.string().min(1),
       MAYRLABS_AUTH_ISSUER: z.string().optional(),
       MAYRLABS_AUTH_SESSION_KEY: z.string().default(CLIENT_SESSION_KEY),
+      MAYRLABS_AUTH_STATE_KEY: z.string().default("mayrlabs-auth-state"),
       MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
       MAYRLABS_AUTH_SUCCESS_REDIRECT: z.string().default("/dashboard"),
     },
@@ -64,6 +65,7 @@ export function createNextClientAuth(
     MAYRLABS_CLIENT_AUDIENCE: audience,
     MAYRLABS_AUTH_ISSUER: issuerEnv,
     MAYRLABS_AUTH_SESSION_KEY: sessionKey,
+    MAYRLABS_AUTH_STATE_KEY: stateKey,
     MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
     MAYRLABS_AUTH_SUCCESS_REDIRECT: successRedirect,
   } = clientEnv;
@@ -81,6 +83,10 @@ export function createNextClientAuth(
 
   const session = {
     key: options.session?.key || sessionKey,
+  };
+
+  const cookie = {
+    stateKey: options.cookie?.stateKey || stateKey,
   };
 
   const setup: ClientAuthSetup = new ClientAuthSetup({
@@ -121,7 +127,10 @@ export function createNextClientAuth(
     // CSRF State Verification
     const state = searchParams.get("state");
 
-    const cookieState = cookieStore.get("mayrlabs-auth-state")?.value;
+    const cookieState = cookieStore.get(cookie.stateKey)?.value;
+
+    // Cleanup state cookie immediately after retrieval
+    cookieStore.delete(cookie.stateKey);
 
     if (!state || !cookieState || state !== cookieState) {
       return redirectToError(
@@ -255,7 +264,7 @@ export function createNextClientAuth(
   const getUserOrRedirect = async (): Promise<AuthUser> => {
     const user = await getUser();
 
-    if (!user) return redirect(setup.getLoginUrl());
+    if (!user) return redirectToLogin();
 
     return user;
   };
@@ -272,7 +281,7 @@ export function createNextClientAuth(
 
     if (token) user = await setup.verifyAuthToken(token, audience);
 
-    if (!user) return redirectToLogin(request);
+    if (!user) return redirectToLogin();
 
     return NextResponse.next();
   };
@@ -292,19 +301,14 @@ export function createNextClientAuth(
    * Returns a redirect to the central login URL.
    * Generates and stores a CSRF state cookie valid for 5 minutes.
    */
-  const redirectToLogin = async (
-    request: NextRequest,
-    params: Record<string, string> = {},
-  ) => {
+  const redirectToLogin = async (params: Record<string, string> = {}) => {
     const state = generateRandomString(32);
 
     const loginUrl = setup.getLoginUrl({ ...params, state });
 
-    const response = redirectTo(loginUrl, request.url);
+    const response = redirectTo(loginUrl);
 
-    const cookieStore = await cookies();
-
-    cookieStore.set("mayrlabs-auth-state", state, {
+    response.cookies.set(cookie.stateKey, state, {
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -330,7 +334,7 @@ export function createNextClientAuth(
   }): Promise<React.JSX.Element | null> {
     const user = await getUser();
 
-    if (!user) return redirect(setup.getLoginUrl());
+    if (!user) return redirectToLogin();
 
     if (
       allowedRoles &&
