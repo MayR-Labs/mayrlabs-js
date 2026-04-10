@@ -1,15 +1,18 @@
 export {
+  AuthError,
+  type AuthErrorPayload,
+  type AuthMachinePayload,
+  type AuthUserPayload,
   BaseAuthSetup,
   ClientAuthSetup,
   type ClientConfig,
   type ClientConfigInput,
+  generateCodeChallenge,
+  generateCodeVerifier,
+  generateRandomString,
   IssuerAuthSetup,
   type IssuerConfig,
   type IssuerConfigInput,
-  MayRLabsAuthError,
-  type MayRLabsAuthErrorPayload,
-  type MayRLabsAuthMachinePayload,
-  type MayRLabsAuthUserPayload,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 export * from "./client";

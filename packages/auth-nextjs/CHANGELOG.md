@@ -1,12 +1,25 @@
 # Changelog
 
+## [0.5.1] - 2026-04-10
+
+### Breaking Changes
+
+- Exported `AuthError` from `@mayrlabs/auth`
+- Exported `generateCodeChallenge`, `generateCodeVerifier` and `generateRandomString` util functions from `@mayrlabs/auth`
+
+### Fixes
+
+Fixed exports of `AuthErrorPayload`, `AuthMachinePayload`, `AuthUserPayload` from `@mayrlabs/auth`
+
 ## [0.5.0] - 2026-04-10
 
 ### ⚠️ Breaking Changes
+
 - `redirectToLogin()` no longer requires the `NextRequest` parameter as it uses absolute URL redirection.
 - `getUserOrRedirect` and `AuthProvider` now redirect to the local `redirects.error` path (default `/login`) instead of absolute SSO URLs in server context.
 
 ### Features
+
 - **CSRF Protection**: Added robust state-parameter verification for all SSO flows using `httpOnly` cookies (5-minute expiry).
 - **Security Hardening**: The state cookie is now immediately deleted after consumption in `handleCallback` to maximize security.
 - **Configurable State Key**: Added `MAYRLABS_AUTH_STATE_KEY` env variable and `cookie.stateKey` option to customize the CSRF state cookie name.
@@ -19,6 +32,7 @@
 ## [0.4.2] - 2026-04-08
 
 ### Breaking Changes
+
 - Updated session key defaults to prevent collision between Client and Issuer sessions.
 - Default Client key: `mayrlabs-client-session`
 - Default Issuer key: `mayrlabs-issuer-session`
