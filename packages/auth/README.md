@@ -13,7 +13,8 @@ The premium authentication and identity provider core package for the MayR Labs 
 - 📦 **Type Safe**: Fully written in TypeScript with comprehensive exported interfaces.
 - 👤 **User Model**: Built-in `AuthUser` class with helper methods for roles (`hasRole`, `hasAnyRole`) and nullable name fields.
 - 🔄 **Lifecycle Hooks**: Hook into auth events with `onAuthSuccess` and `onAuthFailure`.
-- 🔑 **PKCE Support**: Built-in utilities for Proof Key for Code Exchange (`generateCodeVerifier`, `generateCodeChallenge`).
+- 🛡️ **CSRF Protection**: Native support for state-based verification to prevent cross-site request forgery.
+- 🔑 **PKCE Utilities**: Built-in helpers for Proof Key for Code Exchange (`generateCodeVerifier`, `generateCodeChallenge`).
 
 ---
 
@@ -65,16 +66,20 @@ const auth = new ClientAuthSetup({
 
 ### Methods
 
-#### `getLoginUrl(): string`
-Returns the SSO redirect URL to send unauthenticated users to.
+#### `getLoginUrl(params?: Record<string, string>): string`
+
+Returns the SSO redirect URL. You can pass optional parameters like `return_to`.
 
 #### `verifyAuthToken(token: string, audience?: string): Promise<AuthUserPayload | null>`
+
 Locally verifies a signed User JWT. Defaults to using `clientId` as audience if none provided.
 
 #### `verifyErrorToken(token: string, audience?: string): Promise<AuthErrorPayload | null>`
+
 Locally verifies a signed Error JWT.
 
 #### `authenticateMachine(): Promise<string>`
+
 Fetches a **Machine Token** from the Account App's service endpoint using client credentials.
 
 ---

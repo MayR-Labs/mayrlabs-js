@@ -1,4 +1,9 @@
 import type { AuthUserPayload } from "../types";
+import {
+  _generateRandomString,
+  ALPHANUMERIC_CHARSET,
+  ALPHANUMERICDASH_CHARSET,
+} from "./_utils";
 
 /**
  * A utility class that wraps the AuthUserPayload.
@@ -103,20 +108,7 @@ export class AuthUser {
  * @returns The generated verifier string.
  */
 export function generateCodeVerifier(length = 64): string {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
-
-  let result = "";
-
-  const values = new Uint8Array(length);
-
-  crypto.getRandomValues(values);
-
-  for (let i = 0; i < length; i++) {
-    result += charset[values[i] % charset.length];
-  }
-
-  return result;
+  return _generateRandomString(ALPHANUMERICDASH_CHARSET, length);
 }
 
 /**
@@ -130,6 +122,16 @@ export async function generateCodeChallenge(verifier: string): Promise<string> {
   const buffer = await crypto.subtle.digest("SHA-256", data);
 
   return b64url(new Uint8Array(buffer));
+}
+
+/**
+ * Generates a random alphanumeric string of a specified length.
+ *
+ * @param length The length of the string (default: 32).
+ * @returns The generated random string.
+ */
+export function generateRandomString(length = 32): string {
+  return _generateRandomString(ALPHANUMERIC_CHARSET, length);
 }
 
 /**

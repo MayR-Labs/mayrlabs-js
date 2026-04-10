@@ -3,6 +3,8 @@
 ## 0.5.0 (2026-04-09)
 
 ### Features
+- **CSRF Protection**: Added robust state-parameter verification for all SSO flows using `httpOnly` cookies (5-minute expiry).
+- **Dynamic Redirects**: `redirectToLogin` now accepts an optional `params` object (e.g., `return_to`).
 - **Session Sliding**: Added `autoRotateCookie` option for automatic token rotation in Middleware/Actions.
 - **Role Gating**: Simplified UI-level protection with `allowedRoles` and `fallback` props in `AuthProvider`.
 - **User Model**: `useUser()` now returns the standardized `AuthUser` class instance.

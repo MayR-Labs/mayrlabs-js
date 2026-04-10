@@ -1,5 +1,6 @@
 import type {
   AuthErrorPayload,
+  AuthUser,
   AuthUserPayload,
   ClientAuthSetup,
   IssuerAuthSetup,
@@ -39,20 +40,23 @@ export interface NextAuthOptions {
 
 export interface NextIssuerAuth {
   setup: IssuerAuthSetup;
-  getUser: () => Promise<AuthUserPayload | null>;
-  getUserOrThrow: () => Promise<AuthUserPayload>;
+  getUser: () => Promise<AuthUser | null>;
+  getUserOrThrow: () => Promise<AuthUser>;
   logoutHandler: (request: NextRequest) => Promise<NextResponse>;
 }
 
 export interface NextClientAuth {
   setup: ClientAuthSetup;
   handleCallback: (request: NextRequest) => Promise<NextResponse>;
-  getUser: () => Promise<AuthUserPayload | null>;
-  getUserOrThrow: () => Promise<AuthUserPayload>;
-  getUserOrRedirect: () => Promise<AuthUserPayload>;
+  getUser: () => Promise<AuthUser | null>;
+  getUserOrThrow: () => Promise<AuthUser>;
+  getUserOrRedirect: () => Promise<AuthUser>;
   authProxy: (request: NextRequest) => Promise<NextResponse>;
   logoutHandler: (request: NextRequest) => Promise<NextResponse>;
-  redirectToLogin: (request: NextRequest) => NextResponse;
+  redirectToLogin: (
+    request: NextRequest,
+    params?: Record<string, string>,
+  ) => Promise<NextResponse>;
   AuthProvider: (props: {
     children: React.ReactNode;
     allowedRoles?: string[];

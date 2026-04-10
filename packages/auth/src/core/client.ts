@@ -27,11 +27,17 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
    * Constructs the URL to the centralized login page.
    * Includes the `appId` search parameter with the configured clientId.
    *
+   * @param params Optional additional query parameters to append.
    * @returns The fully qualified login URL as a string.
    */
-  getLoginUrl(): string {
+  getLoginUrl(params: Record<string, string> = {}): string {
     const url = new URL(`${this.config.accountUrl}/login`);
+
     url.searchParams.set("appId", this.config.clientId);
+
+    for (const [key, value] of Object.entries(params)) {
+      url.searchParams.set(key, value);
+    }
 
     return url.toString();
   }

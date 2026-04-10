@@ -58,11 +58,24 @@ export const {
   AuthProvider,
 } = createNextClientAuth({
   remotePublicKey: true, 
-  autoRotateCookie: true, // Automatically refreshes the session past half-life
+  autoRotateCookie: true,
   events: {
     onAuthSuccess: (user) => console.log(`User ${user.email} logged in`),
   }
 });
+```
+
+### 🛡️ CSRF Protection
+The SDK automatically implements **State-parameter verification**. When you call `redirectToLogin`, it:
+1. Generates a random `state`.
+2. Stores it in an `httpOnly` cookie (`mayrlabs-auth-state`) with a 5-minute expiry.
+3. Appends the `state` to the login URL.
+The `handleCallback` method then strictly verifies this state.
+
+### 🔄 Dynamic Redirects
+You can now pass custom parameters to the login page:
+```typescript
+await redirectToLogin(request, { return_to: "/dashboard/settings" });
 ```
 
 ### ⚛️ React Setup

@@ -1,8 +1,10 @@
 import {
   ACCOUNT_URL,
+  AuthUser,
   type AuthUserPayload,
   CLIENT_SESSION_KEY,
   ClientAuthSetup,
+  generateRandomString,
   UnauthenticatedError,
 } from "@mayrlabs/auth";
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -105,6 +107,8 @@ export function createNextClientAuth(
   const handleCallback = async (request: NextRequest) => {
     const { searchParams } = new URL(request.url);
 
+    const cookieStore = await cookies();
+
     const redirectToError = (code: string, message: string) => {
       const errorUrl = new URL(setup.config.redirects.error, request.url);
 
@@ -113,6 +117,18 @@ export function createNextClientAuth(
 
       return NextResponse.redirect(errorUrl);
     };
+
+    // CSRF State Verification
+    const state = searchParams.get("state");
+
+    const cookieState = cookieStore.get("mayrlabs-auth-state")?.value;
+
+    if (!state || !cookieState || state !== cookieState) {
+      return redirectToError(
+        "CLIENT_CSRF_MISMATCH",
+        "Security state mismatch. Please try logging in again.",
+      );
+    }
 
     const errorToken = searchParams.get("error");
 
@@ -163,7 +179,7 @@ export function createNextClientAuth(
    * Retrieves the current user from the session cookie.
    * If autoRotateCookie is enabled, it periodically refreshes the session token.
    */
-  const getUser = async (): Promise<AuthUserPayload | null> => {
+  const getUser = async (): Promise<AuthUser | null> => {
     const cookieStore = await cookies();
 
     const token = cookieStore.get(setup.config.session.key)?.value;
@@ -212,15 +228,15 @@ export function createNextClientAuth(
       }
     }
 
-    return user;
+    return user ? new AuthUser(user) : null;
   };
 
   /**
    * Retrieves the current user or throws an UnauthenticatedError if no session exists.
    *
-   * @returns User payload.
+   * @returns User model instance.
    */
-  const getUserOrThrow = async (): Promise<AuthUserPayload> => {
+  const getUserOrThrow = async (): Promise<AuthUser> => {
     const user = await getUser();
 
     if (!user) {
@@ -236,7 +252,7 @@ export function createNextClientAuth(
    * Gets the current user or redirects to the login page if not logged in.
    * Useful for Server Components.
    */
-  const getUserOrRedirect = async (): Promise<AuthUserPayload> => {
+  const getUserOrRedirect = async (): Promise<AuthUser> => {
     const user = await getUser();
 
     if (!user) return redirect(setup.getLoginUrl());
@@ -256,11 +272,7 @@ export function createNextClientAuth(
 
     if (token) user = await setup.verifyAuthToken(token, audience);
 
-    if (!user) {
-      const loginUrl = setup.getLoginUrl();
-
-      return redirectTo(loginUrl, request.url);
-    }
+    if (!user) return redirectToLogin(request);
 
     return NextResponse.next();
   };
@@ -278,11 +290,29 @@ export function createNextClientAuth(
 
   /**
    * Returns a redirect to the central login URL.
+   * Generates and stores a CSRF state cookie valid for 5 minutes.
    */
-  const redirectToLogin = (request: NextRequest) => {
-    const loginUrl = setup.getLoginUrl();
+  const redirectToLogin = async (
+    request: NextRequest,
+    params: Record<string, string> = {},
+  ) => {
+    const state = generateRandomString(32);
 
-    return redirectTo(loginUrl, request.url);
+    const loginUrl = setup.getLoginUrl({ ...params, state });
+
+    const response = redirectTo(loginUrl, request.url);
+
+    const cookieStore = await cookies();
+
+    cookieStore.set("mayrlabs-auth-state", state, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 300, // 5 minutes
+    });
+
+    return response;
   };
 
   /**
@@ -309,7 +339,9 @@ export function createNextClientAuth(
       return (fallback as React.JSX.Element) || null;
     }
 
-    return <AuthClientProvider user={user}>{children}</AuthClientProvider>;
+    return (
+      <AuthClientProvider user={user.toJSON()}>{children}</AuthClientProvider>
+    );
   }
 
   return {

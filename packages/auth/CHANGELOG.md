@@ -3,8 +3,10 @@
 ## 0.5.0 (2026-04-09)
 
 ### Features
+- **CSRF Protection**: Implemented state-parameter verification for SSO flows to prevent forgery.
+- **Dynamic Redirects**: `getLoginUrl` and `redirectToLogin` now accept optional query parameters (e.g., `return_to`).
 - **User Model**: Renamed `MayRLabsUser` to `AuthUser` and aligned interface with the Account Center (`id`, `username`, nullable name fields).
-- **PKCE Support**: Added `generateCodeVerifier` and `generateCodeChallenge` utilities for secure public client authentication.
+- **Security Utilities**: Added `generateCodeVerifier`, `generateCodeChallenge`, and `generateRandomString`.
 - **Hooks**: Added `onAuthSuccess` and `onAuthFailure` event hooks to `ClientConfig`.
 - **Breaking Changes**: Renamed `MayRLabsAuth*Payload` to `Auth*Payload` across the entire SDK.
 

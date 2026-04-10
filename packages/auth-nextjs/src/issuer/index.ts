@@ -1,5 +1,5 @@
 import {
-  type AuthUserPayload,
+  AuthUser,
   ISSUER_SESSION_KEY,
   IssuerAuthSetup,
   UnauthenticatedError,
@@ -58,27 +58,29 @@ export function createNextIssuerAuth(): NextIssuerAuth {
    * Gets the current user from the session cookie.
    * Works securely in Server Components, Server Actions, and Route Handlers.
    *
-   * @returns A promise resolving to the user payload or null if unauthenticated.
+   * @returns A promise resolving to the user model or null if unauthenticated.
    */
-  const getUser = async (): Promise<AuthUserPayload | null> => {
+  const getUser = async (): Promise<AuthUser | null> => {
     const cookieStore = await cookies();
 
     const token = cookieStore.get(sessionKey)?.value;
 
     if (!token) return null;
 
-    return setup.verifyAuthToken(token);
+    const payload = await setup.verifyAuthToken(token);
+
+    return payload ? new AuthUser(payload) : null;
   };
 
   /**
    * Gets the current user or throws an UnauthenticatedError if not logged in.
    * Useful for quickly securing Server Actions or strictly protected Route Handlers.
    *
-   * @returns A promise resolving to the user payload.
+   * @returns A promise resolving to the user model.
    *
    * @throws {UnauthenticatedError} If the user session token is missing or invalid.
    */
-  const getUserOrThrow = async (): Promise<AuthUserPayload> => {
+  const getUserOrThrow = async (): Promise<AuthUser> => {
     const user = await getUser();
 
     if (!user) throw new UnauthenticatedError();
