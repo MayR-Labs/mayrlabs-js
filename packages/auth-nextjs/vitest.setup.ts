@@ -16,4 +16,5 @@ process.env.MAYRLABS_AUTH_ISSUER = "test-issuer";
 process.env.MAYRLABS_AUTH_SESSION_KEY = "mayrlabs-issuer-session";
 process.env.MAYRLABS_AUTH_ERROR_REDIRECT = "/login";
 process.env.MAYRLABS_AUTH_SUCCESS_REDIRECT = "/dashboard";
+process.env.MAYRLABS_AUTH_STATE_KEY = "mayrlabs-auth-state";
 process.env.NODE_ENV = "test";

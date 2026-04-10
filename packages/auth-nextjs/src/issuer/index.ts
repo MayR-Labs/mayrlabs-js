@@ -35,7 +35,6 @@ export function createNextIssuerAuth(): NextIssuerAuth {
       MAYRLABS_AUTH_SESSION_KEY: z.string().default(ISSUER_SESSION_KEY),
       MAYRLABS_AUTH_ERROR_REDIRECT: z.string().default("/login"),
     },
-    client: {},
     experimental__runtimeEnv: process.env,
     skipValidation: process.env.NODE_ENV === "test",
   });
@@ -43,9 +42,9 @@ export function createNextIssuerAuth(): NextIssuerAuth {
   const {
     MAYRLABS_AUTH_PRIVATE_JWK: privateKey,
     MAYRLABS_AUTH_PUBLIC_JWK: publicKey,
-    MAYRLABS_AUTH_ISSUER: issuer = "auth.mayrlabs.com",
-    MAYRLABS_AUTH_SESSION_KEY: sessionKey = ISSUER_SESSION_KEY,
-    MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect = "/login",
+    MAYRLABS_AUTH_ISSUER: issuer,
+    MAYRLABS_AUTH_SESSION_KEY: sessionKey,
+    MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
   } = issuerEnv;
 
   const setup: IssuerAuthSetup = new IssuerAuthSetup({
