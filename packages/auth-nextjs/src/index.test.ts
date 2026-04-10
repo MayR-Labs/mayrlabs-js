@@ -11,16 +11,22 @@ import { createNextClientAuth, createNextIssuerAuth } from "./index";
 
 const {
   mockCookiesGet,
+  mockCookiesSet,
+  mockCookiesDelete,
   mockCookiesGetSetter,
   MockNextRequest,
   mockNextResponse,
 } = vi.hoisted(() => {
   let _mockCookiesGetImpl = (_name?: string) => undefined as any;
 
+  const mockCookiesGet = vi.fn((n: string) => _mockCookiesGetImpl(n));
+  const mockCookiesSet = vi.fn();
+  const mockCookiesDelete = vi.fn();
+
   class MockNextRequest {
     public url: string;
     public nextUrl: URL;
-    public cookies = { get: (n: string) => _mockCookiesGetImpl(n) };
+    public cookies = { get: mockCookiesGet };
     constructor(url: string) {
       this.url = url;
       this.nextUrl = new URL(url);
@@ -30,13 +36,15 @@ const {
   const mockNextResponse = {
     redirect: (url: string | URL) => ({
       url: url.toString(),
-      cookies: { set: vi.fn(), delete: vi.fn() },
+      cookies: { set: mockCookiesSet, delete: mockCookiesDelete },
     }),
     next: vi.fn(() => ({ type: "next" })),
   };
 
   return {
-    mockCookiesGet: (n: string) => _mockCookiesGetImpl(n),
+    mockCookiesGet,
+    mockCookiesSet,
+    mockCookiesDelete,
     mockCookiesGetSetter: (fn: any) => {
       _mockCookiesGetImpl = fn;
     },
@@ -48,8 +56,8 @@ const {
 vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: mockCookiesGet,
-    set: vi.fn(),
-    delete: vi.fn(),
+    set: mockCookiesSet,
+    delete: mockCookiesDelete,
   }),
 }));
 

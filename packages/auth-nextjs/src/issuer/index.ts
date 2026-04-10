@@ -43,9 +43,9 @@ export function createNextIssuerAuth(): NextIssuerAuth {
   const {
     MAYRLABS_AUTH_PRIVATE_JWK: privateKey,
     MAYRLABS_AUTH_PUBLIC_JWK: publicKey,
-    MAYRLABS_AUTH_ISSUER: issuer,
-    MAYRLABS_AUTH_SESSION_KEY: sessionKey,
-    MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
+    MAYRLABS_AUTH_ISSUER: issuer = "auth.mayrlabs.com",
+    MAYRLABS_AUTH_SESSION_KEY: sessionKey = ISSUER_SESSION_KEY,
+    MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect = "/login",
   } = issuerEnv;
 
   const setup: IssuerAuthSetup = new IssuerAuthSetup({
