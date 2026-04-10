@@ -1,6 +1,8 @@
 import { Buffer } from "node:buffer";
 import { exportJWK, generateKeyPair, importJWK, SignJWT } from "jose";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { AuthError } from "../errors";
+import { BaseAuthSetup } from "./base";
 
 vi.mock("jose", async (importOriginal) => {
   // biome-ignore lint/suspicious/noExplicitAny: Test
@@ -12,9 +14,6 @@ vi.mock("jose", async (importOriginal) => {
       .mockReturnValue(() => Promise.resolve("mocked-jwks")),
   };
 });
-
-import { MayRLabsAuthError } from "../errors";
-import { BaseAuthSetup } from "./base";
 
 class MockAuthSetup extends BaseAuthSetup<{
   publicKey?: string;
@@ -52,9 +51,9 @@ describe("BaseAuthSetup", () => {
         await setup.testGetKey("invalid-json", "Public");
         expect.fail("Should have thrown");
       } catch (error) {
-        expect(error).toBeInstanceOf(MayRLabsAuthError);
-        expect((error as MayRLabsAuthError).code).toBe("INVALID_PUBLIC_KEY");
-        expect((error as MayRLabsAuthError).message).toContain(
+        expect(error).toBeInstanceOf(AuthError);
+        expect((error as AuthError).code).toBe("INVALID_PUBLIC_KEY");
+        expect((error as AuthError).message).toContain(
           "Failed to import Public JWK",
         );
       }
@@ -64,7 +63,7 @@ describe("BaseAuthSetup", () => {
       const setup = new MockAuthSetup({ publicKey: publicJWK, issuer: ISSUER });
       await expect(
         setup.testGetKey(JSON.stringify({ kty: "oct", k: "..." }), "Public"),
-      ).rejects.toThrow(MayRLabsAuthError);
+      ).rejects.toThrow(AuthError);
     });
   });
 

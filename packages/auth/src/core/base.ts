@@ -5,7 +5,7 @@ import {
   type JWTVerifyGetKey,
   jwtVerify,
 } from "jose";
-import { MayRLabsAuthError } from "../errors";
+import { AuthError } from "../errors";
 import type {
   AuthErrorPayload,
   AuthMachinePayload,
@@ -37,7 +37,7 @@ export abstract class BaseAuthSetup<
     try {
       return (await importJWK(JSON.parse(keyString), "PS256")) as CryptoKey;
     } catch (error) {
-      throw new MayRLabsAuthError(
+      throw new AuthError(
         `Failed to import ${keyType} JWK: ${error instanceof Error ? error.message : "Unknown error"}`,
         `INVALID_${keyType.toUpperCase()}_KEY`,
       );
@@ -54,7 +54,7 @@ export abstract class BaseAuthSetup<
     }
 
     if (!this.config.publicKey) {
-      throw new MayRLabsAuthError(
+      throw new AuthError(
         "Local public key missing and remotePublicKey not enabled.",
         "MISSING_PUBLIC_KEY",
       );
@@ -84,7 +84,7 @@ export abstract class BaseAuthSetup<
 
       return payload as ResponseT;
     } catch (error) {
-      if (error instanceof MayRLabsAuthError) throw error;
+      if (error instanceof AuthError) throw error;
 
       return null;
     }

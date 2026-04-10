@@ -1,4 +1,4 @@
-import { MayRLabsAuthError } from "../errors";
+import { AuthError } from "../errors";
 import type {
   AuthErrorPayload,
   AuthUserPayload,
@@ -48,7 +48,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
    *
    * @returns A promise that resolves to the machine authentication token.
    *
-   * @throws {MayRLabsAuthError} If authentication fails or network error occurs.
+   * @throws {AuthError} If authentication fails or network error occurs.
    */
   async authenticateMachine(): Promise<string> {
     try {
@@ -70,7 +70,7 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
           code?: string;
         };
 
-        throw new MayRLabsAuthError(
+        throw new AuthError(
           errorData.message || "Failed to authenticate machine",
           errorData.code || "MACHINE_AUTH_FAILED",
         );
@@ -80,9 +80,9 @@ export class ClientAuthSetup extends BaseAuthSetup<ClientConfig> {
 
       return data.token;
     } catch (error) {
-      if (error instanceof MayRLabsAuthError) throw error;
+      if (error instanceof AuthError) throw error;
 
-      throw new MayRLabsAuthError(
+      throw new AuthError(
         `Machine authentication network error: ${error instanceof Error ? error.message : "Unknown error"}`,
         "MACHINE_AUTH_NETWORK_ERROR",
       );

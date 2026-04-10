@@ -1,8 +1,15 @@
 # Changelog
 
+## [0.5.1] - 2026-04-10
+
+### Breaking Changes
+
+- Renamed `MayRLabsAuthError` -> `AuthError`
+
 ## [0.5.0] - 2026-04-10
 
 ### Features
+
 - **CSRF Protection**: Implemented state-parameter verification for SSO flows to prevent forgery.
 - **Node.js Compatibility**: Improved `b64url` encoding to utilize `Buffer` when available, ensuring compatibility with Next.js Server Actions and Middleware.
 - **User Model**: Renamed `MayRLabsUser` to `AuthUser` and aligned interface with the Account Center (`id`, `username`, nullable name fields).
@@ -14,6 +21,7 @@
 ## [0.4.2] - 2026-04-08
 
 ### Breaking Changes
+
 - Separated session cookie keys for client and issuer applications.
 - Updated default session key to `mayrlabs-client-session` (Client) and `mayrlabs-issuer-session` (Issuer).
 
@@ -63,7 +71,7 @@ Minor bump to ensure version sync
   - `IssuerAuthSetup`: For identity providers (signing tokens with Private JWK).
   - `ClientAuthSetup`: For consumer applications (verifying tokens with Public JWK and machine authentication).
 - **JWK Integration**: Switched to JSON Web Key (JWK) standard for key management with built-in caching for performance.
-- **Strict Typing**: Removed all `any` types and implemented exhaustive TypeScript interfaces for `MayRLabsAuthUserPayload`, `MayRLabsAuthMachinePayload`, and `MayRLabsAuthErrorPayload`.
+- **Strict Typing**: Removed all `any` types and implemented exhaustive TypeScript interfaces for `MayRLabsAuthUserPayload`, `MayRLabsAuthMachinePayload`, and `AuthErrorPayload`.
 - **Breaking Changes**: Fully removed legacy symmetric encryption utilities (`src/core/encryption.ts`).
 
 ## 0.1.2
