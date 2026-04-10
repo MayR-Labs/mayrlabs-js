@@ -264,7 +264,7 @@ export function createNextClientAuth(
   const getUserOrRedirect = async (): Promise<AuthUser> => {
     const user = await getUser();
 
-    if (!user) return redirectToLogin();
+    if (!user) return redirect(redirects.error);
 
     return user;
   };
@@ -334,7 +334,7 @@ export function createNextClientAuth(
   }): Promise<React.JSX.Element | null> {
     const user = await getUser();
 
-    if (!user) return redirectToLogin();
+    if (!user) return redirect(redirects.error);
 
     if (
       allowedRoles &&
