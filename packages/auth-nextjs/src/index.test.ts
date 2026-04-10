@@ -221,7 +221,7 @@ describe("createNextClientAuth", () => {
       const { redirect } = await import("next/navigation");
       const auth = createNextClientAuth();
       await auth.getUserOrRedirect();
-      expect(redirect).toHaveBeenCalledWith(auth.setup.getLoginUrl());
+      expect(redirect).toHaveBeenCalledWith("/login");
     });
   });
 

@@ -1,16 +1,17 @@
-# @mayrlabs/auth
+# Changelog
 
-## 0.5.0 (2026-04-09)
+## [0.5.0] - 2026-04-10
 
 ### Features
 - **CSRF Protection**: Implemented state-parameter verification for SSO flows to prevent forgery.
-- **Dynamic Redirects**: `getLoginUrl` and `redirectToLogin` now accept optional query parameters (e.g., `return_to`).
+- **Node.js Compatibility**: Improved `b64url` encoding to utilize `Buffer` when available, ensuring compatibility with Next.js Server Actions and Middleware.
 - **User Model**: Renamed `MayRLabsUser` to `AuthUser` and aligned interface with the Account Center (`id`, `username`, nullable name fields).
-- **Security Utilities**: Added `generateCodeVerifier`, `generateCodeChallenge`, and `generateRandomString`.
+- **PKCE Utilities**: Added `generateCodeVerifier`, `generateCodeChallenge`, and `generateRandomString` (compatible with both Browser and Node.js).
 - **Hooks**: Added `onAuthSuccess` and `onAuthFailure` event hooks to `ClientConfig`.
 - **Breaking Changes**: Renamed `MayRLabsAuth*Payload` to `Auth*Payload` across the entire SDK.
+- **Tests**: Added comprehensive unit tests for `AuthUser`, `PKCE`, and random string utilities.
 
-## 0.4.2 (2026-04-08)
+## [0.4.2] - 2026-04-08
 
 ### Breaking Changes
 - Separated session cookie keys for client and issuer applications.

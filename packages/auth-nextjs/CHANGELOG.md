@@ -1,16 +1,22 @@
-# @mayrlabs/auth-nextjs
+# Changelog
 
-## 0.5.0 (2026-04-09)
+## [0.5.0] - 2026-04-10
+
+### ⚠️ Breaking Changes
+- `redirectToLogin()` no longer requires the `NextRequest` parameter as it uses absolute URL redirection.
+- `getUserOrRedirect` and `AuthProvider` now redirect to the local `redirects.error` path (default `/login`) instead of absolute SSO URLs in server context.
 
 ### Features
 - **CSRF Protection**: Added robust state-parameter verification for all SSO flows using `httpOnly` cookies (5-minute expiry).
+- **Security Hardening**: The state cookie is now immediately deleted after consumption in `handleCallback` to maximize security.
+- **Configurable State Key**: Added `MAYRLABS_AUTH_STATE_KEY` env variable and `cookie.stateKey` option to customize the CSRF state cookie name.
 - **Dynamic Redirects**: `redirectToLogin` now accepts an optional `params` object (e.g., `return_to`).
 - **Session Sliding**: Added `autoRotateCookie` option for automatic token rotation in Middleware/Actions.
 - **Role Gating**: Simplified UI-level protection with `allowedRoles` and `fallback` props in `AuthProvider`.
 - **User Model**: `useUser()` now returns the standardized `AuthUser` class instance.
 - **Breaking Changes**: Renamed `MayRLabsAuth*Payload` to `Auth*Payload` to match core v0.5.0.
 
-## 0.4.2 (2026-04-08)
+## [0.4.2] - 2026-04-08
 
 ### Breaking Changes
 - Updated session key defaults to prevent collision between Client and Issuer sessions.
