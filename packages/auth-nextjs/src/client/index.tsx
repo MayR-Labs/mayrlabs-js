@@ -63,7 +63,7 @@ export function createNextClientAuth(
     MAYRLABS_ACCOUNT_URL: accountUrl = ACCOUNT_URL,
     MAYRLABS_CLIENT_AUDIENCE: audience,
     MAYRLABS_AUTH_ISSUER: issuerEnv,
-    MAYRLABS_AUTH_SESSION_KEY: sessionKey = CLIENT_SESSION_KEY,
+    MAYRLABS_AUTH_SESSION_KEY: sessionKey,
     MAYRLABS_AUTH_STATE_KEY: stateKey,
     MAYRLABS_AUTH_ERROR_REDIRECT: errorRedirect,
     MAYRLABS_AUTH_SUCCESS_REDIRECT: successRedirect,
