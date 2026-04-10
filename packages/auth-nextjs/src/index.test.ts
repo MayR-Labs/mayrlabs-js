@@ -166,6 +166,7 @@ describe("createNextClientAuth", () => {
     });
 
     it("should redirect to error if both token and error are missing in handleCallback", async () => {
+      const auth = createNextClientAuth();
       mockCookiesGetSetter((name: string) => {
         if (name === "mayrlabs-auth-state")
           return { value: "mock-state" } as any;
