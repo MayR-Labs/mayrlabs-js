@@ -118,7 +118,7 @@
   "dependencies": {
     "@mayrlabs/auth": "^0.5.1",
     "@t3-oss/env-nextjs": "^0.12.0",
-    "zod": "^3.24.2"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@types/react-dom": "^19.0.0",
