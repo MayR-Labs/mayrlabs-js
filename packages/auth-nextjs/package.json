@@ -100,7 +100,7 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsdown",
+    "build": "node init && tsdown",
     "pkg:dev": "tsdown --watch",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
