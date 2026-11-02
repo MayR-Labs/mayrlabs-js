@@ -44,7 +44,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "node init && tsdown",
     "pkg:dev": "tsdown --watch",
     "demo": "tsx src/hello.ts",
     "demo:dist": "node dist/hello.cjs",
