@@ -54,7 +54,7 @@
     "@clack/prompts": "^0.9.1",
     "@mayrlabs/debugger": "^1.0.0",
     "dotenv": "^16.4.7",
-    "node-telegram-bot-api": "^0.66.0"
+    "node-telegram-bot-api": "^2.3.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
