@@ -48,7 +48,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "node init && tsdown",
+    "build": "tsdown",
     "pkg:dev": "tsdown --watch",
     "demo": "tsx src/cli/index.ts",
     "demo:dist": "node dist/genesis.cjs",

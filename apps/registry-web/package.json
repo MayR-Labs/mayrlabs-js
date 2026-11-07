@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node init && next dev",
+    "dev": "next dev",
     "prebuildxxx": "node scripts/ensure-ci-env.mjs",
     "buildxxx": "next build",
-    "start": "node init && next start",
+    "start": "next start",
     "lint": "biome lint .",
     "format": "biome format .",
     "registry:build": "shadcn build"

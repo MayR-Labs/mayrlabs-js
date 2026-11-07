@@ -58,7 +58,7 @@
     "test:coverage": "vitest run --coverage",
     "demo": "tsx src/cli.ts",
     "demo:dist": "node dist/cli.cjs",
-    "build": "node init && tsdown",
+    "build": "tsdown",
     "pkg:dev": "tsdown --watch",
     "prepublishOnly": "npm run build"
   },

@@ -61,7 +61,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "node init && tsdown",
+    "build": "tsdown",
     "pkg:dev": "tsdown --watch",
     "test": "vitest run",
     "test:watch": "vitest",
